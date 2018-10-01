@@ -1,0 +1,8 @@
+" Make line numbers relative
+set rnu
+
+" Make line number in the cursor line absolute
+set nu
+
+" Add plugin vim-surround
+set surround
