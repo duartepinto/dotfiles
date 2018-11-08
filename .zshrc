@@ -105,3 +105,7 @@ source ~/.bashrc
 
 alias sbt=JVM_OPTS='"-Xmx4G -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Xss2M -Duser.timezone=UTC" sbtx'
 
+if [ "$TMUX" = "" ]; then tmux; fi
+
+alias adstax="cd ~/Documents/git/adstax"
+
