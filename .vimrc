@@ -8,25 +8,31 @@ Plugin 'VundleVim/Vundle.vim'
 
 " Plugins
 
-" https://github.com/plasticboy/vim-markdown 
 Plugin 'godlygeek/tabular'
-Plugin 'plasticboy/vim-markdown'
-
-Plugin 'lervag/vimtex'
 Plugin 'scrooloose/syntastic'
-Plugin 'suan/vim-instant-markdown'
-"Plugin 'JamshedVesuna/vim-markdown-preview'
 Plugin 'tpope/vim-surround'
 Plugin 'bling/vim-airline' " Status bar at the bottom of vim
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'valloric/youcompleteme', { 'do': './install.py --tern-completer' }
-Plugin 'easymotion/vim-easymotion'
-" Plugin 'rhysd/vim-grammarous'
-Plugin 'kaicataldo/material.vim'
+" Plugin 'easymotion/vim-easymotion' " Removed it because I should learn what it does before having it installed
+"Plugin 'kaicataldo/material.vim' " Had to stop using this because of jsx syntax highlighting
+Plugin 'altercation/vim-colors-solarized'
+
+" Plugins for Latex
+Plugin 'lervag/vimtex'
+
+" Plugins for Markdown
+Plugin 'plasticboy/vim-markdown'
+Plugin 'suan/vim-instant-markdown'
 
 " Plugins for Javascript
 Plugin 'pangloss/vim-javascript'
-Plugin 'moll/vim-node'
+"Plugin 'moll/vim-node'
+
+" Plugins for React
+Plugin 'maxmellon/vim-jsx-pretty'
+Plugin 'mattn/emmet-vim'
+"Plugin 'w0rp/ale'
 
 " Plugins for Scala
 Plugin 'derekwyatt/vim-scala'
@@ -59,12 +65,14 @@ catch
 endtry
 
 " Colorscheme
+syntax enable
 set background=dark
-colorscheme material 
+"colorscheme material 
+let g:solarized_termcolors=256
+let g:solarized_termtrans=1
+colorscheme solarized 
 
 " Line numbers
-"set number
-
 set number relativenumber
 
 augroup numbertoggle
@@ -89,7 +97,7 @@ set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
-" Don't use syntastic with .tex files
+" Don't use syntastic with these file extensions
 let g:syntastic_mode_map = { 'passive_filetypes': ['tex', 'scala'] }
 
 let g:syntastic_always_populate_loc_list = 1
@@ -99,9 +107,7 @@ let g:syntastic_check_on_wq = 0
 
 "let g:syntastic_python_checkers=['pyflakes', 'python3']
 let g:syntastic_python_checkers=[]
-let g:syntastic_javascript_checkers = ['jshint']
-
-let syntax = 1
+"let g:syntastic_javascript_checkers = ['jshint']
 
 filetype plugin on
 
@@ -124,3 +130,12 @@ let g:EclimCompletionMethod = 'omnifunc'
 
 " Enable mouse in all modes. I added this to allow mouse scroll with tmux
 set mouse=a
+
+" Make vim-jsx have syntax highlighting and identation only for .jsx files
+"let g:jsx_ext_required = 1
+
+" Unfold all by default
+set foldlevel=99
+
+let g:vim_jsx_pretty_colorful_config = 1 " default 0
+

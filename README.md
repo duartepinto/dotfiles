@@ -32,3 +32,16 @@
 
 * Install [Oh My Zsh](https://github.com/robbyrussell/oh-my-zsh)
 * To solve problem with 'agnoster' theme with questions marks appearing in iTerm2, follow [https://github.com/robbyrussell/oh-my-zsh/issues/1906#issuecomment-252443982](https://github.com/robbyrussell/oh-my-zsh/issues/1906#issuecomment-252443982)
+
+
+
+## Common errors
+### YCM with Javascript files
+
+When opening a `.js` or `.jsx` the following error might occur
+```
+RuntimeError: Warning: Unable to detect a .tern-project file in the hierarchy before /Users/ain/projects/iptools-jquery-modal and no global .tern-config file was found. This is required for accurate JavaScript completion.
+```
+
+To solve follow:
+https://github.com/ain/.vim/issues/46#issuecomment-381189916
