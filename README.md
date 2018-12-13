@@ -28,11 +28,68 @@
 
 *   `npm install -g instant-markdown-d`
 
+### ESLint for React
+
+To use Syntastic with ESLint:
+
+Install eslint, babel-eslint (for ES6 support), and [eslint-plugin-react](https://github.com/yannickcr/eslint-plugin-react):
+
+```
+npm install -g eslint
+npm install -g babel-eslint
+npm install -g eslint-plugin-react
+```
+
+Create a config like this in your project's `.eslintrc`, or do so globally by placing it in `~/.eslintrc`:
+
+```
+{
+    "parser": "babel-eslint",
+    "env": {
+            "browser": true,
+                    "node": true
+                        
+    },
+    "settings": {
+            "ecmascript": 6,
+                    "jsx": true
+                        
+    },
+    "plugins": [
+            "react"
+                
+    ],
+    "rules": {
+            "strict": 0,
+                    "quotes": 0,
+                            "no-unused-vars": 0,
+                                    "camelcase": 0,
+                                            "no-underscore-dangle": 0
+                                                
+    }
+
+}
+```
+
+### Prettier - an opinionated code formatter (for React).
+
+* `npm install -g prettier`
+
 ## Oh My Zsh
 
 * Install [Oh My Zsh](https://github.com/robbyrussell/oh-my-zsh)
 * To solve problem with 'agnoster' theme with questions marks appearing in iTerm2, follow [https://github.com/robbyrussell/oh-my-zsh/issues/1906#issuecomment-252443982](https://github.com/robbyrussell/oh-my-zsh/issues/1906#issuecomment-252443982)
 
+## iTerm key mappings
+
+Go to iTerm2 > Preferences > Profiles > Keys
+
+  | Shortcut  | Action               | Code |
+  |-----------|----------------------|------|
+  | ⌥+←Delete | Send Hex Code        | 0x17 |
+  | ⌘+←Delete | Send Hex Code        | 0x15 |
+  | ⌥+←       | Send Escape sequence | b    |
+  | ⌥+→       | Send Escape sequence | f    |
 
 
 ## Common errors
