@@ -32,6 +32,7 @@ Plugin 'pangloss/vim-javascript'
 " Plugins for React
 Plugin 'maxmellon/vim-jsx-pretty'
 Plugin 'mattn/emmet-vim'
+Plugin 'skywind3000/asyncrun.vim' " Run commands asynchronously. To use with Prettier formater
 "Plugin 'w0rp/ale'
 
 " Plugins for Scala
@@ -107,7 +108,7 @@ let g:syntastic_check_on_wq = 0
 
 "let g:syntastic_python_checkers=['pyflakes', 'python3']
 let g:syntastic_python_checkers=[]
-"let g:syntastic_javascript_checkers = ['jshint']
+let g:syntastic_javascript_checkers = ['eslint']
 
 filetype plugin on
 
@@ -139,3 +140,9 @@ set foldlevel=99
 
 let g:vim_jsx_pretty_colorful_config = 1 " default 0
 
+autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
+
+
+" Make vim automatically refresh any files that haven't been edited by vim
+set autoread
+au FocusGained,BufEnter * :silent! !

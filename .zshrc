@@ -109,3 +109,20 @@ if [ "$TMUX" = "" ]; then tmux; fi
 
 alias adstax="cd ~/Documents/git/adstax"
 
+
+
+
+function authkops () {
+  if [ $# -eq 0 ]
+  then
+      echo "usage: authkops <client> <context> <aws-profile>"
+      return 1
+  fi
+  kubectl config use-context "$2"
+  KEY=$(KOPS_STATE_STORE=s3://adstax-$1-kops-state AWS_PROFILE=${3-default} \
+    kops get secrets kube --type secret -oplaintext)
+  echo $KEY | pbcopy
+  echo "Copied $KEY to the clipboard."
+}
+
+export PATH="/usr/local/opt/node@8/bin:$PATH"
