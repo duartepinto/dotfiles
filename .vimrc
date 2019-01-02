@@ -146,3 +146,10 @@ autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --
 " Make vim automatically refresh any files that haven't been edited by vim
 set autoread
 au FocusGained,BufEnter * :silent! !
+
+" This will insert four spaces instead of a tab character.
+" Spaces are a bit more “stable”, meaning that text indented with spaces will show up the
+" same in the browser and any other application.
+:set tabstop=2
+:set shiftwidth=2
+:set expandtab
