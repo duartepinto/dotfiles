@@ -109,9 +109,6 @@ if [ "$TMUX" = "" ]; then tmux; fi
 
 alias adstax="cd ~/Documents/git/adstax"
 
-
-
-
 function authkops () {
   if [ $# -eq 0 ]
   then
@@ -123,6 +120,10 @@ function authkops () {
     kops get secrets kube --type secret -oplaintext)
   echo $KEY | pbcopy
   echo "Copied $KEY to the clipboard."
+}
+
+kubetoken () {
+    kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | awk '/^deployment-controller-token-/{print $1}') | awk '$1=="token:"{print $2}' | pbcopy
 }
 
 export PATH="/usr/local/opt/node@8/bin:$PATH"

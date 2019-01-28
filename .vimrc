@@ -17,6 +17,7 @@ Plugin 'valloric/youcompleteme', { 'do': './install.py --tern-completer' }
 " Plugin 'easymotion/vim-easymotion' " Removed it because I should learn what it does before having it installed
 "Plugin 'kaicataldo/material.vim' " Had to stop using this because of jsx syntax highlighting
 Plugin 'altercation/vim-colors-solarized'
+Plugin 'natebosch/vim-lsc' " Language Server Client
 
 " Plugins for Latex
 Plugin 'lervag/vimtex'
@@ -112,14 +113,41 @@ let g:syntastic_javascript_checkers = ['eslint']
 
 filetype plugin on
 
-let maplocalleader = "\\"
+"let maplocalleader = "\\"
+let maplocalleader="\<space>"
 
 " Automatically truncate the length of a line in Latex
 autocmd FileType tex    set textwidth=82
 
-" Make vimtex automatically open the evince instead of the default system viewer.
-
+" Make vimtex automatically open evince instead of the default system viewer.
 "let g:vimtex_view_general_viewer = 'evince'
+
+" %%%%%%%%%% MAC OS ONLY %%%%%%%%%%
+" Make vimtex automatically open skim instead of the default system viewer. Better for Mac OS.
+let g:vimtex_view_general_viewer 
+      \ = '/Applications/Skim.app/Contents/SharedSupport/displayline'
+let g:vimtex_view_general_options = '-r @line @pdf @tex'
+let g:vimtex_compiler_callback_hooks = ['UpdateSkim']
+function! UpdateSkim(status)
+  if !a:status | return | endif
+
+  let l:out = b:vimtex.out()
+  let l:tex = expand('%:p')
+  let l:cmd = [g:vimtex_view_general_viewer, '-r']
+  if !empty(system('pgrep Skim'))
+    call extend(l:cmd, ['-g'])
+  endif
+  if has('nvim')
+    call jobstart(l:cmd + [line('.'), l:out, l:tex])
+  elseif has('job')
+    call job_start(l:cmd + [line('.'), l:out, l:tex])
+  else
+    call system(join(l:cmd + [line('.'),
+          \ shellescape(l:out), shellescape(l:tex)], ' '))
+  endif
+endfunction
+
+" %%%%%%%%%% END OF MAC OS ONLY %%%%%%%%%%
 
 if !exists('g:ycm_semantic_triggers')
     let g:ycm_semantic_triggers = {}
@@ -153,3 +181,18 @@ au FocusGained,BufEnter * :silent! !
 :set tabstop=2
 :set shiftwidth=2
 :set expandtab
+
+" Configuration for vim-scala. To use with metals
+au BufRead,BufNewFile *.sbt set filetype=scala
+
+" Configuration for vim-lsc. To use with metals
+let g:lsc_enable_autocomplete = v:false
+let g:lsc_server_commands = {
+  \  'scala': {
+  \    'command': 'metals-vim',
+  \    'log_level': 'Log'
+  \  }
+  \}
+let g:lsc_auto_map = {
+  \  'GoToDefinition': 'gd',
+  \}
