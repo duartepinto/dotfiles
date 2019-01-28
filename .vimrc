@@ -28,6 +28,7 @@ Plugin 'suan/vim-instant-markdown'
 
 " Plugins for Javascript
 Plugin 'pangloss/vim-javascript'
+Plugin 'elzr/vim-json'
 "Plugin 'moll/vim-node'
 
 " Plugins for React
@@ -168,6 +169,7 @@ set foldlevel=99
 
 let g:vim_jsx_pretty_colorful_config = 1 " default 0
 
+" Run Prettier and reload buffer after complete. For .js files
 autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
 
 

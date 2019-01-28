@@ -46,28 +46,23 @@ Create a config like this in your project's `.eslintrc`, or do so globally by pl
 {
     "parser": "babel-eslint",
     "env": {
-            "browser": true,
-                    "node": true
-                        
+      "browser": true,
+      "node": true
     },
     "settings": {
-            "ecmascript": 6,
-                    "jsx": true
-                        
+      "ecmascript": 6,
+      "jsx": true
     },
     "plugins": [
-            "react"
-                
+      "react"
     ],
     "rules": {
-            "strict": 0,
-                    "quotes": 0,
-                            "no-unused-vars": 0,
-                                    "camelcase": 0,
-                                            "no-underscore-dangle": 0
-                                                
+      "strict": 0,
+      "quotes": 0,
+      "no-unused-vars": 0,
+      "camelcase": 0,
+      "no-underscore-dangle": 0
     }
-
 }
 ```
 
