@@ -18,6 +18,7 @@ Plugin 'valloric/youcompleteme', { 'do': './install.py --tern-completer' }
 "Plugin 'kaicataldo/material.vim' " Had to stop using this because of jsx syntax highlighting
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'natebosch/vim-lsc' " Language Server Client
+Plugin 'Xuyuanp/nerdtree-git-plugin'
 
 " Plugins for Latex
 Plugin 'lervag/vimtex'
@@ -39,6 +40,8 @@ Plugin 'skywind3000/asyncrun.vim' " Run commands asynchronously. To use with Pre
 
 " Plugins for Scala
 Plugin 'derekwyatt/vim-scala'
+Plugin 'GEverding/vim-hocon'
+
 "
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -94,7 +97,12 @@ let NERDTreeIgnore = ['__pycache__', '\.pyc$', '\.o$', '\.so$', '\.a$', '\.swp',
 let NERDTreeShowHidden=1
 let g:NERDTreeWinPos="left"
 let g:NERDTreeDirArrows=0
-map <C-t> :NERDTreeToggle<CR>
+map <C-n> :NERDTreeToggle<CR>
+map <C-e> :NERDTreeFind<CR>
+
+" Automatically close a tab if the only remaining window is NerdTree 
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
 
 set statusline+=%#warningmsg#
 set statusline+=%{SyntasticStatuslineFlag()}
@@ -171,7 +179,6 @@ let g:vim_jsx_pretty_colorful_config = 1 " default 0
 
 " Run Prettier and reload buffer after complete. For .js files
 autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
-
 
 " Make vim automatically refresh any files that haven't been edited by vim
 set autoread
