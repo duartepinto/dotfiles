@@ -18,6 +18,7 @@ Plugin 'valloric/youcompleteme', { 'do': './install.py --tern-completer' }
 "Plugin 'kaicataldo/material.vim' " Had to stop using this because of jsx syntax highlighting
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'natebosch/vim-lsc' " Language Server Client
+Plugin 'w0rp/ale' " Just for Scala language diagnostics. Failed to get it to work exclusively with scala
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 
 " Plugins for Latex
@@ -36,7 +37,6 @@ Plugin 'elzr/vim-json'
 Plugin 'maxmellon/vim-jsx-pretty'
 Plugin 'mattn/emmet-vim'
 Plugin 'skywind3000/asyncrun.vim' " Run commands asynchronously. To use with Prettier formater
-"Plugin 'w0rp/ale'
 
 " Plugins for Scala
 Plugin 'derekwyatt/vim-scala'
@@ -97,8 +97,9 @@ let NERDTreeIgnore = ['__pycache__', '\.pyc$', '\.o$', '\.so$', '\.a$', '\.swp',
 let NERDTreeShowHidden=1
 let g:NERDTreeWinPos="left"
 let g:NERDTreeDirArrows=0
+let NERDTreeMinimalUI = 1
 map <C-n> :NERDTreeToggle<CR>
-map <C-e> :NERDTreeFind<CR>
+map <C-y> :NERDTreeFind<CR>
 
 " Automatically close a tab if the only remaining window is NerdTree 
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -205,3 +206,13 @@ let g:lsc_server_commands = {
 let g:lsc_auto_map = {
   \  'GoToDefinition': 'gd',
   \}
+
+" Enable gitgutter by default (Plugin airblade/vim-gitgutter). 
+let g:gitgutter_enabled = 1
+
+" Update GitGutter on save
+autocmd BufWritePost * GitGutter
+
+" Scala Import sort (vim-scala)
+let g:scala_sort_across_groups = 1
+let g:scala_first_party_namespaces = '\(eu.shiftforward.*\|com.velocidi.*\)'
