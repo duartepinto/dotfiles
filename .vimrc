@@ -204,7 +204,11 @@ let g:lsc_server_commands = {
   \  }
   \}
 let g:lsc_auto_map = {
-  \  'GoToDefinition': 'gd',
+  \ 'GoToDefinition': 'gd',
+  \ 'GoToDefinitionSplit': ['<C-W>]', '<C-W><C-]>'],
+  \ 'FindReferences': 'gr',
+  \ 'FindCodeActions': 'ga',
+  \ 'Rename': 'gR',
   \}
 
 " Enable gitgutter by default (Plugin airblade/vim-gitgutter). 
