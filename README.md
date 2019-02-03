@@ -70,6 +70,27 @@ Create a config like this in your project's `.eslintrc`, or do so globally by pl
 
 * `npm install -g prettier`
 
+### Metals - Languages Server for Scala
+
+Follow instructions in https://scalameta.org/metals/docs/editors/vim.html :
+
+```bash
+# Make sure to use coursier v1.1.0-M9 or newer.
+
+curl -L -o coursier https://git.io/coursieri
+chmod +x coursier
+./coursier bootstrap \
+  --java-opt -XX:+UseG1GC \
+  --java-opt -XX:+UseStringDeduplication  \
+  --java-opt -Xss4m \
+  --java-opt -Xms100m \
+  --java-opt -Dmetals.client=vim-lsc \
+  org.scalameta:metals_2.12:0.4.4 \
+  -r bintray:scalacenter/releases \
+  -r sonatype:snapshots \
+  -o /usr/local/bin/metals-vim -f
+```
+
 ## Oh My Zsh
 
 * Install [Oh My Zsh](https://github.com/robbyrussell/oh-my-zsh)
