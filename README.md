@@ -107,6 +107,25 @@ Go to iTerm2 > Preferences > Profiles > Keys
   | ⌥+←       | Send Escape sequence | b    |
   | ⌥+→       | Send Escape sequence | f    |
 
+## Solarized Theme
+
+I'm using the Solarized Dark theme developed by [Ethan Schoonover](https://ethanschoonover.com/solarized/)
+
+### iTerm
+
+Install and enable `Solarized Dark` theme from [Official repo](https://github.com/altercation/vim-colors-solarized)
+
+Useful links:
+
+* https://gist.github.com/kevin-smets/8568070
+
+### Vim 
+Already installed. No need to do anything.
+Instruction here if needed: https://github.com/altercation/vim-colors-solarized
+
+### Tmux 
+Already installed. No need to do anything.
+Instruction here if needed: https://github.com/seebi/tmux-colors-solarized
 
 ## Common errors
 ### YCM with Javascript files
