@@ -20,6 +20,7 @@ Plugin 'altercation/vim-colors-solarized'
 Plugin 'natebosch/vim-lsc' " Language Server Client
 Plugin 'w0rp/ale' " Just for Scala language diagnostics. Failed to get it to work exclusively with scala
 Plugin 'Xuyuanp/nerdtree-git-plugin'
+Plugin 'diepm/vim-rest-console'
 
 " Plugins for Latex
 Plugin 'lervag/vimtex'
@@ -217,3 +218,11 @@ autocmd BufWritePost * GitGutter
 " Scala Import sort (vim-scala)
 let g:scala_sort_across_groups = 1
 let g:scala_first_party_namespaces = '\(eu.shiftforward.*\|com.velocidi.*\)'
+
+" Custom comment delimiters for NERDCommenter
+let g:NERDCustomDelimiters = {
+  \ 'hocon': { 'left': '#', 'right': ''  },
+  \ }
+
+" Add spaces after comment delimiters by default
+let g:NERDSpaceDelims = 1
