@@ -15,12 +15,13 @@ Plugin 'bling/vim-airline' " Status bar at the bottom of vim
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'valloric/youcompleteme', { 'do': './install.py --tern-completer' }
 " Plugin 'easymotion/vim-easymotion' " Removed it because I should learn what it does before having it installed
-"Plugin 'kaicataldo/material.vim' " Had to stop using this because of jsx syntax highlighting
 Plugin 'altercation/vim-colors-solarized'
 Plugin 'natebosch/vim-lsc' " Language Server Client
-Plugin 'w0rp/ale' " Just for Scala language diagnostics. Failed to get it to work exclusively with scala
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'diepm/vim-rest-console'
+
+" Plugins for Python
+Plugin 'vim-python/python-syntax'
 
 " Plugins for Latex
 Plugin 'lervag/vimtex'
@@ -86,8 +87,8 @@ augroup numbertoggle
 augroup END
 
 " Enable Github Flavored Markdown Preview
-let vim_markdown_preview_github=1
-let vim_markdown_preview_browser='Google Chrome'
+" let vim_markdown_preview_github=1
+" let vim_markdown_preview_browser='Google Chrome'
 
 " ==== NERDTREE
 let NERDTreeIgnore = ['__pycache__', '\.pyc$', '\.o$', '\.so$', '\.a$', '\.swp', '*\.swp', '\.swo', '\.swn', '\.swh', '\.swm', '\.swl', '\.swk', '\.sw*$', '[a-zA-Z]*egg[a-zA-Z]*', '.DS_Store']
@@ -108,15 +109,17 @@ set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
 " Don't use syntastic with these file extensions
-let g:syntastic_mode_map = { 'passive_filetypes': ['tex', 'scala'] }
+let g:syntastic_mode_map = { 
+  \ "mode": "passive",  
+  \ 'passive_filetypes': ['tex', 'scala', 'python']
+  \ }
 
 let g:syntastic_always_populate_loc_list = 1
 let g:syntastic_auto_loc_list = 1
 let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
-"let g:syntastic_python_checkers=['pyflakes', 'python3']
-let g:syntastic_python_checkers=[]
+let g:syntastic_python_checkers=['pep8']
 let g:syntastic_javascript_checkers = ['eslint']
 
 filetype plugin on
@@ -183,12 +186,21 @@ autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --
 set autoread
 au FocusGained,BufEnter * :silent! !
 
-" This will insert four spaces instead of a tab character.
+" This will insert 2 spaces instead of a tab character.
 " Spaces are a bit more “stable”, meaning that text indented with spaces will show up the
 " same in the browser and any other application.
 :set tabstop=2
 :set shiftwidth=2
 :set expandtab
+
+" For Python files only
+" This will insert 4 spaces instead of a tab character.
+" Spaces are a bit more “stable”, meaning that text indented with spaces will show up the
+" same in the browser and any other application.
+aug python
+  " ftype/python.vim overwrites this
+  au FileType python setlocal ts=4 sts=4 sw=4 expandtab
+aug end
 
 " Configuration for vim-scala. To use with metals
 au BufRead,BufNewFile *.sbt set filetype=scala
@@ -201,6 +213,7 @@ let g:lsc_server_commands = {
   \    'log_level': 'Log'
   \  }
   \}
+
 let g:lsc_auto_map = {
   \ 'GoToDefinition': 'gd',
   \ 'GoToDefinitionSplit': ['<C-W>]', '<C-W><C-]>'],
@@ -223,6 +236,29 @@ let g:scala_first_party_namespaces = '\(eu.shiftforward.*\|com.velocidi.*\)'
 let g:NERDCustomDelimiters = {
   \ 'hocon': { 'left': '#', 'right': ''  },
   \ }
-
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
+
+" Disable Ale. Comes installed with amix/vimrc 
+" let g:ale_enabled = 0
+
+" Check JSX files with eslint in Ale
+augroup FiletypeGroup
+  autocmd!
+  au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
+augroup END
+
+let g:ale_linter_aliases = {'jsx': ['css', 'javascript']}
+let g:ale_linters = {
+  \ 'python': ['flake8'],
+  \ 'jsx': ['eslint']
+  \ }
+let g:ale_fixers = { 'python': ['autopep8'] }
+
+" Make flake8 use `python3` instead of `python`
+let g:ale_python_flake8_executable = 'python3'
+
+" Open quickfix list automatically
+let g:ale_open_list = 1
+
+let g:ale_completion_enabled = 1

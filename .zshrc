@@ -127,3 +127,5 @@ kubetoken () {
 }
 
 export PATH="/usr/local/opt/node@8/bin:$PATH"
+
+export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
