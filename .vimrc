@@ -1,65 +1,48 @@
 set nocompatible              " be iMproved, required
-filetype off                  " required
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
-
+call plug#begin('~/.vim/plugged')
 " Plugins
 
-Plugin 'godlygeek/tabular'
-Plugin 'scrooloose/syntastic'
-Plugin 'tpope/vim-surround'
-Plugin 'bling/vim-airline' " Status bar at the bottom of vim
-Plugin 'scrooloose/nerdcommenter'
-Plugin 'valloric/youcompleteme', { 'do': './install.py --tern-completer' }
-" Plugin 'easymotion/vim-easymotion' " Removed it because I should learn what it does before having it installed
-Plugin 'altercation/vim-colors-solarized'
-Plugin 'natebosch/vim-lsc' " Language Server Client
-Plugin 'Xuyuanp/nerdtree-git-plugin'
-Plugin 'diepm/vim-rest-console'
-Plugin 'junegunn/fzf.vim' " Fuzzy search for vim
+Plug 'godlygeek/tabular'
+Plug 'scrooloose/syntastic'
+Plug 'tpope/vim-surround'
+Plug 'bling/vim-airline' " Status bar at the bottom of vim
+Plug 'scrooloose/nerdcommenter'
+Plug 'valloric/youcompleteme', { 'do': './install.py --tern-completer' }
+" Plug 'easymotion/vim-easymotion' " Removed it because I should learn what it does before having it installed
+Plug 'altercation/vim-colors-solarized'
+Plug 'natebosch/vim-lsc', {'for': ['scala']} " Language Server Client
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'diepm/vim-rest-console'
+
+" Fuzzy search for vim
+Plug '/usr/local/opt/fzf'
+Plug 'junegunn/fzf.vim'
 
 " Plugins for Python
-Plugin 'vim-python/python-syntax'
+Plug 'vim-python/python-syntax'
 
 " Plugins for Latex
-Plugin 'lervag/vimtex'
+Plug 'lervag/vimtex'
 
 " Plugins for Markdown
-Plugin 'plasticboy/vim-markdown'
-Plugin 'suan/vim-instant-markdown'
+Plug 'plasticboy/vim-markdown'
+Plug 'suan/vim-instant-markdown'
 
 " Plugins for Javascript
-Plugin 'pangloss/vim-javascript'
-Plugin 'elzr/vim-json'
-"Plugin 'moll/vim-node'
+Plug 'pangloss/vim-javascript'
+Plug 'elzr/vim-json'
+"Plug 'moll/vim-node'
 
 " Plugins for React
-Plugin 'maxmellon/vim-jsx-pretty'
-Plugin 'mattn/emmet-vim'
-Plugin 'skywind3000/asyncrun.vim' " Run commands asynchronously. To use with Prettier formater
+Plug 'maxmellon/vim-jsx-pretty'
+Plug 'mattn/emmet-vim'
+Plug 'skywind3000/asyncrun.vim' " Run commands asynchronously. To use with Prettier formater
 
 " Plugins for Scala
-Plugin 'derekwyatt/vim-scala'
-Plugin 'GEverding/vim-hocon'
+Plug 'derekwyatt/vim-scala'
+Plug 'GEverding/vim-hocon'
 
-"
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
+call plug#end()
 
 set runtimepath+=~/.vim_runtime
 
@@ -257,15 +240,9 @@ let g:ale_linters = {
   \ }
 let g:ale_fixers = { 'python': ['autopep8'] }
 
-" Make flake8 use `python3` instead of `python`
-let g:ale_python_flake8_executable = 'python3'
-
 " Open quickfix list automatically
 let g:ale_open_list = 1
 
 let g:ale_completion_enabled = 1
-
-" Allow fzf in vim
-set rtp+=/usr/local/opt/fzf
 
 nmap <leader><tab> :Files<Enter>

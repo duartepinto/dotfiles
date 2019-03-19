@@ -9,6 +9,12 @@
 
 ## Setup Vim
 
+### Install vim-plug
+```bash
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+```
+
 ### Basic vim files
 
 *   `git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime`
@@ -16,8 +22,6 @@
 ### YouCompleteMe
 
 *   `brew install cmake`
-*   `cd ~/.vim/bundle/YouCompleteMe`
-*   `./install.py --tern-completer`
 
 #### Eclim
 
@@ -25,6 +29,8 @@
 *   If needed run `$ECLIPSE_HOME/eclimd` (if `echo $ECLIPSE` returns empty try in `./Applications/Eclipse.app/Contents/Eclipse/eclimd`)
 
 ### Vim Instant Markdown
+
+_Should not be needed since I upgraded to vim-plug_
 
 *   `npm install -g instant-markdown-d`
 
@@ -34,7 +40,7 @@ To use Syntastic with ESLint:
 
 Install eslint, babel-eslint (for ES6 support), and [eslint-plugin-react](https://github.com/yannickcr/eslint-plugin-react):
 
-```
+```bash
 npm install -g eslint
 npm install -g babel-eslint
 npm install -g eslint-plugin-react
