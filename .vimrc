@@ -19,6 +19,7 @@ Plugin 'altercation/vim-colors-solarized'
 Plugin 'natebosch/vim-lsc' " Language Server Client
 Plugin 'Xuyuanp/nerdtree-git-plugin'
 Plugin 'diepm/vim-rest-console'
+Plugin 'junegunn/fzf.vim' " Fuzzy search for vim
 
 " Plugins for Python
 Plugin 'vim-python/python-syntax'
@@ -251,7 +252,8 @@ augroup END
 let g:ale_linter_aliases = {'jsx': ['css', 'javascript']}
 let g:ale_linters = {
   \ 'python': ['flake8'],
-  \ 'jsx': ['eslint']
+  \ 'jsx': ['eslint'],
+  \ 'scala': []
   \ }
 let g:ale_fixers = { 'python': ['autopep8'] }
 
@@ -262,3 +264,8 @@ let g:ale_python_flake8_executable = 'python3'
 let g:ale_open_list = 1
 
 let g:ale_completion_enabled = 1
+
+" Allow fzf in vim
+set rtp+=/usr/local/opt/fzf
+
+nmap <leader><tab> :Files<Enter>

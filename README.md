@@ -70,6 +70,10 @@ Create a config like this in your project's `.eslintrc`, or do so globally by pl
 
 * `npm install -g prettier`
 
+### FZF - A command-line fuzzy finder
+
+Follow instructions in https://github.com/junegunn/fzf#installation
+
 ### Metals - Languages Server for Scala
 
 Follow instructions in https://scalameta.org/metals/docs/editors/vim.html :

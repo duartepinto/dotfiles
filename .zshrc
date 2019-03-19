@@ -101,7 +101,8 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-source ~/.bashrc
+# Setting default JDK to version 1.8. Reason: Because of Scala
+export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
 
 alias sbt=JVM_OPTS='"-Xmx4G -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Xss2M -Duser.timezone=UTC" sbtx'
 
@@ -129,3 +130,5 @@ kubetoken () {
 export PATH="/usr/local/opt/node@8/bin:$PATH"
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
