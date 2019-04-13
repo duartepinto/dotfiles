@@ -134,8 +134,10 @@ Already installed. No need to do anything.
 Instruction here if needed: https://github.com/altercation/vim-colors-solarized
 
 ### Tmux 
-Already installed. No need to do anything.
 Instruction here if needed: https://github.com/seebi/tmux-colors-solarized
+
+### Enable italics
+https://apple.stackexchange.com/questions/249307/tic-doesnt-read-from-stdin-and-segfaults-when-adding-terminfo-to-support-italic/249385
 
 ## Common errors
 ### YCM with Javascript files
