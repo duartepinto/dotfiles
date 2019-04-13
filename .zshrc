@@ -66,8 +66,6 @@ plugins=(
   git
   k
   dirhistory
-  zsh-autosuggestions
-  zsh-syntax-highlighting
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -109,6 +107,7 @@ alias sbt=JVM_OPTS='"-Xmx4G -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnable
 if [ "$TMUX" = "" ]; then tmux -2; fi
 
 alias adstax="cd ~/Documents/git/adstax"
+alias ios="cd ~/Documents/git/velocidi-ios-objc-sdk"
 
 function authkops () {
   if [ $# -eq 0 ]
