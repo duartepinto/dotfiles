@@ -58,6 +58,9 @@ Plug 'GEverding/vim-hocon'
 " Plugins for Elixir
 Plug 'elixir-editors/vim-elixir'
 
+" Plugins for Swift
+Plug 'bumaociyuan/vim-swift'
+
 call plug#end()
 
 " Colorscheme
