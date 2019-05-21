@@ -23,6 +23,7 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'valloric/youcompleteme', { 'do': './install.py --tern-completer', 'for': ['tex'] }
 " Plug 'easymotion/vim-easymotion' " Removed it because I should learn what it does before having it installed
 Plug 'altercation/vim-colors-solarized'
+Plug 'lifepillar/vim-solarized8'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'diepm/vim-rest-console'
 Plug 'tmux-plugins/vim-tmux-focus-events' " Autoread with tmux
@@ -40,7 +41,7 @@ Plug 'lervag/vimtex'
 
 " Plugins for Markdown
 Plug 'plasticboy/vim-markdown'
-Plug 'suan/vim-instant-markdown', { 'do': 'npm install -g instant-markdown-d' }
+Plug 'suan/vim-instant-markdown', { 'do': 'npm install -g instant-markdown-d', 'for': 'markdown' }
 
 " Plugins for Javascript
 Plug 'pangloss/vim-javascript'
@@ -66,8 +67,12 @@ call plug#end()
 " Colorscheme
 syntax enable
 set background=dark
-let g:solarized_contrast='high'
-colorscheme solarized
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+" let g:solarized_term_italics=1
+set termguicolors
+
+colorscheme solarized8
 
 " Line numbers
 set number relativenumber
