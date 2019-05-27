@@ -28,6 +28,7 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'diepm/vim-rest-console'
 Plug 'tmux-plugins/vim-tmux-focus-events' " Autoread with tmux
 Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}, 'for': ['scala']} " Settings for coc.nvim are in .vim/ftplugin/scala.vim
+Plug 'mileszs/ack.vim'
 
 " Fuzzy search for vim
 Plug '/usr/local/opt/fzf'
@@ -226,3 +227,12 @@ let g:ale_completion_enabled = 1
 
 " Press ',<TAB>' to execute fzf Files command
 nmap <leader><tab> :Files<Enter>
+
+" Using Ripgrep with Vim in CtrlP and Ack.vim
+if executable('rg')
+  let g:ctrlp_user_command = 'rg --files %s'
+  let g:ctrlp_use_caching = 0
+  let g:ctrlp_working_path_mode = 'ra'
+  let g:ctrlp_switch_buffer = 'et'
+  let g:ackprg = 'rg --vimgrep --no-heading'
+endif

@@ -19,18 +19,18 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 
 *   `git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime`
 
-### YouCompleteMe
+### ~~YouCompleteMe~~ _(No longer using. Replaced by ALE)_
 
 *   `brew install cmake`
 
-#### Eclim
+#### ~~Eclim~~ _(No longer using. Replaced by Metals)_
 
 *   Install [eclim](http://eclim.org/install.html#installer) for Scala autocomplete
 *   If needed run `$ECLIPSE_HOME/eclimd` (if `echo $ECLIPSE` returns empty try in `./Applications/Eclipse.app/Contents/Eclipse/eclimd`)
 
-### Vim Instant Markdown
+### ~~Vim Instant Markdown~~
 
-_Should not be needed since I upgraded to vim-plug_
+_Set should no longer be needed since I upgraded to vim-plug_
 
 *   `npm install -g instant-markdown-d`
 
@@ -80,26 +80,13 @@ Create a config like this in your project's `.eslintrc`, or do so globally by pl
 
 Follow instructions in https://github.com/junegunn/fzf#installation
 
+### Ripgrep - Recursively searches directories for a regex pattern
+
+Follow instructions in https://github.com/BurntSushi/ripgrep#installation
+
 ### Metals - Languages Server for Scala
 
 Follow instructions in https://scalameta.org/metals/docs/editors/vim.html :
-
-```bash
-# Make sure to use coursier v1.1.0-M9 or newer.
-
-curl -L -o coursier https://git.io/coursieri
-chmod +x coursier
-./coursier bootstrap \
-  --java-opt -XX:+UseG1GC \
-  --java-opt -XX:+UseStringDeduplication  \
-  --java-opt -Xss4m \
-  --java-opt -Xms100m \
-  --java-opt -Dmetals.client=vim-lsc \
-  org.scalameta:metals_2.12:0.4.4 \
-  -r bintray:scalacenter/releases \
-  -r sonatype:snapshots \
-  -o /usr/local/bin/metals-vim -f
-```
 
 ## Oh My Zsh
 
