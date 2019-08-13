@@ -66,7 +66,7 @@ endfunction
 
 " Highlight symbol under cursor on CursorHold
 " Commented due to bug in Vim or coc.nvim not cleanning highlights
-" autocmd CursorHold * silent call CocActionAsync('highlight')
+autocmd CursorHold * silent call CocActionAsync('highlight')
 
 " Remap for rename current word
 nmap <leader>rn <Plug>(coc-rename)

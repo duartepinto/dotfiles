@@ -104,6 +104,11 @@ Go to iTerm2 > Preferences > Profiles > Keys
   | ⌥+←       | Send Escape sequence | b    |
   | ⌥+→       | Send Escape sequence | f    |
 
+## xclip
+In order to copy the whole tmux buffer into the normal buffer 
+
+* `brew install xclip`
+
 ## Solarized Theme
 
 I'm using the Solarized Dark theme developed by [Ethan Schoonover](https://ethanschoonover.com/solarized/)

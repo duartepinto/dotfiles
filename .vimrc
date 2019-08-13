@@ -27,7 +27,7 @@ Plug 'lifepillar/vim-solarized8'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'diepm/vim-rest-console'
 Plug 'tmux-plugins/vim-tmux-focus-events' " Autoread with tmux
-Plug 'neoclide/coc.nvim', {'do': { -> coc#util#install()}, 'for': ['scala']} " Settings for coc.nvim are in .vim/ftplugin/scala.vim
+Plug 'neoclide/coc.nvim', {'tag': '*', 'do': 'yarn install --frozen-lockfile', 'for': ['scala']} " Settings for coc.nvim are in .vim/ftplugin/scala.vim
 Plug 'mileszs/ack.vim'
 
 " Fuzzy search for vim
