@@ -102,7 +102,7 @@ source $ZSH/oh-my-zsh.sh
 # Setting default JDK to version 1.8. Reason: Because of Scala
 export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
 
-alias sbt=JVM_OPTS='"-Xmx4G -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Xss2M -Duser.timezone=UTC" sbtx'
+alias sbt=JVM_OPTS='"-Xmx6G -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Xss2M -Duser.timezone=UTC" sbtx'
 
 if [ "$TMUX" = "" ]; then tmux -2; fi
 
@@ -136,3 +136,7 @@ export LANG=en_US.UTF-8
 # export PATH="/usr/local/opt/ruby/bin:$PATH"
 eval "$(rbenv init -)"
 export TERM=xterm-256color
+
+function ssht(){
+  ssh $* -t 'tmux a || tmux || /bin/bash'
+}
