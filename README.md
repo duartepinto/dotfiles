@@ -104,6 +104,11 @@ Go to iTerm2 > Preferences > Profiles > Keys
   | ⌥+←       | Send Escape sequence | b    |
   | ⌥+→       | Send Escape sequence | f    |
 
+## Git
+Create a global .gitignore
+
+* `git config --global core.excludesfile ~/.gitignore_global`
+
 ## xclip
 In order to copy the whole tmux buffer into the normal buffer 
 
