@@ -27,7 +27,7 @@ Plug 'lifepillar/vim-solarized8'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'diepm/vim-rest-console'
 Plug 'tmux-plugins/vim-tmux-focus-events' " Autoread with tmux
-Plug 'neoclide/coc.nvim', {'tag': '*', 'do': 'yarn install --frozen-lockfile', 'for': ['scala']} " Settings for coc.nvim are in .vim/ftplugin/scala.vim
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['scala']} " Settings for coc.nvim are in .vim/ftplugin/scala.vim
 Plug 'mileszs/ack.vim'
 
 " Fuzzy search for vim
@@ -224,6 +224,9 @@ let g:ale_fixers = { 'python': ['autopep8'] }
 let g:ale_open_list = 1
 
 let g:ale_completion_enabled = 1
+
+" Triggering ALE completion manually with <C-x><C-o>
+set omnifunc=ale#completion#OmniFunc
 
 " Press ',<TAB>' to execute fzf Files command
 nmap <leader><tab> :Files<Enter>
