@@ -4,3 +4,5 @@
 .bloop/
 .metals/
 project/metals.sbt
+
+.ruby-version

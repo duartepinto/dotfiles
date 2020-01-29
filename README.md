@@ -84,7 +84,7 @@ Follow instructions in https://github.com/junegunn/fzf#installation
 
 Follow instructions in https://github.com/BurntSushi/ripgrep#installation
 
-### Metals - Languages Server for Scala
+### Metals - Language Server for Scala
 
 Follow instructions in https://scalameta.org/metals/docs/editors/vim.html :
 
@@ -137,7 +137,8 @@ Instruction here if needed: https://github.com/seebi/tmux-colors-solarized
 https://apple.stackexchange.com/questions/249307/tic-doesnt-read-from-stdin-and-segfaults-when-adding-terminfo-to-support-italic/249385
 
 ## Common errors
-### YCM with Javascript files
+### ~~YCM with Javascript files~~
+_(Should not happen anymore has I have disabled YCM for every filetype except `.tex`)_
 
 When opening a `.js` or `.jsx` the following error might occur
 ```

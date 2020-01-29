@@ -84,4 +84,4 @@ nnoremap <silent> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list
 nnoremap <silent> <space>p  :<C-u>CocListResume<CR>
 " Open coc command fuzzy finder
-nnoremap <silent> <space>c  :<C-u>CocCommand<CR>
+nnoremap <silent> <leader>c  :<C-u>CocCommand<CR>
