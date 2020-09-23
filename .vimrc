@@ -57,11 +57,11 @@ Plug 'skywind3000/asyncrun.vim' " Run commands asynchronously. To use with Prett
 Plug 'derekwyatt/vim-scala'
 Plug 'GEverding/vim-hocon'
 
-" Plugins for Elixir
-Plug 'elixir-editors/vim-elixir'
-
 " Plugins for Swift
 Plug 'bumaociyuan/vim-swift'
+
+" Plugins for Kotlin
+Plug 'udalov/kotlin-vim'
 
 call plug#end()
 
@@ -149,6 +149,8 @@ if !exists('g:ycm_semantic_triggers')
 endif
 let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
 
+let g:tex_flavor = "latex"
+
 " Option for Eclim to work
 let g:EclimCompletionMethod = 'omnifunc'
 
@@ -223,7 +225,7 @@ let g:ale_fixers = { 'python': ['autopep8'] }
 " Open quickfix list automatically
 let g:ale_open_list = 1
 
-let g:ale_completion_enabled = 1
+" let g:ale_completion_enabled = 1
 
 " Triggering ALE completion manually with <C-x><C-o>
 set omnifunc=ale#completion#OmniFunc
@@ -239,3 +241,10 @@ if executable('rg')
   let g:ctrlp_switch_buffer = 'et'
   let g:ackprg = 'rg --vimgrep --no-heading'
 endif
+
+" Empty value to disable 'fzf.vim' preview window altogether
+let g:fzf_preview_window = ''
+
+" Fix bug where mouse click doesn't work past the 220th column (https://stackoverflow.com/questions/7000960/in-vim-why-doesnt-my-mouse-work-past-the-220th-column)
+" FIXME: Remove when possible. The issue mentions that it is fixed in version 7.3.632, but that doesn't seem to be the case
+set ttymouse=sgr

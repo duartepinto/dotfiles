@@ -140,3 +140,9 @@ export TERM=xterm-256color
 function ssht(){
   ssh $* -t 'tmux a || tmux || /bin/bash'
 }
+
+# Necessary for https://krew.sigs.k8s.io/
+export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
+
+# change max open files soft limit for this shell. Necessary for uploading some collie resources to s3
+ulimit -n 24576
