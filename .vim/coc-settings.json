@@ -1,4 +1,5 @@
 {
   "languageserver": {
-  }
+  },
+  "metals.ammoniteJvmProperties": ["-Xmx1G"]
 }
