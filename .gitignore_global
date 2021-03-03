@@ -6,3 +6,4 @@
 project/metals.sbt
 
 .ruby-version
+*.worksheet.sc
