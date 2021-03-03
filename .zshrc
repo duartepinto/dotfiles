@@ -102,7 +102,8 @@ source $ZSH/oh-my-zsh.sh
 # Setting default JDK to version 1.8. Reason: Because of Scala
 export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
 
-alias sbt=JVM_OPTS='"-Xmx6G -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Xss2M -Duser.timezone=UTC" sbtx'
+# alias sbt='JVM_OPTS="-Xmx8G -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Xss2M -Duser.timezone=UTC" sbtx'
+alias sbt='JVM_OPTS="-Xmx8G -XX:+CMSClassUnloadingEnabled -Xss2M -XX:+UseG1GC -Duser.timezone=UTC" sbtx'
 
 if [ "$TMUX" = "" ]; then tmux -2; fi
 
@@ -146,3 +147,9 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 
 # change max open files soft limit for this shell. Necessary for uploading some collie resources to s3
 ulimit -n 24576
+
+# Command to delete branches not on remote
+# https://stackoverflow.com/questions/7726949/remove-tracking-branches-no-longer-on-remote
+function git-delete-not-remote(){
+  git branch --merged | grep -v "master" >/tmp/merged-branches && vi /tmp/merged-branches && xargs git branch -d </tmp/merged-branches
+}
