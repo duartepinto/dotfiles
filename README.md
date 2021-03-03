@@ -18,6 +18,7 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
 ### Basic vim files
 
 *   `git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime`
+* After installing, apply the git patch `amix_vimrc.diff`.
 
 ### ~~YouCompleteMe~~ _(No longer using. Replaced by ALE)_
 
