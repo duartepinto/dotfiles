@@ -1,17 +1,6 @@
 set nocompatible              " be iMproved, required
 
-set runtimepath+=~/.vim_runtime
-
-source ~/.vim_runtime/vimrcs/basic.vim
-source ~/.vim_runtime/vimrcs/filetypes.vim
-source ~/.vim_runtime/vimrcs/plugins_config.vim
-source ~/.vim_runtime/vimrcs/extended.vim
-
-try
-source ~/.vim_runtime/my_configs.vim
-catch
-endtry
-
+source ~/.vim/vimrcs/basic.vim
 
 call plug#begin('~/.vim/plugged')
 " Plugins
@@ -20,17 +9,15 @@ Plug 'godlygeek/tabular'
 Plug 'tpope/vim-surround'
 Plug 'itchyny/lightline.vim' " Statusbar/Tabline plugin
 Plug 'maximbaz/lightline-ale'
-Plug 'scrooloose/nerdcommenter'
-Plug 'valloric/youcompleteme', { 'do': './install.py --tern-completer', 'for': ['tex'] }
 Plug 'altercation/vim-colors-solarized'
 Plug 'lifepillar/vim-solarized8'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'scrooloose/nerdtree'
+Plug 'scrooloose/nerdcommenter'
 Plug 'diepm/vim-rest-console'
 Plug 'tmux-plugins/vim-tmux-focus-events' " Autoread with tmux
-Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['scala']} " Settings for coc.nvim are in .vim/ftplugin/scala.vim
-Plug 'mileszs/ack.vim'
 Plug 'w0rp/ale'
+Plug 'mileszs/ack.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'maxbrunsfeld/vim-yankstack'
@@ -43,6 +30,7 @@ Plug 'junegunn/fzf.vim'
 Plug 'vim-python/python-syntax'
 
 " Plugins for Latex
+Plug 'valloric/youcompleteme', { 'do': './install.py --tern-completer', 'for': ['tex'] }
 Plug 'lervag/vimtex'
 
 " Plugins for Markdown
@@ -60,6 +48,7 @@ Plug 'mattn/emmet-vim'
 Plug 'skywind3000/asyncrun.vim' " Run commands asynchronously. To use with Prettier formater
 
 " Plugins for Scala
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['scala']} " Settings for coc.nvim are in .vim/ftplugin/scala.vim
 Plug 'derekwyatt/vim-scala'
 Plug 'GEverding/vim-hocon'
 
@@ -363,3 +352,30 @@ endfunction
 function! CtrlPStatusFunc_2(str)
   return lightline#statusline(0)
 endfunction
+
+
+" When you press <leader>r you can search and replace the selected text.
+" From `extended.vim` in  https://github.com/amix/vimrc
+vnoremap <silent> <leader>r :call VisualSelection('replace', '')<CR>
+
+" Set font according to system.
+" From `extended.vim` in  https://github.com/amix/vimrc
+if has("mac") || has("macunix")
+    set gfn=IBM\ Plex\ Mono:h14,Hack:h14,Source\ Code\ Pro:h15,Menlo:h15
+elseif has("win16") || has("win32")
+    set gfn=IBM\ Plex\ Mono:h14,Source\ Code\ Pro:h12,Bitstream\ Vera\ Sans\ Mono:h11
+elseif has("gui_gtk2")
+    set gfn=IBM\ Plex\ Mono\ 14,:Hack\ 14,Source\ Code\ Pro\ 12,Bitstream\ Vera\ Sans\ Mono\ 11
+elseif has("linux")
+    set gfn=IBM\ Plex\ Mono\ 14,:Hack\ 14,Source\ Code\ Pro\ 12,Bitstream\ Vera\ Sans\ Mono\ 11
+elseif has("unix")
+    set gfn=Monospace\ 11
+endif
+
+" Turn persistent undo on means that you can undo even when you close a buffer/VIM.
+" From `extended.vim` in  https://github.com/amix/vimrc
+try
+    set undodir=~/.vim_runtime/temp_dirs/undodir
+    set undofile
+catch
+endtry
