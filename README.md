@@ -2,9 +2,11 @@
 
 ## To Install
 
-*   Vim
-*   Tmux
-*   Zsh
+*   Hombrew
+    * Restore everything that was installed by restoring my `Brewfile`
+*   ~~Vim~~ _(should be installed through brew's backup)_
+*   ~~Tmux~~ _(should be installed through brew's backup)_
+*   ~~Zsh~~ _(should be installed through brew's backup)_
 *   Oh My Zsh
 
 ## Setup Vim
@@ -15,7 +17,7 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
 
-### Basic vim files
+### ~~Basic vim files~~ _(No longer using. Everything was removed and what was needed is now included in this repo)_
 
 *   `git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime`
 * After installing, apply the git patch `amix_vimrc.diff`.
@@ -82,6 +84,7 @@ Create a config like this in your project's `.eslintrc`, or do so globally by pl
 Follow instructions in https://github.com/junegunn/fzf#installation
 
 ### Ripgrep - Recursively searches directories for a regex pattern
+_Install should no longer be needed. Will be installed when installing everything with brew's backup_
 
 Follow instructions in https://github.com/BurntSushi/ripgrep#installation
 
@@ -110,7 +113,8 @@ Create a global .gitignore
 
 * `git config --global core.excludesfile ~/.gitignore_global`
 
-## xclip
+## xclip 
+_Install should no longer be needed. Will be installed when installing everything with brew's backup_
 In order to copy the whole tmux buffer into the normal buffer 
 
 * `brew install xclip`
