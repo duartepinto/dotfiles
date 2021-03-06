@@ -17,26 +17,6 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
 
-### ~~Basic vim files~~ _(No longer using. Everything was removed and what was needed is now included in this repo)_
-
-*   `git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime`
-* After installing, apply the git patch `amix_vimrc.diff`.
-
-### ~~YouCompleteMe~~ _(No longer using. Replaced by ALE)_
-
-*   `brew install cmake`
-
-#### ~~Eclim~~ _(No longer using. Replaced by Metals)_
-
-*   Install [eclim](http://eclim.org/install.html#installer) for Scala autocomplete
-*   If needed run `$ECLIPSE_HOME/eclimd` (if `echo $ECLIPSE` returns empty try in `./Applications/Eclipse.app/Contents/Eclipse/eclimd`)
-
-### ~~Vim Instant Markdown~~
-
-_Set should no longer be needed since I upgraded to vim-plug_
-
-*   `npm install -g instant-markdown-d`
-
 ### ESLint for React
 
 To use Syntastic with ESLint:
@@ -79,15 +59,6 @@ Create a config like this in your project's `.eslintrc`, or do so globally by pl
 
 * `npm install -g prettier`
 
-### FZF - A command-line fuzzy finder
-
-Follow instructions in https://github.com/junegunn/fzf#installation
-
-### Ripgrep - Recursively searches directories for a regex pattern
-_Install should no longer be needed. Will be installed when installing everything with brew's backup_
-
-Follow instructions in https://github.com/BurntSushi/ripgrep#installation
-
 ### Metals - Language Server for Scala
 
 Follow instructions in https://scalameta.org/metals/docs/editors/vim.html :
@@ -113,12 +84,6 @@ Create a global .gitignore
 
 * `git config --global core.excludesfile ~/.gitignore_global`
 
-## xclip 
-_Install should no longer be needed. Will be installed when installing everything with brew's backup_
-In order to copy the whole tmux buffer into the normal buffer 
-
-* `brew install xclip`
-
 ## Solarized Theme
 
 I'm using the Solarized Dark theme developed by [Ethan Schoonover](https://ethanschoonover.com/solarized/)
@@ -140,6 +105,44 @@ Instruction here if needed: https://github.com/seebi/tmux-colors-solarized
 
 ### Enable italics
 https://apple.stackexchange.com/questions/249307/tic-doesnt-read-from-stdin-and-segfaults-when-adding-terminfo-to-support-italic/249385
+
+# Old
+## ~~Basic vim files~~ _(No longer using. Everything was removed and what was needed is now included in this repo)_
+
+*   `git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime`
+* After installing, apply the git patch `amix_vimrc.diff`.
+
+## ~~YouCompleteMe~~ _(No longer using. Replaced by ALE)_
+
+*   `brew install cmake`
+
+## ~~Eclim~~ _(No longer using. Replaced by Metals)_
+
+*   Install [eclim](http://eclim.org/install.html#installer) for Scala autocomplete
+*   If needed run `$ECLIPSE_HOME/eclimd` (if `echo $ECLIPSE` returns empty try in `./Applications/Eclipse.app/Contents/Eclipse/eclimd`)
+
+## Vim Instant Markdown
+
+Install should no longer be needed since I upgraded to vim-plug_
+
+*   `npm install -g instant-markdown-d`
+
+## xclip
+_Install should no longer be needed. Will be installed when installing everything with brew's backup_
+
+In order to copy the whole tmux buffer into the normal buffer
+
+* `brew install xclip`
+
+### FZF - A command-line fuzzy finder
+_Install should no longer be needed. Will be installed when installing everything with brew's backup_
+
+Follow instructions in https://github.com/junegunn/fzf#installation
+
+### Ripgrep - Recursively searches directories for a regex pattern
+_Install should no longer be needed. Will be installed when installing everything with brew's backup_
+
+Follow instructions in https://github.com/BurntSushi/ripgrep#installation
 
 ## Common errors
 ### ~~YCM with Javascript files~~
