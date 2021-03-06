@@ -101,56 +101,12 @@ map <C-y> :NERDTreeFind<CR>
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
 set statusline+=%*
 
 filetype plugin on
 
 "let maplocalleader = "\\"
 let maplocalleader="\<space>"
-
-" Automatically truncate the length of a line in Latex
-autocmd FileType tex    set textwidth=82
-
-" Make vimtex automatically open evince instead of the default system viewer.
-"let g:vimtex_view_general_viewer = 'evince'
-
-" %%%%%%%%%% MAC OS ONLY %%%%%%%%%%
-" Make vimtex automatically open skim instead of the default system viewer. Better for Mac OS.
-let g:vimtex_view_general_viewer 
-      \ = '/Applications/Skim.app/Contents/SharedSupport/displayline'
-let g:vimtex_view_general_options = '-r @line @pdf @tex'
-let g:vimtex_compiler_callback_hooks = ['UpdateSkim']
-function! UpdateSkim(status)
-  if !a:status | return | endif
-
-  let l:out = b:vimtex.out()
-  let l:tex = expand('%:p')
-  let l:cmd = [g:vimtex_view_general_viewer, '-r']
-  if !empty(system('pgrep Skim'))
-    call extend(l:cmd, ['-g'])
-  endif
-  if has('nvim')
-    call jobstart(l:cmd + [line('.'), l:out, l:tex])
-  elseif has('job')
-    call job_start(l:cmd + [line('.'), l:out, l:tex])
-  else
-    call system(join(l:cmd + [line('.'),
-          \ shellescape(l:out), shellescape(l:tex)], ' '))
-  endif
-endfunction
-
-" %%%%%%%%%% END OF MAC OS ONLY %%%%%%%%%%
-
-if !exists('g:ycm_semantic_triggers')
-    let g:ycm_semantic_triggers = {}
-endif
-let g:ycm_semantic_triggers.tex = g:vimtex#re#youcompleteme
-
-let g:tex_flavor = "latex"
-
-" Option for Eclim to work
-let g:EclimCompletionMethod = 'omnifunc'
 
 " Enable mouse in all modes. I added this to allow mouse scroll with tmux
 set mouse=a
@@ -163,9 +119,6 @@ set foldlevel=99
 
 let g:vim_jsx_pretty_colorful_config = 1 " default 0
 
-" Run Prettier and reload buffer after complete. For .js files
-autocmd BufWritePost *.js AsyncRun -post=checktime ./node_modules/.bin/eslint --fix %
-
 " Make vim automatically refresh any files that haven't been edited by vim
 set autoread
 au FocusGained,BufEnter * :silent! !
@@ -177,18 +130,6 @@ au FocusGained,BufEnter * :silent! !
 :set shiftwidth=2
 :set expandtab
 
-" For Python files only
-" This will insert 4 spaces instead of a tab character.
-" Spaces are a bit more “stable”, meaning that text indented with spaces will show up the
-" same in the browser and any other application.
-aug python
-  " ftype/python.vim overwrites this
-  au FileType python setlocal ts=4 sts=4 sw=4 expandtab
-aug end
-
-" Configuration for vim-scala. To use with metals
-au BufRead,BufNewFile *.sbt set filetype=scala
-
 " Enable gitgutter by default (Plugin airblade/vim-gitgutter). 
 let g:gitgutter_enabled = 1
 
@@ -196,10 +137,6 @@ let g:gitgutter_enabled = 1
 autocmd BufWritePost * GitGutter
 
 highlight! link SignColumn LineNr
-
-" Scala Import sort (vim-scala)
-let g:scala_sort_across_groups = 1
-let g:scala_first_party_namespaces = '\(eu.shiftforward.*\|com.velocidi.*\)'
 
 " Custom comment delimiters for NERDCommenter
 let g:NERDCustomDelimiters = {
@@ -353,6 +290,7 @@ function! CtrlPStatusFunc_2(str)
   return lightline#statusline(0)
 endfunction
 
+" %%%%%%%%%% END OF CTRLP %%%%%%%%%%
 
 " When you press <leader>r you can search and replace the selected text.
 " From `extended.vim` in  https://github.com/amix/vimrc

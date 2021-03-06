@@ -1,4 +1,5 @@
-" ~/.vimrc
+" %%%%%%%%%%%%%%%%%%%%%%%%%%% Metals' suggested configurations %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 " Configuration for coc.nvim
 
 " If hidden is not set, TextEdit might fail.
@@ -134,3 +135,10 @@ nnoremap <silent> <space>tb :<C-u>CocCommand metals.tvp metalsBuild<CR>
 nnoremap <silent> <space>tf :<C-u>CocCommand metals.revealInTreeView metalsPackages<CR>
 " Open coc command fuzzy finder
 nnoremap <silent> <leader>c  :<C-u>CocCommand<CR>
+
+
+" %%%%%%%%%%%%%%%%%%%%%%%%%%% Personal configurations %%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+" Scala Import sort (vim-scala)
+let g:scala_sort_across_groups = 1
+let g:scala_first_party_namespaces = '\(eu.shiftforward.*\|com.velocidi.*\)'
