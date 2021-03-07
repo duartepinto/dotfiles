@@ -1,4 +1,4 @@
-# My Dev setup
+# dotfiles
 
 ## To Install
 
