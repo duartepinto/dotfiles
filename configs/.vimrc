@@ -1,6 +1,7 @@
 set nocompatible              " be iMproved, required
 
 source ~/.vim/vimrcs/basic.vim
+source ~/.vim/vimrcs/ale.vim
 
 call plug#begin('~/.vim/plugged')
 " Plugins
@@ -21,6 +22,7 @@ Plug 'mileszs/ack.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'maxbrunsfeld/vim-yankstack'
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['scala', 'javascript.jsx']}
 
 " Fuzzy search for vim
 Plug '/usr/local/opt/fzf'
@@ -48,7 +50,6 @@ Plug 'mattn/emmet-vim'
 Plug 'skywind3000/asyncrun.vim' " Run commands asynchronously. To use with Prettier formater
 
 " Plugins for Scala
-Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['scala']} " Settings for coc.nvim are in .vim/ftplugin/scala.vim
 Plug 'derekwyatt/vim-scala'
 Plug 'GEverding/vim-hocon'
 
@@ -64,7 +65,6 @@ Plug 'vim-ruby/vim-ruby'
 call plug#end()
 
 " Colorscheme
-syntax enable
 set background=dark
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
@@ -95,9 +95,9 @@ let g:NERDTreeWinPos="left"
 let g:NERDTreeDirArrows=0
 let NERDTreeMinimalUI = 1
 map <C-n> :NERDTreeToggle<CR>
-map <C-y> :NERDTreeFind<CR>
+map <C-f> :NERDTreeFind<CR>
 
-" Automatically close a tab if the only remaining window is NerdTree 
+" Automatically close a tab if the only remaining window is NerdTree
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
 
 set statusline+=%#warningmsg#
@@ -130,7 +130,7 @@ au FocusGained,BufEnter * :silent! !
 :set shiftwidth=2
 :set expandtab
 
-" Enable gitgutter by default (Plugin airblade/vim-gitgutter). 
+" Enable gitgutter by default (Plugin airblade/vim-gitgutter).
 let g:gitgutter_enabled = 1
 
 " Update GitGutter on save
@@ -144,38 +144,6 @@ let g:NERDCustomDelimiters = {
   \ }
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
-
-" Check JSX files with eslint in Ale
-augroup FiletypeGroup
-  autocmd!
-  au BufNewFile,BufRead *.jsx set filetype=javascript.jsx
-augroup END
-
-let g:ale_linter_aliases = {'jsx': ['css', 'javascript']}
-let g:ale_linters = {
-  \ 'python': ['flake8'],
-  \ 'jsx': ['eslint'],
-  \ 'scala': []
-  \ }
-let g:ale_fixers = { 'python': ['autopep8'] }
-
-" Open quickfix list automatically
-let g:ale_open_list = 1
-
-" let g:ale_completion_enabled = 1
-
-" Go to the next error
-nmap <silent> <leader>a <Plug>(ale_next_wrap)
-
-" Disabling highlighting
-let g:ale_set_highlights = 0
-
-" Only run linting when saving the file
-let g:ale_lint_on_text_changed = 'never'
-let g:ale_lint_on_enter = 0
-
-" Triggering ALE completion manually with <C-x><C-o>
-set omnifunc=ale#completion#OmniFunc
 
 " Press ',<TAB>' to execute fzf Files command
 nmap <leader><tab> :Files<Enter>
@@ -243,7 +211,7 @@ let g:lightline = {
 let g:ctrlp_working_path_mode = 0
 
 " Quickly find and open a file in the current working directory
-let g:ctrlp_map = '<C-f>'
+" let g:ctrlp_map = '<C-f>'
 map <leader>j :CtrlP<cr>
 
 " Quickly find and open a buffer
@@ -317,3 +285,6 @@ try
     set undofile
 catch
 endtry
+
+" Delete trailing whitespaces when saving the buffer
+autocmd BufWritePre * :%s/\s\+$//e
