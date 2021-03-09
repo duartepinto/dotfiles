@@ -175,7 +175,7 @@ let g:vim_json_syntax_conceal = 0
 
 " Increase maxmempattern (default 1000)
 " https://github.com/vim/vim/issues/2049#issuecomment-494923065
-set mmp=3000
+set mmp=2000
 
 " Fast editing and reloading of vimrc configs (copy of ~/.vim_runtime/vimrcs/extended.vim)
 map <leader>e :e! ~/.vimrc<cr>
@@ -281,7 +281,7 @@ endif
 " Turn persistent undo on means that you can undo even when you close a buffer/VIM.
 " From `extended.vim` in  https://github.com/amix/vimrc
 try
-    set undodir=~/.vim_runtime/temp_dirs/undodir
+    set undodir=~/.vim/temp_dirs/undodir
     set undofile
 catch
 endtry

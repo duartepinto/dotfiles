@@ -103,7 +103,7 @@ source $ZSH/oh-my-zsh.sh
 export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
 
 # alias sbt='JVM_OPTS="-Xmx8G -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Xss2M -Duser.timezone=UTC" sbtx'
-alias sbt='JVM_OPTS="-Xmx8G -XX:+CMSClassUnloadingEnabled -Xss2M -XX:+UseG1GC -Duser.timezone=UTC" sbtx'
+alias sbt='JVM_OPTS="-Xmx8G -XX:+CMSClassUnloadingEnabled -Xss2M -XX:+UseG1GC -Duser.timezone=UTC" sbt'
 
 if [ "$TMUX" = "" ]; then tmux -2; fi
 
