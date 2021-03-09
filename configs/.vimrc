@@ -46,8 +46,8 @@ Plug 'mustache/vim-mustache-handlebars'
 
 " Plugins for React
 Plug 'maxmellon/vim-jsx-pretty'
-Plug 'mattn/emmet-vim'
 Plug 'skywind3000/asyncrun.vim' " Run commands asynchronously. To use with Prettier formater
+Plug 'groenewege/vim-less'
 
 " Plugins for Scala
 Plug 'derekwyatt/vim-scala'
@@ -219,6 +219,9 @@ map <leader>b :CtrlPBuffer<cr>
 
 " Quickly find and open a recently opened file
 map <leader>f :CtrlPMRU<CR>
+
+" Disable ctrlp default mapping
+let g:ctrlp_map = '<empty>'
 
 let g:ctrlp_max_height = 20
 let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee'
