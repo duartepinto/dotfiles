@@ -102,9 +102,6 @@ source $ZSH/oh-my-zsh.sh
 # Setting default JDK to version 1.8. Reason: Because of Scala
 export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
 
-# alias sbt='JVM_OPTS="-Xmx8G -XX:+UseConcMarkSweepGC -XX:+CMSClassUnloadingEnabled -Xss2M -Duser.timezone=UTC" sbtx'
-alias sbt='JVM_OPTS="-Xmx8G -XX:+CMSClassUnloadingEnabled -Xss2M -XX:+UseG1GC -Duser.timezone=UTC" sbt'
-
 if [ "$TMUX" = "" ]; then tmux -2; fi
 
 alias adstax="cd ~/Documents/git/adstax"

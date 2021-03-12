@@ -1,9 +1,10 @@
 *~
 .DS_Store
 
+.ruby-version
+
 .bloop/
 .metals/
 project/metals.sbt
-
-.ruby-version
+.jvmopts
 *.worksheet.sc
