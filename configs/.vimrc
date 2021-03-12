@@ -291,3 +291,7 @@ endtry
 
 " Delete trailing whitespaces when saving the buffer
 autocmd BufWritePre * :%s/\s\+$//e
+
+" Vimrest default response content-type to JSON
+" To allow for syntax hightlight in response
+let b:vrc_response_default_content_type = 'application/json'
