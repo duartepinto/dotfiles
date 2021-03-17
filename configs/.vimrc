@@ -62,6 +62,9 @@ Plug 'udalov/kotlin-vim'
 " Plugins for ruby
 Plug 'vim-ruby/vim-ruby'
 
+" Plugins for Objective-C
+Plug 'msanders/cocoa.vim'
+
 call plug#end()
 
 " Colorscheme
@@ -76,15 +79,13 @@ colorscheme solarized8
 " Line numbers
 set number relativenumber
 
+" Automatic switch between relative numbers or not
+" Copy of 'jeffkreeftmeijer/vim-numbertoggle'
 augroup numbertoggle
   autocmd!
-  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
-  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+  autocmd BufEnter,FocusGained,InsertLeave,WinEnter * if &nu && mode() != "i" | set rnu   | endif
+  autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
 augroup END
-
-" Enable Github Flavored Markdown Preview
-" let vim_markdown_preview_github=1
-" let vim_markdown_preview_browser='Google Chrome'
 
 " ==== NERDTREE
 let NERDTreeIgnore = ['__pycache__', '\.pyc$', '\.o$', '\.so$', '\.a$', '\.swp', '*\.swp', '\.swo', '\.swn', '\.swh', '\.swm', '\.swl', '\.swk', '\.sw*$', '[a-zA-Z]*egg[a-zA-Z]*', '.DS_Store']
@@ -295,3 +296,6 @@ autocmd BufWritePre * :%s/\s\+$//e
 " Vimrest default response content-type to JSON
 " To allow for syntax hightlight in response
 let b:vrc_response_default_content_type = 'application/json'
+
+" Make .h files be interpreted as Objective-C
+au BufRead,BufNewFile *.h set filetype=objc
