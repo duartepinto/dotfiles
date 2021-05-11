@@ -140,4 +140,4 @@ nnoremap <silent> <leader>c  :<C-u>CocCommand<CR>
 " %%%%%%%%%%%%%%%%%%%%%%%%%%% Personal configurations %%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 " disable to not mess with coc
-let g:ale_completion_enabled = 0
+let g:ale_enabled = 0

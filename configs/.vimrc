@@ -299,3 +299,6 @@ let b:vrc_response_default_content_type = 'application/json'
 
 " Make .h files be interpreted as Objective-C
 au BufRead,BufNewFile *.h set filetype=objc
+
+" Open instant markdown to the world
+let g:instant_markdown_open_to_the_world = 1
