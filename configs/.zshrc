@@ -104,26 +104,6 @@ export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
 
 if [ "$TMUX" = "" ]; then tmux -2; fi
 
-alias adstax="cd ~/Documents/git/adstax"
-alias ios="cd ~/Documents/git/velocidi-ios-objc-sdk"
-
-function authkops () {
-  if [ $# -eq 0 ]
-  then
-      echo "usage: authkops <client> <context> <aws-profile>"
-      return 1
-  fi
-  kubectl config use-context "$2"
-  KEY=$(KOPS_STATE_STORE=s3://adstax-$1-kops-state AWS_PROFILE=${3-default} \
-    kops get secrets kube --type secret -oplaintext)
-  echo $KEY | pbcopy
-  echo "Copied $KEY to the clipboard."
-}
-
-kubetoken () {
-    kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | awk '/^deployment-controller-token-/{print $1}') | awk '$1=="token:"{print $2}' | pbcopy
-}
-
 export PATH="/usr/local/opt/node@8/bin:$PATH"
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
@@ -152,3 +132,5 @@ ulimit -n 24576
 function git-delete-not-remote(){
   git branch --merged | grep -v "master" >/tmp/merged-branches && vi /tmp/merged-branches && xargs git branch -d </tmp/merged-branches
 }
+
+[ -f ~/.fzf.bash ] && source ~/.private-configs/.velocidi
