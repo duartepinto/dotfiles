@@ -18,9 +18,6 @@ set shortmess+=c
 " Always show signcolumns
 set signcolumn=yes
 
-" Help Vim recognize *.sbt and *.sc as Scala files
-au BufRead,BufNewFile *.sbt,*.sc set filetype=scala
-
 " Use tab for trigger completion with characters ahead and navigate.
 " Use command ':verbose imap <tab>' to make sure tab is not mapped by other plugin.
 inoremap <silent><expr> <TAB>

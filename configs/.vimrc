@@ -23,6 +23,7 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['scala', 'javascript.jsx']}
+Plug 'vim-scripts/LargeFile'
 
 " Fuzzy search for vim
 Plug '/usr/local/opt/fzf'
@@ -104,8 +105,6 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 set statusline+=%#warningmsg#
 set statusline+=%*
 
-filetype plugin on
-
 "let maplocalleader = "\\"
 let maplocalleader="\<space>"
 
@@ -119,10 +118,6 @@ set mouse=a
 set foldlevel=99
 
 let g:vim_jsx_pretty_colorful_config = 1 " default 0
-
-" Make vim automatically refresh any files that haven't been edited by vim
-set autoread
-au FocusGained,BufEnter * :silent! !
 
 " This will insert 2 spaces instead of a tab character.
 " Spaces are a bit more “stable”, meaning that text indented with spaces will show up the
@@ -176,7 +171,7 @@ let g:vim_json_syntax_conceal = 0
 
 " Increase maxmempattern (default 1000)
 " https://github.com/vim/vim/issues/2049#issuecomment-494923065
-set mmp=2000
+set mmp=3000
 
 " Fast editing and reloading of vimrc configs (copy of ~/.vim_runtime/vimrcs/extended.vim)
 map <leader>e :e! ~/.vimrc<cr>
@@ -302,3 +297,23 @@ au BufRead,BufNewFile *.h set filetype=objc
 
 " Open instant markdown to the world
 let g:instant_markdown_open_to_the_world = 1
+
+" 100MByte files or larger are considered large files
+let g:LargeFile=100
+
+" Change cursor in Insert mode
+" Might disable it because it is a bit slow when going back to Normal mode and because it messes with TMUX.
+" https://stackoverflow.com/questions/6488683/how-to-change-the-cursor-between-normal-and-insert-modes-in-vim
+if exists('$TMUX')
+  let &t_SI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=1\x7\<Esc>\\"
+  let &t_EI = "\<Esc>Ptmux;\<Esc>\<Esc>]50;CursorShape=0\x7\<Esc>\\"
+else
+  let &t_SI = "\<Esc>]50;CursorShape=1\x7"
+  let &t_EI = "\<Esc>]50;CursorShape=0\x7"
+endif
+
+" Highlight cursor line when in Insert mode
+:autocmd InsertEnter,InsertLeave * set cul!
+
+" Help Vim recognize *.sbt and *.sc as Scala files
+au BufRead,BufNewFile *.sbt,*.sc set filetype=scala
