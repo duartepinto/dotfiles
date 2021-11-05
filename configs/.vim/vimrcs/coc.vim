@@ -138,3 +138,8 @@ nnoremap <silent> <leader>c  :<C-u>CocCommand<CR>
 
 " disable to not mess with coc
 let g:ale_enabled = 0
+
+" Necessary for coc.nvim + lightline integration
+function! CocCurrentFunction()
+    return get(b:, 'coc_current_function', '')
+endfunction
