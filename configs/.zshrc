@@ -145,4 +145,7 @@ export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
 # To apply the command to CTRL-T as well
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
+# Enable Ctrl-x-e to edit command line
+autoload -U edit-command-line
+
 [ -f ~/.fzf.bash ] && source ~/.private-configs/.velocidi
