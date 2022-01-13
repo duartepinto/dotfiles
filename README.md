@@ -80,9 +80,13 @@ Go to iTerm2 > Preferences > Profiles > Keys
   | ⌥+→       | Send Escape sequence | f    |
 
 ## Git
-Create a global .gitignore
+Create a global .gitignore.
 
 * `git config --global core.excludesfile ~/.gitignore_global`
+
+Use a template commit message.
+
+* `git config --global commit.template ~/.gitmessage`
 
 ## Solarized Theme
 
@@ -96,11 +100,11 @@ Useful links:
 
 * https://gist.github.com/kevin-smets/8568070
 
-### Vim 
+### Vim
 Already installed. No need to do anything.
 Instruction here if needed: https://github.com/altercation/vim-colors-solarized
 
-### Tmux 
+### Tmux
 Instruction here if needed: https://github.com/seebi/tmux-colors-solarized
 
 ### Enable italics
