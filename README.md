@@ -88,6 +88,10 @@ Use a template commit message.
 
 * `git config --global commit.template ~/.gitmessage`
 
+Use verbose mode in commit messages.
+
+* `git config --global commit.verbose true`
+
 ## Solarized Theme
 
 I'm using the Solarized Dark theme developed by [Ethan Schoonover](https://ethanschoonover.com/solarized/)
