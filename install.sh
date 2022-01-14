@@ -1,3 +1,5 @@
 #!/bin/bash
 
-stow configs
+SCRIPT_DIR="$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
+
+stow $SCRIPT_DIR/configs
