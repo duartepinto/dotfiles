@@ -92,6 +92,10 @@ Use verbose mode in commit messages.
 
 * `git config --global commit.verbose true`
 
+Use [zdiff3](https://git-scm.com/docs/git-config#Documentation/git-config.txt-mergeconflictStyle) as merge conflict style.
+
+* `git config --global merge.conflictstyle zdiff3`
+
 ## Solarized Theme
 
 I'm using the Solarized Dark theme developed by [Ethan Schoonover](https://ethanschoonover.com/solarized/)
