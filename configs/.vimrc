@@ -321,3 +321,6 @@ endif
 
 " Help Vim recognize *.sbt and *.sc as Scala files
 au BufRead,BufNewFile *.sbt,*.sc set filetype=scala
+
+" coc.nvim extensions
+let g:coc_global_extensions = ['coc-metals', 'coc-tsserver', 'coc-json', 'coc-pyls']

@@ -1,6 +1,9 @@
 {
   "languageserver": {
   },
-  "metals.ammoniteJvmProperties": ["-Xmx1G"],
-  "metals.statusBarEnabled": true
+  "metals": {
+    "ammoniteJvmProperties": ["-Xmx1G"],
+    "statusBarEnabled": true,
+    "showImplicitConversionsAndClasses": true
+  }
 }
