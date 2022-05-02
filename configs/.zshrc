@@ -143,4 +143,9 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 # Enable Ctrl-x-e to edit command line
 autoload -U edit-command-line
 
+# Set NVIM as default editor
+alias vim="nvim"
+export VISUAL=nvim
+export EDITOR="$VISUAL"
+
 [ -f ~/.fzf.bash ] && source ~/.private-configs/.velocidi
