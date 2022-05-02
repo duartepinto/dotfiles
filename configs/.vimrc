@@ -1,7 +1,7 @@
 set nocompatible              " be iMproved, required
 
 source ~/.vim/vimrcs/basic.vim
-source ~/.vim/vimrcs/ale.vim
+source ~/.vim/vimrcs/nvim-tree.vim
 
 call plug#begin('~/.vim/plugged')
 " Plugins
@@ -12,18 +12,19 @@ Plug 'itchyny/lightline.vim' " Statusbar/Tabline plugin
 Plug 'maximbaz/lightline-ale'
 Plug 'altercation/vim-colors-solarized'
 Plug 'lifepillar/vim-solarized8'
-Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/nerdcommenter'
 Plug 'diepm/vim-rest-console'
 Plug 'tmux-plugins/vim-tmux-focus-events' " Autoread with tmux
-Plug 'w0rp/ale'
 Plug 'mileszs/ack.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['scala', 'javascript.jsx']}
 Plug 'vim-scripts/LargeFile'
+
+"nvim specfic
+Plug 'kyazdani42/nvim-web-devicons' " for file icons
+Plug 'kyazdani42/nvim-tree.lua'
 
 " Fuzzy search for vim
 Plug '/usr/local/opt/fzf'
@@ -54,17 +55,8 @@ Plug 'groenewege/vim-less'
 Plug 'derekwyatt/vim-scala'
 Plug 'GEverding/vim-hocon'
 
-" Plugins for Swift
-Plug 'bumaociyuan/vim-swift'
-
-" Plugins for Kotlin
-Plug 'udalov/kotlin-vim'
-
 " Plugins for ruby
 Plug 'vim-ruby/vim-ruby'
-
-" Plugins for Objective-C
-Plug 'msanders/cocoa.vim'
 
 call plug#end()
 
@@ -88,19 +80,9 @@ augroup numbertoggle
   autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
 augroup END
 
-" ==== NERDTREE
-let NERDTreeIgnore = ['__pycache__', '\.pyc$', '\.o$', '\.so$', '\.a$', '\.swp', '*\.swp', '\.swo', '\.swn', '\.swh', '\.swm', '\.swl', '\.swk', '\.sw*$', '[a-zA-Z]*egg[a-zA-Z]*', '.DS_Store']
-
-let g:NERDTreeWinSize=35
-let NERDTreeShowHidden=1
-let g:NERDTreeWinPos="left"
-let g:NERDTreeDirArrows=0
-let NERDTreeMinimalUI = 1
-map <C-n> :NERDTreeToggle<CR>
-map <C-f> :NERDTreeFind<CR>
-
-" Automatically close a tab if the only remaining window is NerdTree
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+lua << EOF
+  require'nvim-tree'.setup()
+EOF
 
 set statusline+=%#warningmsg#
 set statusline+=%*
@@ -164,7 +146,8 @@ map <leader>g :Rg<Enter>
 
 " Fix bug where mouse click doesn't work past the 220th column (https://stackoverflow.com/questions/7000960/in-vim-why-doesnt-my-mouse-work-past-the-220th-column)
 " FIXME: Remove when possible. The issue mentions that it is fixed in version 7.3.632, but that doesn't seem to be the case
-set ttymouse=sgr
+" FIXME: Removed as part of experimenting neovim
+" set ttymouse=sgr
 
 " Disable vim-json from concealing double-quotes
 let g:vim_json_syntax_conceal = 0
