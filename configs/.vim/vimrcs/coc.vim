@@ -143,3 +143,6 @@ let g:ale_enabled = 0
 function! CocCurrentFunction()
     return get(b:, 'coc_current_function', '')
 endfunction
+
+" coc.nvim extensions
+let g:coc_global_extensions = ['coc-metals', 'coc-tsserver', 'coc-json', 'coc-pyls']

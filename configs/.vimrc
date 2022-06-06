@@ -1,15 +1,11 @@
 set nocompatible              " be iMproved, required
 
-source ~/.vim/vimrcs/basic.vim
-source ~/.vim/vimrcs/nvim-tree.vim
-
 call plug#begin('~/.vim/plugged')
 " Plugins
 
 Plug 'godlygeek/tabular'
 Plug 'tpope/vim-surround'
 Plug 'itchyny/lightline.vim' " Statusbar/Tabline plugin
-Plug 'maximbaz/lightline-ale'
 Plug 'altercation/vim-colors-solarized'
 Plug 'lifepillar/vim-solarized8'
 Plug 'scrooloose/nerdcommenter'
@@ -20,7 +16,7 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['scala', 'javascript.jsx']}
-Plug 'vim-scripts/LargeFile'
+Plug 'lambdalisue/suda.vim' " sudo save for nvim
 
 "nvim specfic
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
@@ -44,12 +40,11 @@ Plug 'suan/vim-instant-markdown', { 'do': 'npm install -g instant-markdown-d', '
 " Plugins for Javascript
 Plug 'pangloss/vim-javascript'
 Plug 'elzr/vim-json'
-Plug 'mustache/vim-mustache-handlebars'
+Plug 'mustache/vim-mustache-handlebars' " working with mustache and handlebars template languages.
 
 " Plugins for React
 Plug 'maxmellon/vim-jsx-pretty'
-Plug 'skywind3000/asyncrun.vim' " Run commands asynchronously. To use with Prettier formater
-Plug 'groenewege/vim-less'
+Plug 'groenewege/vim-less' " Syntax highlighting, indenting and autocompletion for the dynamic stylesheet language LESS.
 
 " Plugins for Scala
 Plug 'derekwyatt/vim-scala'
@@ -59,6 +54,12 @@ Plug 'GEverding/vim-hocon'
 Plug 'vim-ruby/vim-ruby'
 
 call plug#end()
+
+source ~/.vim/vimrcs/basic.vim
+source ~/.vim/vimrcs/ctrlp.vim
+if has('nvim')
+  source ~/.vim/vimrcs/nvim-tree.vim
+endif
 
 " Colorscheme
 set background=dark
@@ -80,10 +81,6 @@ augroup numbertoggle
   autocmd BufLeave,FocusLost,InsertEnter,WinLeave   * if &nu                  | set nornu | endif
 augroup END
 
-lua << EOF
-  require'nvim-tree'.setup()
-EOF
-
 set statusline+=%#warningmsg#
 set statusline+=%*
 
@@ -92,9 +89,6 @@ let maplocalleader="\<space>"
 
 " Enable mouse in all modes. I added this to allow mouse scroll with tmux
 set mouse=a
-
-" Make vim-jsx have syntax highlighting and identation only for .jsx files
-"let g:jsx_ext_required = 1
 
 " Unfold all by default
 set foldlevel=99
@@ -144,11 +138,6 @@ let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1, 'borde
 " Open Fzf with text search  (overrides Ack shortcut)
 map <leader>g :Rg<Enter>
 
-" Fix bug where mouse click doesn't work past the 220th column (https://stackoverflow.com/questions/7000960/in-vim-why-doesnt-my-mouse-work-past-the-220th-column)
-" FIXME: Remove when possible. The issue mentions that it is fixed in version 7.3.632, but that doesn't seem to be the case
-" FIXME: Removed as part of experimenting neovim
-" set ttymouse=sgr
-
 " Disable vim-json from concealing double-quotes
 let g:vim_json_syntax_conceal = 0
 
@@ -190,61 +179,6 @@ let g:lightline = {
       \ 'subseparator': { 'left': ' ', 'right': ' ' }
       \ }
 
-" %%%%%%%%%% CTRLP %%%%%%%%%%
-let g:ctrlp_working_path_mode = 0
-
-" Quickly find and open a file in the current working directory
-" let g:ctrlp_map = '<C-f>'
-map <leader>j :CtrlP<cr>
-
-" Quickly find and open a buffer
-map <leader>b :CtrlPBuffer<cr>
-
-" Quickly find and open a recently opened file
-map <leader>f :CtrlPMRU<CR>
-
-" Disable ctrlp default mapping
-let g:ctrlp_map = '<empty>'
-
-let g:ctrlp_max_height = 20
-let g:ctrlp_custom_ignore = 'node_modules\|^\.DS_Store\|^\.git\|^\.coffee'
-
-" For lightline + CtrlP integration
-" https://github.com/itchyny/lightline.vim/issues/16#issuecomment-23462561
-function! MyFilename()
-  if expand('%:t') == 'ControlP'
-    return g:lightline.ctrlp_prev . ' ' . g:lightline.subseparator.left . ' ' .
-          \ g:lightline.ctrlp_item . ' ' . g:lightline.subseparator.left . ' ' .
-          \ g:lightline.ctrlp_next
-  endif
-  return ('' != MyReadonly() ? MyReadonly() . ' ' : '') .
-        \ (&ft == 'vimfiler' ? vimfiler#get_status_string() :
-        \  &ft == 'unite' ? unite#get_status_string() :
-        \  &ft == 'vimshell' ? vimshell#get_status_string() :
-        \ '' != expand('%:t') ? expand('%:t') : '[No Name]') .
-        \ ('' != MyModified() ? ' ' . MyModified() : '')
-endfunction
-
-function! CtrlPMark()
-  return expand('%:t') =~ 'ControlP' ? g:lightline.ctrlp_marked : ''
-endfunction
-
-let g:ctrlp_status_func = {
-  \ 'main': 'CtrlPStatusFunc_1',
-  \ 'prog': 'CtrlPStatusFunc_2',
-  \ }
-function! CtrlPStatusFunc_1(focus, byfname, regex, prev, item, next, marked)
-  let g:lightline.ctrlp_prev = a:prev
-  let g:lightline.ctrlp_item = a:item
-  let g:lightline.ctrlp_next = a:next
-  let g:lightline.ctrlp_marked = a:marked
-  return lightline#statusline(0)
-endfunction
-function! CtrlPStatusFunc_2(str)
-  return lightline#statusline(0)
-endfunction
-
-" %%%%%%%%%% END OF CTRLP %%%%%%%%%%
 
 " When you press <leader>r you can search and replace the selected text.
 " From `extended.vim` in  https://github.com/amix/vimrc
@@ -285,9 +219,6 @@ au BufRead,BufNewFile *.h set filetype=objc
 " Open instant markdown to the world
 let g:instant_markdown_open_to_the_world = 1
 
-" 100MByte files or larger are considered large files
-let g:LargeFile=100
-
 " Change cursor in Insert mode
 " Might disable it because it is a bit slow when going back to Normal mode and because it messes with TMUX.
 " https://stackoverflow.com/questions/6488683/how-to-change-the-cursor-between-normal-and-insert-modes-in-vim
@@ -305,5 +236,8 @@ endif
 " Help Vim recognize *.sbt and *.sc as Scala files
 au BufRead,BufNewFile *.sbt,*.sc set filetype=scala
 
-" coc.nvim extensions
-let g:coc_global_extensions = ['coc-metals', 'coc-tsserver', 'coc-json', 'coc-pyls']
+if has('nvim')
+  " :W sudo saves the file
+  " uses suda.vim since nvim does not have this natively
+  command! W execute 'SudaWrite'
+endif
