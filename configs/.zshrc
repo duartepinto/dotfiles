@@ -99,22 +99,15 @@ source $ZSH/oh-my-zsh.sh
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
-# Setting default JDK to version 1.8. Reason: Because of Scala
-export JAVA_HOME=`/usr/libexec/java_home -v 1.8`
-
 if [ "$TMUX" = "" ]; then tmux -2; fi
-
-export PATH="/usr/local/opt/node@8/bin:$PATH"
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
-export PATH="$HOME/.rbenv/bin:$PATH"
+export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
 export LANG=en_US.UTF-8
-# export PATH="/usr/local/opt/ruby/bin:$PATH"
-eval "$(rbenv init -)"
 export TERM=xterm-256color
 
 function ssht(){
@@ -149,3 +142,9 @@ export VISUAL=nvim
 export EDITOR="$VISUAL"
 
 [ -f ~/.fzf.bash ] && source ~/.private-configs/.velocidi
+
+# Load asdf. This has to be sourced after all changes to $PATH
+. /usr/local/opt/asdf/libexec/asdf.sh
+
+# Setting default JDK according to asdf settings.
+. ~/.asdf/plugins/java/set-java-home.zsh
