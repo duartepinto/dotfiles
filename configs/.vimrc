@@ -15,7 +15,7 @@ Plug 'mileszs/ack.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'maxbrunsfeld/vim-yankstack'
-Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['scala', 'javascript.jsx']}
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['javascript.jsx']}
 Plug 'lambdalisue/suda.vim' " sudo save for nvim
 
 "nvim specfic
@@ -49,6 +49,9 @@ Plug 'groenewege/vim-less' " Syntax highlighting, indenting and autocompletion f
 " Plugins for Scala
 Plug 'derekwyatt/vim-scala'
 Plug 'GEverding/vim-hocon'
+Plug 'hrsh7th/nvim-cmp'
+Plug 'hrsh7th/cmp-nvim-lsp' | Plug 'hrsh7th/cmp-vsnip' | Plug 'hrsh7th/vim-vsnip'
+Plug 'nvim-lua/plenary.nvim' | Plug 'scalameta/nvim-metals'
 
 " Plugins for ruby
 Plug 'vim-ruby/vim-ruby'
@@ -59,6 +62,7 @@ source ~/.vim/vimrcs/basic.vim
 source ~/.vim/vimrcs/ctrlp.vim
 if has('nvim')
   source ~/.vim/vimrcs/nvim-tree.vim
+  source ~/.vim/vimrcs/nvim-metals.lua
 endif
 
 " Colorscheme
@@ -159,7 +163,7 @@ let g:lightline = {
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
       \             ['fugitive', 'readonly', 'filename', 'modified'] ],
-      \   'right': [ [ 'lineinfo' ], ['percent'], ['cocstatus'] ]
+      \   'right': [ [ 'lineinfo' ], ['percent'], ['%{metals_status()}'] ]
       \ },
       \ 'component': {
       \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
@@ -170,10 +174,6 @@ let g:lightline = {
       \   'readonly': '(&filetype!="help"&& &readonly)',
       \   'modified': '(&filetype!="help"&&(&modified||!&modifiable))',
       \   'fugitive': '(exists("*FugitiveHead") && ""!=FugitiveHead())'
-      \ },
-      \ 'component_function': {
-      \   'cocstatus': 'coc#status',
-      \   'currentfunction': 'CocCurrentFunction'
       \ },
       \ 'separator': { 'left': ' ', 'right': ' ' },
       \ 'subseparator': { 'left': ' ', 'right': ' ' }
@@ -231,7 +231,7 @@ else
 endif
 
 " Highlight cursor line when in Insert mode
-:autocmd InsertEnter,InsertLeave * set cul!
+autocmd InsertEnter,InsertLeave * set cul!
 
 " Help Vim recognize *.sbt and *.sc as Scala files
 au BufRead,BufNewFile *.sbt,*.sc set filetype=scala
@@ -240,4 +240,9 @@ if has('nvim')
   " :W sudo saves the file
   " uses suda.vim since nvim does not have this natively
   command! W execute 'SudaWrite'
+
+  " Common accross nvim.lsp
+  autocmd CursorHold  <buffer> lua vim.lsp.buf.document_highlight()
+  autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+  autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
 endif
