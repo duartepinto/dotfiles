@@ -113,9 +113,6 @@ metals_config.settings = {
 -- you'll not see any messages from metals. There is more info in the help
 -- docs about this
 metals_config.init_options.statusBarProvider = "on"
-local function metals_status()
-  return vim.g["metals_status"] or ""
-end
 
 -- Example if you are using cmp how to make sure the correct capabilities for snippets are set
 local capabilities = vim.lsp.protocol.make_client_capabilities()
