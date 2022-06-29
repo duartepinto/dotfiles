@@ -21,37 +21,30 @@ Plug 'lambdalisue/suda.vim' " sudo save for nvim
 "nvim specfic
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'kyazdani42/nvim-tree.lua'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " nvim syntax highlight
 
 " Fuzzy search for vim
 Plug '/usr/local/opt/fzf'
 Plug 'junegunn/fzf.vim'
-
-" Plugins for Python
-Plug 'vim-python/python-syntax'
 
 " Plugins for Latex
 Plug 'valloric/youcompleteme', { 'do': './install.py --tern-completer', 'for': ['tex'] }
 Plug 'lervag/vimtex'
 
 " Plugins for Markdown
-Plug 'plasticboy/vim-markdown'
 Plug 'suan/vim-instant-markdown', { 'do': 'npm install -g instant-markdown-d', 'for': 'markdown' }
 
 " Plugins for Javascript
-Plug 'pangloss/vim-javascript'
-Plug 'elzr/vim-json'
 Plug 'mustache/vim-mustache-handlebars' " working with mustache and handlebars template languages.
 
 " Plugins for React
-Plug 'maxmellon/vim-jsx-pretty'
 Plug 'groenewege/vim-less' " Syntax highlighting, indenting and autocompletion for the dynamic stylesheet language LESS.
 
 " Plugins for Scala
 Plug 'derekwyatt/vim-scala'
-Plug 'GEverding/vim-hocon'
-Plug 'hrsh7th/nvim-cmp'
-Plug 'hrsh7th/cmp-nvim-lsp' | Plug 'hrsh7th/cmp-vsnip' | Plug 'hrsh7th/vim-vsnip'
-Plug 'nvim-lua/plenary.nvim' | Plug 'scalameta/nvim-metals'
+Plug 'hrsh7th/nvim-cmp' " Necessary for nvim-metals
+Plug 'hrsh7th/cmp-nvim-lsp' | Plug 'hrsh7th/cmp-vsnip' | Plug 'hrsh7th/vim-vsnip' " Necessary for nvim-metals
+Plug 'nvim-lua/plenary.nvim' | Plug 'scalameta/nvim-metals' " Necessary for nvim-metals
 
 " Plugins for ruby
 Plug 'vim-ruby/vim-ruby'
@@ -63,6 +56,7 @@ source ~/.vim/vimrcs/ctrlp.vim
 if has('nvim')
   source ~/.vim/vimrcs/nvim-tree.vim
   source ~/.vim/vimrcs/nvim-metals.lua
+  source ~/.vim/vimrcs/nvim-treesitter.lua
 endif
 
 " Colorscheme
@@ -235,6 +229,10 @@ autocmd InsertEnter,InsertLeave * set cul!
 
 " Help Vim recognize *.sbt and *.sc as Scala files
 au BufRead,BufNewFile *.sbt,*.sc set filetype=scala
+
+" Use Scaladoc identation standard (gutter asterisks aligned in column three).
+" http://docs.scala-lang.org/style/scaladoc.html
+let g:scala_scaladoc_indent = 1
 
 if has('nvim')
   " :W sudo saves the file
