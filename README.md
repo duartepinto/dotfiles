@@ -18,7 +18,7 @@ curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
     https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
 ```
 
-### ESLint for React
+### ~~ESLint for React~~ _(No longer using)_
 
 To use Syntastic with ESLint:
 
@@ -56,11 +56,11 @@ Create a config like this in your project's `.eslintrc`, or do so globally by pl
 }
 ```
 
-### Prettier - an opinionated code formatter (for React).
+### ~~Prettier - an opinionated code formatter (for React)~~ _(No longer using)_
 
 * `npm install -g prettier`
 
-### Metals - Language Server for Scala
+### ~~Metals - Language Server for Scala~~ _(nvim-metals should handle installation)_
 
 Follow instructions in https://scalameta.org/metals/docs/editors/vim.html :
 
@@ -125,7 +125,7 @@ https://apple.stackexchange.com/questions/249307/tic-doesnt-read-from-stdin-and-
 *   `git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime`
 * After installing, apply the git patch `amix_vimrc.diff`.
 
-## ~~YouCompleteMe~~ _(No longer using. Replaced by ALE)_
+## ~~YouCompleteMe~~ _(Plug should handle installation)_
 
 *   `brew install cmake`
 
@@ -134,14 +134,13 @@ https://apple.stackexchange.com/questions/249307/tic-doesnt-read-from-stdin-and-
 *   Install [eclim](http://eclim.org/install.html#installer) for Scala autocomplete
 *   If needed run `$ECLIPSE_HOME/eclimd` (if `echo $ECLIPSE` returns empty try in `./Applications/Eclipse.app/Contents/Eclipse/eclimd`)
 
-## Vim Instant Markdown
+## ~~Vim Instant Markdown~~ _(Plug should handle installation)_
 
 Install should no longer be needed since I upgraded to vim-plug_
 
 *   `npm install -g instant-markdown-d`
 
-## xclip
-_Install should no longer be needed. Will be installed when installing everything with brew's backup_
+## ~~xclip~~ _(Will be installed through brew's backup)_
 
 In order to copy the whole tmux buffer into the normal buffer
 
@@ -152,8 +151,7 @@ _Install should no longer be needed. Will be installed when installing everythin
 
 Follow instructions in https://github.com/junegunn/fzf#installation
 
-### Ripgrep - Recursively searches directories for a regex pattern
-_Install should no longer be needed. Will be installed when installing everything with brew's backup_
+### ~~Ripgrep - Recursively searches directories for a regex pattern~~ _(Will be installed through brew's backup)_
 
 Follow instructions in https://github.com/BurntSushi/ripgrep#installation
 
