@@ -11,8 +11,6 @@ Plug 'lifepillar/vim-solarized8'
 Plug 'scrooloose/nerdcommenter'
 Plug 'diepm/vim-rest-console'
 Plug 'tmux-plugins/vim-tmux-focus-events' " Autoread with tmux
-Plug 'mileszs/ack.vim'
-Plug 'ctrlpvim/ctrlp.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['javascript.jsx']}
@@ -22,10 +20,11 @@ Plug 'lambdalisue/suda.vim' " sudo save for nvim
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " nvim syntax highlight
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 
 " Fuzzy search for vim
-Plug '/usr/local/opt/fzf'
-Plug 'junegunn/fzf.vim'
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
 
 " Plugins for Latex
 Plug 'valloric/youcompleteme', { 'do': './install.py --tern-completer', 'for': ['tex'] }
@@ -43,8 +42,10 @@ Plug 'groenewege/vim-less' " Syntax highlighting, indenting and autocompletion f
 " Plugins for Scala
 Plug 'derekwyatt/vim-scala'
 Plug 'hrsh7th/nvim-cmp' " Necessary for nvim-metals
-Plug 'hrsh7th/cmp-nvim-lsp' | Plug 'hrsh7th/cmp-vsnip' | Plug 'hrsh7th/vim-vsnip' " Necessary for nvim-metals
-Plug 'nvim-lua/plenary.nvim' | Plug 'scalameta/nvim-metals' " Necessary for nvim-metals
+Plug 'hrsh7th/cmp-nvim-lsp' " Necessary for nvim-metals
+Plug 'hrsh7th/cmp-vsnip' " Necessary for nvim-metals
+Plug 'hrsh7th/vim-vsnip' " Necessary for nvim-metals
+Plug 'scalameta/nvim-metals'
 
 " Plugins for ruby
 Plug 'vim-ruby/vim-ruby'
@@ -52,9 +53,9 @@ Plug 'vim-ruby/vim-ruby'
 call plug#end()
 
 source ~/.vim/vimrcs/basic.vim
-source ~/.vim/vimrcs/ctrlp.vim
 if has('nvim')
   source ~/.vim/vimrcs/nvim-tree.vim
+  source ~/.vim/vimrcs/nvim-telescope.vim
   source ~/.vim/vimrcs/nvim-metals.lua
   source ~/.vim/vimrcs/nvim-treesitter.lua
 endif
@@ -114,27 +115,6 @@ let g:NERDCustomDelimiters = {
   \ }
 " Add spaces after comment delimiters by default
 let g:NERDSpaceDelims = 1
-
-" Press ',<TAB>' to execute fzf Files command
-nmap <leader><tab> :Files<Enter>
-
-" Using Ripgrep with Vim in CtrlP and Ack.vim
-if executable('rg')
-  let g:ctrlp_user_command = 'rg --files %s'
-  let g:ctrlp_use_caching = 0
-  let g:ctrlp_working_path_mode = 'ra'
-  let g:ctrlp_switch_buffer = 'et'
-  let g:ackprg = 'rg --vimgrep --no-heading'
-endif
-
-" Empty value to disable 'fzf.vim' preview window altogether
-let g:fzf_preview_window = ''
-
-" Make fzf window appear in the same place as it used to in previous versions
-let g:fzf_layout = { 'window': { 'width': 1, 'height': 0.4, 'yoffset': 1, 'border': 'horizontal'  }  }
-
-" Open Fzf with text search  (overrides Ack shortcut)
-map <leader>g :Rg<Enter>
 
 " Disable vim-json from concealing double-quotes
 let g:vim_json_syntax_conceal = 0
@@ -249,3 +229,6 @@ if has('nvim')
   autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
   autocmd BufEnter,CursorHold,InsertLeave <buffer> lua vim.lsp.codelens.refresh()
 endif
+
+" Detect .conf files as hocon
+au BufRead,BufNewFile *.conf set filetype=hocon
