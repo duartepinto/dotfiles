@@ -7,8 +7,8 @@
 * ~~Vim~~ _(should be installed through brew's backup)_
 * ~~Tmux~~ _(should be installed through brew's backup)_
 * ~~Zsh~~ _(should be installed through brew's backup)_
+* ~asdf~_(should be installed through brew's backup)_
 * Oh My Zsh
-* asdf
 
 ## Setup Vim
 
