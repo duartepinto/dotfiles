@@ -67,6 +67,10 @@ Use [zdiff3](https://git-scm.com/docs/git-config#Documentation/git-config.txt-me
 
 * `git config --global merge.conflictstyle zdiff3`
 
+Always sign the commits with the GPG keys
+
+* `git config --global commit.gpgsign true`
+
 ## Solarized Theme
 
 I'm using the Solarized Dark theme developed by [Ethan Schoonover](https://ethanschoonover.com/solarized/)
