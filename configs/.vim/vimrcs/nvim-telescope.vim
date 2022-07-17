@@ -7,8 +7,8 @@ nnoremap <leader>c <cmd>lua require("telescope").extensions.metals.commands()<cr
 lua << EOF
 require('telescope').setup{
   defaults = {
-    -- Default configuration for telescope goes here:
-    -- config_key = value,
+    layout_strategy='vertical',
+    path_display={"truncate"},
     mappings = {
       i = {
         -- map actions.which_key to <C-h> (default: <C-/>)
