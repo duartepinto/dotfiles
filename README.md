@@ -30,39 +30,9 @@ npm install -g babel-eslint
 npm install -g eslint-plugin-react
 ```
 
-Create a config like this in your project's `.eslintrc`, or do so globally by placing it in `~/.eslintrc`:
-
-```
-{
-    "parser": "babel-eslint",
-    "env": {
-      "browser": true,
-      "node": true
-    },
-    "settings": {
-      "ecmascript": 6,
-      "jsx": true
-    },
-    "plugins": [
-      "react"
-    ],
-    "rules": {
-      "strict": 0,
-      "quotes": 0,
-      "no-unused-vars": 0,
-      "camelcase": 0,
-      "no-underscore-dangle": 0
-    }
-}
-```
-
 ### ~~Prettier - an opinionated code formatter (for React)~~ _(No longer using)_
 
 * `npm install -g prettier`
-
-### ~~Metals - Language Server for Scala~~ _(nvim-metals should handle installation)_
-
-Follow instructions in https://scalameta.org/metals/docs/editors/vim.html :
 
 ## Oh My Zsh
 
@@ -119,20 +89,9 @@ Instruction here if needed: https://github.com/seebi/tmux-colors-solarized
 ### Enable italics
 https://apple.stackexchange.com/questions/249307/tic-doesnt-read-from-stdin-and-segfaults-when-adding-terminfo-to-support-italic/249385
 
-# Old
-## ~~Basic vim files~~ _(No longer using. Everything was removed and what was needed is now included in this repo)_
-
-*   `git clone --depth=1 https://github.com/amix/vimrc.git ~/.vim_runtime`
-* After installing, apply the git patch `amix_vimrc.diff`.
-
 ## ~~YouCompleteMe~~ _(Plug should handle installation)_
 
 *   `brew install cmake`
-
-## ~~Eclim~~ _(No longer using. Replaced by Metals)_
-
-*   Install [eclim](http://eclim.org/install.html#installer) for Scala autocomplete
-*   If needed run `$ECLIPSE_HOME/eclimd` (if `echo $ECLIPSE` returns empty try in `./Applications/Eclipse.app/Contents/Eclipse/eclimd`)
 
 ## ~~Vim Instant Markdown~~ _(Plug should handle installation)_
 
@@ -147,13 +106,9 @@ In order to copy the whole tmux buffer into the normal buffer
 * `brew install xclip`
 
 ### FZF - A command-line fuzzy finder
-_Install should no longer be needed. Will be installed when installing everything with brew's backup_
+_Install should no longer be needed. Will be installed when installing everything with brew's backup. Step 2 still needs to be followed_
 
 Follow instructions in https://github.com/junegunn/fzf#installation
-
-### ~~Ripgrep - Recursively searches directories for a regex pattern~~ _(Will be installed through brew's backup)_
-
-Follow instructions in https://github.com/BurntSushi/ripgrep#installation
 
 ## Common errors
 ### ~~YCM with Javascript files~~
@@ -166,3 +121,8 @@ RuntimeError: Warning: Unable to detect a .tern-project file in the hierarchy be
 
 To solve follow:
 https://github.com/ain/.vim/issues/46#issuecomment-381189916
+
+### oh-my-zsh when being loaded by Tmux
+This might cause oh-my-zsh to not be properly loaded when zsh is loaded by tmux. Reloading zsh or `source ~/.zshrc` seems to fixed this.
+
+Since I'm relying on brew to install zsh, this might be fixed by following this: https://stackoverflow.com/a/35762726
