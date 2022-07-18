@@ -67,9 +67,13 @@ Use [zdiff3](https://git-scm.com/docs/git-config#Documentation/git-config.txt-me
 
 * `git config --global merge.conflictstyle zdiff3`
 
-Always sign the commits with the GPG keys
+Always sign the commits with the GPG keys.
 
 * `git config --global commit.gpgsign true`
+
+Automatically create remote branch on push.
+
+* `git config --global push.autoSetupRemote true`
 
 ## Solarized Theme
 
