@@ -83,6 +83,9 @@ if [ "$TMUX" = "" ]; then tmux -2; fi
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
+# Necessary for having psql in path
+export PATH="/usr/local/opt/libpq/bin:$PATH"
+
 export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
