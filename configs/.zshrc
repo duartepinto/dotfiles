@@ -64,7 +64,6 @@ ZSH_THEME="agnoster"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(
   git
-  k
   dirhistory
 )
 
@@ -105,7 +104,7 @@ ulimit -n 24576
 # Command to delete branches not on remote
 # https://stackoverflow.com/questions/7726949/remove-tracking-branches-no-longer-on-remote
 function git-delete-not-remote(){
-  git branch --merged | grep -v "master" >/tmp/merged-branches && vi /tmp/merged-branches && xargs git branch -d </tmp/merged-branches
+  git branch --merged | grep -v "master" >/tmp/merged-branches && vim /tmp/merged-branches && xargs git branch -d </tmp/merged-branches
 }
 
 # FZF to respect .gitignore, follow symbolic links, and don't exclude hidden files
@@ -123,10 +122,11 @@ alias vim="nvim"
 export VISUAL=nvim
 export EDITOR="$VISUAL"
 
-[ -f ~/.fzf.bash ] && source ~/.private-configs/.velocidi
+[ -f ~/.fzf.bash ] && source ~/.private-configs/.teralyticsrc
 
 # Load asdf. This has to be sourced after all changes to $PATH
-. /usr/local/opt/asdf/libexec/asdf.sh
+# . /usr/local/opt/asdf/libexec/asdf.sh # This previouly worked. Not anymore
+. /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 # Setting default JDK according to asdf settings.
 . ~/.asdf/plugins/java/set-java-home.zsh
