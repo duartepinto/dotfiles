@@ -83,7 +83,7 @@ if [ "$TMUX" = "" ]; then tmux -2; fi
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 # Necessary for having psql in path
-export PATH="/usr/local/opt/libpq/bin:$PATH"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
 export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 
@@ -101,12 +101,6 @@ export PATH="${KREW_ROOT:-$HOME/.krew}/bin:$PATH"
 # change max open files soft limit for this shell. Necessary for uploading some collie resources to s3
 ulimit -n 24576
 
-# Command to delete branches not on remote
-# https://stackoverflow.com/questions/7726949/remove-tracking-branches-no-longer-on-remote
-function git-delete-not-remote(){
-  git branch --merged | grep -v "master" >/tmp/merged-branches && vim /tmp/merged-branches && xargs git branch -d </tmp/merged-branches
-}
-
 # FZF to respect .gitignore, follow symbolic links, and don't exclude hidden files
 # See https://github.com/junegunn/fzf#respecting-gitignore
 export FZF_DEFAULT_COMMAND='fd --type f --hidden --follow --exclude .git'
@@ -121,6 +115,12 @@ autoload -U edit-command-line
 alias vim="nvim"
 export VISUAL=nvim
 export EDITOR="$VISUAL"
+
+# Command to delete branches not on remote
+# https://stackoverflow.com/questions/7726949/remove-tracking-branches-no-longer-on-remote
+function git-delete-not-remote(){
+  git branch --merged | grep -v "master" >/tmp/merged-branches && vim /tmp/merged-branches && xargs git branch -d </tmp/merged-branches
+}
 
 [ -f ~/.fzf.bash ] && source ~/.private-configs/.teralyticsrc
 
