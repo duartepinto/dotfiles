@@ -1,0 +1,42 @@
+#!/usr/bin/env ruby
+
+# This is meant to use with the prepare-commit-msg hook on a global configuration.
+# This script uses a whitelist `IncludedOrigins` so it would only work for excplicit sources,
+# and also uses a blacklist for branches to ignore `ExcludedBranches`
+# that way it would only work for the projects and branches that you want
+
+ExcludedBranches = ["main", "master"]
+IncludedOrigins = [""]
+JiraMatcher = /[A-Z]+-\d+/
+
+messageFile = ARGV[0]
+branch = %x[git rev-parse --abbrev-ref HEAD]
+originUrl = %x[git config --get remote.origin.url]
+
+# Check if repo origin is in the included list, if not exit
+IncludedOrigins.each do |url|
+    exit 0 unless originUrl.start_with?(url)
+end
+
+# Check if the branch is in the branches to skip list, if so exit
+ExcludedBranches.each do |name|
+    exit 0 if branch.start_with?(name)
+end
+
+# Check if a jira issue was not found in the branch name, if so exit
+match = JiraMatcher.match(branch)
+exit 0 if match.to_s.empty?
+
+# read commit message
+text = File.read(messageFile)
+
+# Check if a jira issue was found in the message name, if so exit
+matchMessage = JiraMatcher.match(text)
+exit 0 unless matchMessage.to_s.empty?
+
+# Add the jira issue to the message in the following format: "[ISSUE-123] - some message"
+modifiedText = "[#{match.to_s}] - #{text}"
+
+# Write the modified message to the commit message file(apply the change)
+File.write(messageFile, modifiedText)
+view rawruby prepare-commit-msg hosted with ? by GitHub
