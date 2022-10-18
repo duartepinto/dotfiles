@@ -75,10 +75,6 @@ Automatically create remote branch on push.
 
 * `git config --global push.autoSetupRemote true`
 
-[Use branch name to prepend all commit messages with JIRA issue](https://snir-orlanczyk.medium.com/adding-jira-issue-to-commit-message-automatically-7812d412684a)
-
-* `git config --global core.hooksPath '~/.git-hooks'`
-
 ## Solarized Theme
 
 I'm using the Solarized Dark theme developed by [Ethan Schoonover](https://ethanschoonover.com/solarized/)
