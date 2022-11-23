@@ -71,6 +71,9 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
+# Add timestamp at the right of each command
+RPROMPT='[%D{%L:%M:%S}] '$RPROMPT
+
 # Lets files beginning with a . be matched without explicitly specifying the dot.
 # Autocomplete will show hidden files
 setopt globdots
