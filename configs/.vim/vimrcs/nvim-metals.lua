@@ -36,7 +36,6 @@ end
 ----------------------------------
 -- global
 vim.opt_global.completeopt = { "menuone", "noinsert", "noselect" }
-vim.opt_global.shortmess:remove("F"):append("c")
 
 -- LSP mappings
 map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
@@ -121,8 +120,7 @@ metals_config.settings = {
 metals_config.init_options.statusBarProvider = "on"
 
 -- Example if you are using cmp how to make sure the correct capabilities for snippets are set
-local capabilities = vim.lsp.protocol.make_client_capabilities()
-metals_config.capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
+metals_config.capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 -- Autocmd that will actually be in charging of starting the whole thing
 local nvim_metals_group = api.nvim_create_augroup("nvim-metals", { clear = true })
