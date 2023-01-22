@@ -27,8 +27,6 @@ lua << EOF
 
     respect_buf_cwd = true, -- 0 by default, will change cwd of nvim-tree to that of new buffer's when opening nvim-tree.
 
-    create_in_closed_folder = true, -- 0 by default, When creating files, sets the path of a file when cursor is on a closed folder to the parent folder when 0, and inside the folder when 1.
-
     renderer = {
       highlight_opened_files = "icon", -- "none" by default, will enable folder and file icon highlight for opened files/directories.
 
