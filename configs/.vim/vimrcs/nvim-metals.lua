@@ -22,14 +22,7 @@
 -------------------------------------------------------------------------------
 local api = vim.api
 local cmd = vim.cmd
-
-local function map(mode, lhs, rhs, opts)
-  local options = { noremap = true }
-  if opts then
-    options = vim.tbl_extend("force", options, opts)
-  end
-  api.nvim_set_keymap(mode, lhs, rhs, options)
-end
+local map = vim.keymap.set
 
 ----------------------------------
 -- OPTIONS -----------------------
@@ -38,30 +31,49 @@ end
 vim.opt_global.completeopt = { "menuone", "noinsert", "noselect" }
 
 -- LSP mappings
-map("n", "gd", "<cmd>lua vim.lsp.buf.definition()<CR>")
-map("n", "K", "<cmd>lua vim.lsp.buf.hover()<CR>")
-map("n", "gds", "<cmd>lua vim.lsp.buf.document_symbol()<CR>")
-map("n", "gws", "<cmd>lua vim.lsp.buf.workspace_symbol()<CR>")
-map("n", "<leader>cl", [[<cmd>lua vim.lsp.codelens.run()<CR>]])
-map("n", "<leader>sh", [[<cmd>lua vim.lsp.buf.signature_help()<CR>]])
-map("n", "<leader>rn", "<cmd>lua vim.lsp.buf.rename()<CR>")
-map("n", "<leader>F", "<cmd>lua vim.lsp.buf.formatting()<CR>")
-map("n", "<leader>A", "<cmd>lua vim.lsp.buf.code_action()<CR>", { noremap = false })
-map("n", "Ks", '<cmd>lua require"metals".hover_worksheet()<CR>')
-map("n", "<leader>aa", [[<cmd>lua vim.diagnostic.setqflist()<CR>]]) -- all workspace diagnostics
-map("n", "<leader>ae", [[<cmd>lua vim.diagnostic.setqflist({severity = "E"})<CR>]]) -- all workspace errors
-map("n", "<leader>aw", [[<cmd>lua vim.diagnostic.setqflist({severity = "W"})<CR>]]) -- all workspace warnings
-map("n", "[g", "<cmd>lua vim.diagnostic.goto_prev { wrap = false }<CR>")
-map("n", "]g", "<cmd>lua vim.diagnostic.goto_next { wrap = false }<CR>")
+map("n", "K", vim.lsp.buf.hover)
+map("n", "gds", vim.lsp.buf.document_symbol)
+map("n", "gws", vim.lsp.buf.workspace_symbol)
+map("n", "<leader>cl", vim.lsp.codelens.run)
+map("n", "<leader>sh", vim.lsp.buf.signature_help)
+map("n", "<leader>rn", vim.lsp.buf.rename)
+map("n", "<leader>F", vim.lsp.buf.formatting)
+map("n", "<leader>A", vim.lsp.buf.code_action)
+map("n", "<leader>aa", vim.diagnostic.setqflist) -- all workspace diagnostics
+map("n", "Ks", function()
+  require("metals").hover_worksheet({ wrap = false })
+end)
+map("n", "<leader>ae", function() -- all workspace errors
+  vim.diagnostic.setqflist({severity = "E"})
+end)
+map("n", "<leader>aw", function() -- all workspace warnings
+  vim.diagnostic.setqflist({severity = "W"})
+end)
+map("n", "[g", function()
+  vim.diagnostic.goto_prev { wrap = false }
+end)
+map("n", "]g", function()
+  vim.diagnostic.goto_next { wrap = false }
+end)
 
 -- Defaults from nvim-metals suggested config
--- map("n", "gi", "<cmd>lua vim.lsp.buf.implementation()<CR>")
--- map("n", "gr", "<cmd>lua vim.lsp.buf.references()<CR>")
--- map("n", "<leader>d", "<cmd>lua vim.diagnostic.setloclist()<CR>")
+-- map("n", "gd", vim.lsp.buf.definition)
+-- map("n", "gi", vim.lsp.buf.implementation)
+-- map("n", "gr", vim.lsp.buf.references)
+-- map("n", "<leader>d", vim.diagnostic.setloclist)
 -- Overriden:
-map("n", "gi", '<cmd>lua require"telescope.builtin".lsp_implementations()<CR>')
-map("n", "gr", '<cmd>lua require"telescope.builtin".lsp_references()<CR>')
-map("n", "<leader>d", '<cmd>lua require"telescope.builtin".diagnostics()<CR>') -- buffer diagnostics only
+map("n", "gd", function()
+  require("telescope.builtin").lsp_definitions()
+end)
+map("n", "gi", function()
+  require("telescope.builtin").lsp_implementations()
+end)
+map("n", "gr", function()
+  require("telescope.builtin").lsp_references()
+end)
+map("n", "<leader>d", function() -- buffer diagnostics only
+  require("telescope.builtin").diagnostics()
+end)
 
 -- completion related settings
 -- This is similiar to what I use
