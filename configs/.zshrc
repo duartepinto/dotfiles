@@ -161,7 +161,7 @@ function fzf-git-checkout() {
 }
 alias gco='fzf-git-checkout'
 
-[ -f ~/.fzf.bash ] && source ~/.private-configs/.teralyticsrc
+[ -f ~/.fzf.bash ] && source ~/.private-configs/.paylarc
 
 # Load asdf. This has to be sourced after all changes to $PATH
 # . /usr/local/opt/asdf/libexec/asdf.sh # This previouly worked. Not anymore
