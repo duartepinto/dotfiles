@@ -5,6 +5,7 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'godlygeek/tabular'
 Plug 'tpope/vim-surround'
+Plug 'tpope/vim-fugitive'
 Plug 'itchyny/lightline.vim' " Statusbar/Tabline plugin
 Plug 'altercation/vim-colors-solarized'
 Plug 'lifepillar/vim-solarized8'

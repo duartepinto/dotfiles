@@ -27,6 +27,9 @@ require('telescope').setup{
     -- }
     -- Now the picker_config_key will be applied every time you call this
     -- builtin picker
+    lsp_definitions = {
+      fname_width = 80,
+    }
   },
   extensions = {
     -- Your extension configuration goes here:
