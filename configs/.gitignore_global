@@ -9,3 +9,4 @@ project/metals.sbt
 .jvmopts
 *.worksheet.sc
 .tool-versions
+.ignore

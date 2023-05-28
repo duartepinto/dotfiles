@@ -29,6 +29,10 @@ require('telescope').setup{
     -- builtin picker
     lsp_definitions = {
       fname_width = 80,
+    },
+    find_files = {
+      find_comand = "fd",
+      hidden = true,
     }
   },
   extensions = {
