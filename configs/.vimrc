@@ -16,6 +16,8 @@ Plug 'airblade/vim-gitgutter'
 Plug 'maxbrunsfeld/vim-yankstack'
 Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['javascript.jsx']}
 Plug 'lambdalisue/suda.vim' " sudo save for nvim
+Plug 'chunkhang/vim-mbsync'
+Plug 'elzr/vim-json'
 
 "nvim specfic
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
