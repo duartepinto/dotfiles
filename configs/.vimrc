@@ -20,6 +20,7 @@ Plug 'chunkhang/vim-mbsync'
 Plug 'elzr/vim-json'
 
 "nvim specfic
+Plug 'lukas-reineke/indent-blankline.nvim' " Identation guides
 Plug 'kyazdani42/nvim-web-devicons' " for file icons
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " nvim syntax highlight
