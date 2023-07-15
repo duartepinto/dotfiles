@@ -14,10 +14,11 @@ Plug 'diepm/vim-rest-console'
 Plug 'tmux-plugins/vim-tmux-focus-events' " Autoread with tmux
 Plug 'airblade/vim-gitgutter'
 Plug 'maxbrunsfeld/vim-yankstack'
-Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['javascript.jsx']}
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'for': ['javascript.jsx', 'typescript']}
 Plug 'lambdalisue/suda.vim' " sudo save for nvim
 Plug 'chunkhang/vim-mbsync'
 Plug 'elzr/vim-json'
+Plug 'neovim/nvim-lsp'
 
 "nvim specfic
 Plug 'lukas-reineke/indent-blankline.nvim' " Identation guides
@@ -60,6 +61,7 @@ source ~/.vim/vimrcs/basic.vim
 if has('nvim')
   source ~/.vim/vimrcs/nvim-tree.vim
   source ~/.vim/vimrcs/nvim-telescope.vim
+  source ~/.vim/vimrcs/nvim-lspconfig.lua
   source ~/.vim/vimrcs/nvim-metals.lua
   source ~/.vim/vimrcs/nvim-treesitter.lua
 endif
