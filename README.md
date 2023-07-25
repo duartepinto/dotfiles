@@ -2,37 +2,13 @@
 
 ## To Install
 
-* Hombrew
-  * Restore everything that was installed by restoring my `Brewfile`
-* ~~Vim~~ _(should be installed through brew's backup)_
-* ~~Tmux~~ _(should be installed through brew's backup)_
-* ~~Zsh~~ _(should be installed through brew's backup)_
-* ~asdf~_(should be installed through brew's backup)_
-* Oh My Zsh
-
-## Setup Vim
-
-### Install vim-plug
-```bash
-curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-```
-
-### ~~ESLint for React~~ _(No longer using)_
-
-To use Syntastic with ESLint:
-
-Install eslint, babel-eslint (for ES6 support), and [eslint-plugin-react](https://github.com/yannickcr/eslint-plugin-react):
-
-```bash
-npm install -g eslint
-npm install -g babel-eslint
-npm install -g eslint-plugin-react
-```
-
-### ~~Prettier - an opinionated code formatter (for React)~~ _(No longer using)_
-
-* `npm install -g prettier`
+1. Hombrew
+   * Restore everything that was installed by restoring my `Brewfile`
+1. ~~Tmux~~ _(should be installed through brew's backup)_
+1. ~~Zsh~~ _(should be installed through brew's backup)_
+1. Oh My Zsh
+1. ~~asdf~~ _(should be installed through brew's backup)_
+1. ~~Vim~~ _(should be installed through brew's backup)_
 
 ## Oh My Zsh
 
@@ -75,6 +51,23 @@ Automatically create remote branch on push.
 
 * `git config --global push.autoSetupRemote true`
 
+## ASDF
+
+Install plugins that are in `.tool-versions`.
+
+## FZF - A command-line fuzzy finder
+_Install should no longer be needed. Will be installed when installing everything with brew's backup. Step 2 still needs to be followed_
+
+Follow instructions in https://github.com/junegunn/fzf#installation
+
+## Setup Vim
+
+### Install vim-plug
+```bash
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+```
+
 ## Solarized Theme
 
 I'm using the Solarized Dark theme developed by [Ethan Schoonover](https://ethanschoonover.com/solarized/)
@@ -97,26 +90,22 @@ Instruction here if needed: https://github.com/seebi/tmux-colors-solarized
 ### Enable italics
 https://apple.stackexchange.com/questions/249307/tic-doesnt-read-from-stdin-and-segfaults-when-adding-terminfo-to-support-italic/249385
 
-## ~~YouCompleteMe~~ _(Plug should handle installation)_
+## Old
+### ~~YouCompleteMe~~ _(Plug should handle installation)_
 
 *   `brew install cmake`
 
-## ~~Vim Instant Markdown~~ _(Plug should handle installation)_
+### ~~Vim Instant Markdown~~ _(Plug should handle installation)_
 
 Install should no longer be needed since I upgraded to vim-plug_
 
 *   `npm install -g instant-markdown-d`
 
-## ~~xclip~~ _(Will be installed through brew's backup)_
+### ~~xclip~~ _(Will be installed through brew's backup)_
 
 In order to copy the whole tmux buffer into the normal buffer
 
 * `brew install xclip`
-
-### FZF - A command-line fuzzy finder
-_Install should no longer be needed. Will be installed when installing everything with brew's backup. Step 2 still needs to be followed_
-
-Follow instructions in https://github.com/junegunn/fzf#installation
 
 ## Common errors
 ### ~~YCM with Javascript files~~
@@ -134,3 +123,11 @@ https://github.com/ain/.vim/issues/46#issuecomment-381189916
 This might cause oh-my-zsh to not be properly loaded when zsh is loaded by tmux. Reloading zsh or `source ~/.zshrc` seems to fixed this.
 
 Since I'm relying on brew to install zsh, this might be fixed by following this: https://stackoverflow.com/a/35762726
+
+### `:MetalsInstall` throws an error when using an Apple M1/M2 chip
+This might be because of Coursier on M1/M2 chips. There is an issue in [nvim-metals](https://github.com/scalameta/nvim-metals/issues/329) repository regarding that.
+
+Should be fixed by running:
+```
+softwareupdate --install-rosetta
+```
