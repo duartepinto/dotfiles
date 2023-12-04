@@ -19,6 +19,7 @@ Plug 'lambdalisue/suda.vim' " sudo save for nvim
 Plug 'chunkhang/vim-mbsync'
 Plug 'elzr/vim-json'
 Plug 'neovim/nvim-lsp'
+Plug 'github/copilot.vim'
 
 "nvim specfic
 Plug 'lukas-reineke/indent-blankline.nvim' " Identation guides
@@ -64,6 +65,14 @@ if has('nvim')
   source ~/.vim/vimrcs/nvim-lspconfig.lua
   source ~/.vim/vimrcs/nvim-metals.lua
   source ~/.vim/vimrcs/nvim-treesitter.lua
+
+lua << EOF
+vim.g.copilot_assume_mapped = true
+vim.g.copilot_no_tab_map = true
+vim.g.copilot_assume_mapped = true
+vim.g.copilot_tab_fallback = ""
+EOF
+
 endif
 
 " Colorscheme
