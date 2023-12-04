@@ -161,6 +161,10 @@ function fzf-git-checkout() {
 }
 alias gco='fzf-git-checkout'
 
+# Fix for 'gpg failed to sign the data... Inappropriate ioctl for device'
+# https://github.com/keybase/keybase-issues/issues/2798
+export GPG_TTY=$(tty)
+
 [ -f ~/.fzf.bash ] && source ~/.private-configs/.paylarc
 
 # Load asdf. This has to be sourced after all changes to $PATH
