@@ -6,6 +6,7 @@ call plug#begin('~/.vim/plugged')
 Plug 'godlygeek/tabular'
 Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-abolish' " better replace (like keeping case)
 Plug 'itchyny/lightline.vim' " Statusbar/Tabline plugin
 Plug 'altercation/vim-colors-solarized'
 Plug 'lifepillar/vim-solarized8'
