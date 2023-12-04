@@ -26,6 +26,8 @@ Go to iTerm2 > Preferences > Profiles > Keys
   | ⌥+←       | Send Escape sequence | b    |
   | ⌥+→       | Send Escape sequence | f    |
 
+Also, ITerm2 -> Preferences -> Profiles -> keys -> General -> Choose "left Option key " as "Esc+"
+
 ## Git
 Create a global .gitignore.
 
