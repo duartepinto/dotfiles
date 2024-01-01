@@ -123,7 +123,7 @@ export EDITOR="$VISUAL"
 # Command to delete branches not on remote
 # https://stackoverflow.com/questions/7726949/remove-tracking-branches-no-longer-on-remote
 function git-delete-not-remote(){
-  git branch --merged | grep -v "master" >/tmp/merged-branches && vim /tmp/merged-branches && xargs git branch -d </tmp/merged-branches
+  git branch --merged | grep -v "master" | grep -v "main" >/tmp/merged-branches && vim /tmp/merged-branches && xargs git branch -d </tmp/merged-branches
 }
 
 # Simply necessary for fuzzy git checkout
