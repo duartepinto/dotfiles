@@ -248,3 +248,6 @@ endif
 
 " Detect .conf files as hocon
 au BufRead,BufNewFile *.conf set filetype=hocon
+
+" Format JSON witg jq
+command JsonFormatCurrentBuffer :%!jq .
