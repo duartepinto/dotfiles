@@ -120,10 +120,13 @@ alias vim="nvim"
 export VISUAL=nvim
 export EDITOR="$VISUAL"
 
-# Command to delete branches not on remote
-# https://stackoverflow.com/questions/7726949/remove-tracking-branches-no-longer-on-remote
+# Command to delete branches not on remote.
+# Mixture of https://stackoverflow.com/questions/7726949/remove-tracking-branches-no-longer-on-remote and
+# https://stackoverflow.com/a/17029936
 function git-delete-not-remote(){
-  git branch --merged | grep -v "master" | grep -v "main" >/tmp/merged-branches && vim /tmp/merged-branches && xargs git branch -d </tmp/merged-branches
+   git fetch -p -q; git branch -r | awk '{print $1}' | egrep -v -f /dev/fd/0 <(git branch -vv | grep origin) | awk '{print $1}' | grep -v "master" | grep -v "main"  > /tmp/merged-branches &&
+     vim /tmp/merged-branches &&
+     xargs git branch -D </tmp/merged-branches
 }
 
 # Simply necessary for fuzzy git checkout
