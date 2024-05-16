@@ -5,3 +5,5 @@ lspconfig.tsserver.setup {
   filetypes = {"typescript", "typescriptreact", "typescript.tsx", "javascript", "jsx"},
   cmd = { "typescript-language-server", "--stdio" },
 }
+
+lspconfig.pyright.setup{}

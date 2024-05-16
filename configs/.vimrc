@@ -29,6 +29,7 @@ Plug 'kyazdani42/nvim-tree.lua'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " nvim syntax highlight
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'j-hui/fidget.nvim'
 
 " Fuzzy search for vim
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
@@ -66,6 +67,7 @@ if has('nvim')
   source ~/.vim/vimrcs/nvim-lspconfig.lua
   source ~/.vim/vimrcs/nvim-metals.lua
   source ~/.vim/vimrcs/nvim-treesitter.lua
+  source ~/.vim/vimrcs/nvim-fidget.lua
 
 lua << EOF
 vim.g.copilot_assume_mapped = true
@@ -147,17 +149,13 @@ let g:yankstack_yank_keys = ['y', 'd']
 nmap <C-p> <Plug>yankstack_substitute_older_paste
 nmap <C-P> <Plug>yankstack_substitute_newer_paste
 
-function! MetalsStatus() abort
-  return get(g:, 'metals_status', '')
-endfunction
-
 " lightline configs
 let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'active': {
       \   'left': [ ['mode', 'paste'],
       \             ['fugitive', 'readonly', 'filename', 'modified'] ],
-      \   'right': [ [ 'lineinfo' ], ['percent'], ['metalsstatus'] ]
+      \   'right': [ [ 'lineinfo' ], ['percent'] ]
       \ },
       \ 'component': {
       \   'readonly': '%{&filetype=="help"?"":&readonly?"🔒":""}',
@@ -251,3 +249,5 @@ au BufRead,BufNewFile *.conf set filetype=hocon
 
 " Format JSON witg jq
 command JsonFormatCurrentBuffer :%!jq .
+
+command XmlFormatCurrentBuffer :%!xmllint --format -
