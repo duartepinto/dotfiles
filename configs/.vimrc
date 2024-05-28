@@ -8,8 +8,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-abolish' " better replace (like keeping case)
 Plug 'itchyny/lightline.vim' " Statusbar/Tabline plugin
-Plug 'altercation/vim-colors-solarized'
-Plug 'lifepillar/vim-solarized8'
+Plug 'maxmx03/solarized.nvim'
 Plug 'scrooloose/nerdcommenter'
 Plug 'diepm/vim-rest-console'
 Plug 'tmux-plugins/vim-tmux-focus-events' " Autoread with tmux
@@ -82,10 +81,10 @@ endif
 set background=dark
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
 let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-" let g:solarized_term_italics=1
+let g:solarized_term_italics=1
 set termguicolors
 
-colorscheme solarized8
+colorscheme solarized
 
 " Line numbers
 set number relativenumber
@@ -211,6 +210,8 @@ au BufRead,BufNewFile *.h set filetype=objc
 
 " Open instant markdown to the world
 let g:instant_markdown_open_to_the_world = 1
+
+let g:instant_markdown_mermaid = 1
 
 " Change cursor in Insert mode
 " Might disable it because it is a bit slow when going back to Normal mode and because it messes with TMUX.
