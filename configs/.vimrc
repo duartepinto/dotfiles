@@ -38,7 +38,7 @@ Plug 'valloric/youcompleteme', { 'do': './install.py --tern-completer', 'for': [
 Plug 'lervag/vimtex'
 
 " Plugins for Markdown
-Plug 'suan/vim-instant-markdown', { 'do': 'npm install -g instant-markdown-d', 'for': 'markdown' }
+Plug 'iamcco/markdown-preview.nvim', { 'do': 'cd app && npx --yes yarn install' }
 
 " Plugins for Javascript
 Plug 'mustache/vim-mustache-handlebars' " working with mustache and handlebars template languages.
@@ -73,6 +73,8 @@ vim.g.copilot_assume_mapped = true
 vim.g.copilot_no_tab_map = true
 vim.g.copilot_assume_mapped = true
 vim.g.copilot_tab_fallback = ""
+
+vim.lsp.inlay_hint.enable()
 EOF
 
 endif
@@ -208,10 +210,27 @@ let b:vrc_response_default_content_type = 'application/json'
 " Make .h files be interpreted as Objective-C
 au BufRead,BufNewFile *.h set filetype=objc
 
-" Open instant markdown to the world
-let g:instant_markdown_open_to_the_world = 1
-
-let g:instant_markdown_mermaid = 1
+" markdown-preview.nvim configs
+let g:mkdp_preview_options = {
+  \ 'disable_sync_scroll': 1,
+  \ }
+" set to 1, nvim will open the Markdown preview window after entering the Markdown buffer
+" default: 0
+let g:mkdp_auto_start = 1
+" combine Markdown preview window
+" default: 0
+" if enable it will reuse previous opened preview window when you preview markdown file.
+" ensure to set let g:mkdp_auto_close = 0 if you have enable this option
+let g:mkdp_combine_preview = 1
+" set to 1, the Markdown preview server is available to others in your network.
+" By default, the server listens on localhost (127.0.0.1)
+" default: 0
+let g:mkdp_open_to_the_world = 1
+" use a custom port to start Markdown preview server or empty for random
+let g:mkdp_port = '8090'
+" auto refetch combine preview contents when change markdown buffer
+" only when g:mkdp_combine_preview is 1
+let g:mkdp_combine_preview_auto_refresh = 1
 
 " Change cursor in Insert mode
 " Might disable it because it is a bit slow when going back to Normal mode and because it messes with TMUX.
