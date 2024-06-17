@@ -93,7 +93,7 @@ export RUBY_CONFIGURE_OPTS="--with-openssl-dir=$(brew --prefix openssl@1.1)"
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
-export TERM=tmux-256color
+export TERM=xterm-256color
 
 function ssht(){
   ssh $* -t 'tmux a || tmux || /bin/bash'

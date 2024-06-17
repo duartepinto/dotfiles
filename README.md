@@ -76,7 +76,9 @@ I'm using the Solarized Dark theme developed by [Ethan Schoonover](https://ethan
 
 ### iTerm
 
-Install and enable `Solarized Dark` theme from [Official repo](https://github.com/altercation/vim-colors-solarized)
+~~Install and enable `Solarized Dark` theme from [Official repo](https://github.com/altercation/vim-colors-solarized).~~
+
+Install and enable `Solarized Dark - Patched` theme from this [here](https://iterm2colorschemes.com/)
 
 Useful links:
 
@@ -84,24 +86,25 @@ Useful links:
 
 ### Vim
 Already installed. No need to do anything.
-Instruction here if needed: https://github.com/altercation/vim-colors-solarized
+Instruction here if needed: https://github.com/maxmx03/solarized.nvim
 
 ### Tmux
 Instruction here if needed: https://github.com/seebi/tmux-colors-solarized
 
 ### Enable italics
-https://apple.stackexchange.com/questions/249307/tic-doesnt-read-from-stdin-and-segfaults-when-adding-terminfo-to-support-italic/249385
+~~https://apple.stackexchange.com/questions/249307/tic-doesnt-read-from-stdin-and-segfaults-when-adding-terminfo-to-support-italic/249385~~.
+No longer using because it broke in a recent tmux update.
+
+Currently using `xterm-256colors` to enable italics and have the colors correctly: https://github.com/gpakosz/.tmux/issues/382#issuecomment-921137908
+This is a bit unorthodox since only `screen-256color` or `tmux-256color` should be used inside tmux and this might lead
+to incorrect colors in some cases, but it's the best solution I found so far. This happened mostly in the nvim-telescope
+picker, where the hovered item wasn't highlighted correctly, but instead was being italicized. It also happened in the
+other places, likes visual mode in vim, where the selected had a low contrast collor.
 
 ## Old
 ### ~~YouCompleteMe~~ _(Plug should handle installation)_
 
 *   `brew install cmake`
-
-### ~~Vim Instant Markdown~~ _(Plug should handle installation)_
-
-Install should no longer be needed since I upgraded to vim-plug_
-
-*   `npm install -g instant-markdown-d`
 
 ### ~~xclip~~ _(Will be installed through brew's backup)_
 
