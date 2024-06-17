@@ -129,7 +129,7 @@ local metals_config = require("metals").bare_config()
 
 -- Example of settings
 metals_config.settings = {
-  showImplicitArguments = true,
+  showImplicitArguments = false,
   excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
 }
 
