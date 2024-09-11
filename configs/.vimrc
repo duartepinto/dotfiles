@@ -8,7 +8,7 @@ Plug 'tpope/vim-surround'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-abolish' " better replace (like keeping case)
 Plug 'itchyny/lightline.vim' " Statusbar/Tabline plugin
-Plug 'maxmx03/solarized.nvim'
+Plug 'maxmx03/solarized.nvim', {'branch': 'v3.0.0'}
 Plug 'scrooloose/nerdcommenter'
 Plug 'diepm/vim-rest-console'
 Plug 'tmux-plugins/vim-tmux-focus-events' " Autoread with tmux
