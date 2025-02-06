@@ -172,7 +172,7 @@ export GPG_TTY=$(tty)
 
 # Load asdf. This has to be sourced after all changes to $PATH
 # . /usr/local/opt/asdf/libexec/asdf.sh # This previouly worked. Not anymore
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
+# . /opt/homebrew/opt/asdf/libexec/asdf.sh
 
 # Setting default JDK according to asdf settings.
 . ~/.asdf/plugins/java/set-java-home.zsh

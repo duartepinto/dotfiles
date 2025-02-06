@@ -1,4 +1,4 @@
-java openjdk-17.0.2
+java adoptopenjdk-17.0.13+11
 yarn 1.22.19
 nodejs 18.10.0
 python 3.11.4
