@@ -53,6 +53,10 @@ Automatically create remote branch on push.
 
 * `git config --global push.autoSetupRemote true`
 
+Make git case sensitive (needed since MacOS is case insensitive).
+
+* `git config --global core.ignorecase false`
+
 ## ASDF
 
 Install plugins that are in `.tool-versions`.
