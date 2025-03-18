@@ -23,19 +23,22 @@ local function git_diff_with_copilot(prompt)
     return
   end
 
-  -- Create buffer name based on the git command
-  local buffer_name = "[Git] " .. cmd
+  -- Create buffer name based on the git command with timestamp to avoid naming conflicts
+  local timestamp = os.time()
+  local buffer_name = "[Git] " .. cmd .. " " .. timestamp
 
   -- Create a new buffer for the diff output
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(diff_output, "\n"))
   vim.api.nvim_buf_set_option(buf, "filetype", "diff")
 
-  -- Set the buffer name
-  vim.api.nvim_buf_set_name(buf, buffer_name)
+  -- Safely set the buffer name using pcall to catch any errors
+  pcall(function()
+    vim.api.nvim_buf_set_name(buf, buffer_name)
+  end)
 
-  -- Use a split instead of a floating window for better integration
-  vim.cmd("vsplit")
+  -- Open a new tab and set the buffer
+  vim.cmd("tabnew")
   local win = vim.api.nvim_get_current_win()
   vim.api.nvim_win_set_buf(win, buf)
 
