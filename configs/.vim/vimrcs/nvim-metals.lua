@@ -34,49 +34,14 @@ vim.opt_global.completeopt = { "menuone", "noinsert", "noselect" }
 map("n", "K", vim.lsp.buf.hover)
 map("n", "gds", vim.lsp.buf.document_symbol)
 map("n", "gws", vim.lsp.buf.workspace_symbol)
-map("n", "<leader>cl", vim.lsp.codelens.run)
+map("n", "<leader>clr", vim.lsp.codelens.run)
 map("n", "<leader>sh", vim.lsp.buf.signature_help)
 map("n", "<leader>rn", vim.lsp.buf.rename)
 map("n", "<leader>F", vim.lsp.buf.format)
 map("n", "<leader>A", vim.lsp.buf.code_action)
 map("n", "<leader>aa", vim.diagnostic.setqflist) -- all workspace diagnostics
 map("n", "Ks", function()
-  local util = require("metals.util")
-  local lsp = require("vim.lsp")
-  opts = { wrap = false }
-
-  local buf = api.nvim_get_current_buf()
-  local line,_ = unpack(api.nvim_win_get_cursor(0))
-
-  local hints = vim.lsp.inlay_hint.get({ bufnr = buf })
-
-  local hintsFiltered = vim.tbl_filter(function(item)
-    return item.inlay_hint.position.line == line -1
-  end, hints)
-
-  if #hintsFiltered == 0 then
-    return
-  elseif #hintsFiltered > 1 then
-    log.error_and_show("Received two inlay hints on a single line. This should never happen with worksheets. Please create a nvim-metals issue.")
-    return
-  elseif #hintsFiltered == 1 then
-    local hint = hintsFiltered[1]
-
-    local client = vim.lsp.get_client_by_id(hint.client_id)
-    local resp = client.request_sync('inlayHint/resolve', hint.inlay_hint, 100, 0)
-    local resolved_hint = assert(resp and resp.result, resp.err)
-
-    local hover_message = {}
-    hover_message[1] = resolved_hint.tooltip
-
-    -- This also shouldn't happen but to avoid an empty window we do a sanity check
-    if hover_message[1] == nil then
-      return
-    end
-
-    local floating_preview_opts = util.check_exists_and_merge({ pad_left = 1, pad_right = 1 }, opts)
-    lsp.util.open_floating_preview(hover_message, "markdown", floating_preview_opts)
-  end
+  require("metals").hover_worksheet()
 end)
 map("n", "<leader>ae", function() -- all workspace errors
   vim.diagnostic.setqflist({severity = "E"})
