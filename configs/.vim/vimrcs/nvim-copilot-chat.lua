@@ -1,11 +1,89 @@
 local map = vim.keymap.set
 
+vim.cmd([[
+  function! GitDiffCompletion(ArgLead, CmdLine, CursorPos)
+    let options = [
+      \ '--cached', '--staged', '--name-only', '--name-status',
+      \ '--stat', '--summary', '--patch', '-p',
+      \ '--color', '--no-color', '--word-diff', '--unified=',
+      \ '--output-indicator-new=', '--output-indicator-old=',
+      \ '--abbrev', '--no-abbrev', '--binary',
+      \ 'HEAD~1', 'HEAD~2', 'HEAD~3', 'main', 'master', 'origin/'
+    \ ]
+
+    " Check for ... or .. operators
+    if a:ArgLead =~ '\.\.\.\|\.\..'
+      " Extract what's after ... or .. for branch completion
+      let parts = split(a:ArgLead, '\.\.\.\|\.\.')
+      if len(parts) > 1
+        let branch_prefix = parts[1]
+        let local_branches = systemlist('git branch --format="%(refname:short)" 2>/dev/null')
+        let remote_branches = systemlist('git branch -r --format="%(refname:short)" 2>/dev/null')
+
+        " Filter branches based on the prefix after ... or ..
+        call filter(local_branches, 'v:val =~ "^" . branch_prefix')
+        call filter(remote_branches, 'v:val =~ "^origin/" . branch_prefix')
+        call map(remote_branches, 'substitute(v:val, "^origin/", "", "")')
+
+        " Create full completion items by preserving the first part and the operator
+        let operator = a:ArgLead =~ '\.\.\.' ? '...' : '..'
+        let first_part = parts[0]
+        let completions = []
+        for branch in local_branches + remote_branches
+          call add(completions, first_part . operator . branch)
+        endfor
+
+        return completions
+      endif
+    endif
+
+    " Check if the user is trying to complete a path
+    if a:ArgLead =~ '^[^-]' || a:ArgLead == ''
+      " Get file completions using glob
+      let file_completions = glob(a:ArgLead . '*', 0, 1)
+
+      " Add trailing slash to directories for better UX
+      call map(file_completions, 'isdirectory(v:val) ? v:val . "/" : v:val')
+
+      " Add git branches if the input doesn't look like a file path
+      if a:ArgLead !~ '/' && a:ArgLead !~ '\\'
+        " Get local branches
+        let local_branches = systemlist('git branch --format="%(refname:short)" 2>/dev/null')
+        call filter(local_branches, 'v:val =~ "^" . a:ArgLead')
+        call extend(file_completions, local_branches)
+
+        " Get remote branches with origin/ prefix
+        let remote_branches = systemlist('git branch -r --format="%(refname:short)" 2>/dev/null')
+        call filter(remote_branches, 'v:val =~ "^origin/" . a:ArgLead')
+        call map(remote_branches, 'substitute(v:val, "^origin/", "", "")')
+        call extend(file_completions, remote_branches)
+      endif
+
+      " Add git-tracked files if lead is empty
+      if a:ArgLead == ''
+        let git_files = systemlist('git ls-files 2>/dev/null')
+        call extend(file_completions, git_files)
+      endif
+
+      " Filter, sort, and remove duplicates
+      call filter(file_completions, 'v:val =~ "^" . a:ArgLead')
+      let file_completions = uniq(sort(file_completions))
+      return file_completions
+    endif
+
+    " Standard options completion
+    return filter(copy(options), 'v:val =~ "^" . a:ArgLead')
+  endfunction
+
+]])
+
 -- Function to handle git diff with CopilotChat integration
 local function git_diff_with_copilot(prompt)
   -- Get input from user with abort on escape
   local input = vim.fn.input({
     prompt = "Git diff arguments (leave empty for default): ",
-    cancelreturn = "__CANCEL__"  -- Special value to detect cancellation
+    cancelreturn = "__CANCEL__",  -- Special value to detect cancellation
+    completion = "customlist,GitDiffCompletion"
   })
 
   -- Check if user canceled input
