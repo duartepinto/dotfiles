@@ -21,6 +21,7 @@ Plug 'elzr/vim-json'
 Plug 'neovim/nvim-lsp'
 Plug 'github/copilot.vim'
 Plug 'CopilotC-Nvim/CopilotChat.nvim'
+Plug 'mfussenegger/nvim-dap'
 
 "nvim specfic
 Plug 'lukas-reineke/indent-blankline.nvim' " Identation guides

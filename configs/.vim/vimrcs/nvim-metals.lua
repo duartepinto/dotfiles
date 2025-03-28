@@ -34,7 +34,7 @@ vim.opt_global.completeopt = { "menuone", "noinsert", "noselect" }
 map("n", "K", vim.lsp.buf.hover)
 map("n", "gds", vim.lsp.buf.document_symbol)
 map("n", "gws", vim.lsp.buf.workspace_symbol)
-map("n", "<leader>clr", vim.lsp.codelens.run)
+map("n", "<leader>cll", vim.lsp.codelens.run)
 map("n", "<leader>sh", vim.lsp.buf.signature_help)
 map("n", "<leader>rn", vim.lsp.buf.rename)
 map("n", "<leader>F", vim.lsp.buf.format)
@@ -73,6 +73,35 @@ map("n", "gr", function()
 end)
 map("n", "<leader>d", function() -- buffer diagnostics only
   require("telescope.builtin").diagnostics()
+end)
+
+-- Mappings for usage with nvim-dap.
+map("n", "<leader>dc", function()
+  require("dap").continue()
+end)
+
+map("n", "<leader>dr", function()
+  require("dap").repl.toggle()
+end)
+
+map("n", "<leader>dK", function()
+  require("dap.ui.widgets").hover()
+end)
+
+map("n", "<leader>dt", function()
+  require("dap").toggle_breakpoint()
+end)
+
+map("n", "<leader>dso", function()
+  require("dap").step_over()
+end)
+
+map("n", "<leader>dsi", function()
+  require("dap").step_into()
+end)
+
+map("n", "<leader>dl", function()
+  require("dap").run_last()
 end)
 
 -- completion related settings
@@ -122,6 +151,31 @@ cmp.setup({
   }),
 })
 
+
+local dap = require("dap")
+dap.configurations.scala = {
+  {
+    type = "scala",
+    request = "launch",
+    name = "RunOrTest",
+    metals = {
+      runType = "runOrTestFile",
+      args = function()
+        local args_string = vim.fn.input("Arguments: ")
+        return vim.split(args_string, " +")
+      end,
+    },
+  },
+  {
+    type = "scala",
+    request = "launch",
+    name = "Test Target",
+    metals = {
+      runType = "testTarget",
+    },
+  },
+}
+
 ----------------------------------
 -- LSP Setup ---------------------
 ----------------------------------
@@ -158,3 +212,5 @@ api.nvim_create_autocmd("FileType", {
   end,
   group = nvim_metals_group,
 })
+
+require("metals").setup_dap()
