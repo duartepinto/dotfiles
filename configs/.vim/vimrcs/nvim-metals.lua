@@ -160,10 +160,6 @@ dap.configurations.scala = {
     name = "RunOrTest",
     metals = {
       runType = "runOrTestFile",
-      args = function()
-        local args_string = vim.fn.input("Arguments: ")
-        return vim.split(args_string, " +")
-      end,
     },
   },
   {
