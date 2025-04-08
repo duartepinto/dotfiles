@@ -125,7 +125,10 @@ local function git_diff_with_copilot(prompt)
     -- Make sure we're still in the right buffer
     if vim.api.nvim_get_current_buf() == buf then
       -- Apply the specified prompt
-      vim.cmd("CopilotChat " .. buf .. " " .. prompt)
+      require("CopilotChat").ask(prompt, {
+        buffer = buf,
+        context = "files:full",
+      })
     end
   end, 300)
 end
@@ -143,7 +146,10 @@ map("n", "<leader>zd", function()
 end, { noremap = true, silent = true, desc = "CopilotChat: Explain git diff" })
 
 require("CopilotChat").setup {
-  model = 'claude-3.7-sonnet', -- default model
+  model = 'claude-3.7-sonnet-thought', -- default model
+  sticky = {
+    '#files:full'
+  },
   --
   -- default mappings
   -- see config/mappings.lua for implementation
