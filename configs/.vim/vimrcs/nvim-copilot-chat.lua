@@ -127,7 +127,7 @@ local function git_diff_with_copilot(prompt)
       -- Apply the specified prompt
       require("CopilotChat").ask(prompt, {
         buffer = buf,
-        context = "files:full",
+        context = { 'files:**/*.scala', 'files:**/*.md' },
       })
     end
   end, 300)
@@ -147,9 +147,7 @@ end, { noremap = true, silent = true, desc = "CopilotChat: Explain git diff" })
 
 require("CopilotChat").setup {
   model = 'claude-3.7-sonnet-thought', -- default model
-  sticky = {
-    '#files:full'
-  },
+  sticky = { '#files:**/*.scala', '#files:**/*.md' },
   --
   -- default mappings
   -- see config/mappings.lua for implementation
