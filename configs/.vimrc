@@ -84,6 +84,11 @@ EOF
 
 endif
 
+" Optionally load a private configuration file if it exists
+if filereadable(expand("~/.private-configs/private_config.vim"))
+  source ~/.private-configs/private_config.vim
+endif
+
 " Colorscheme
 set background=dark
 let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
@@ -276,3 +281,30 @@ au BufRead,BufNewFile *.conf set filetype=hocon
 command JsonFormatCurrentBuffer :%!jq .
 
 command XmlFormatCurrentBuffer :%!xmllint --format -
+
+" Custom command to open and navigate Git projects based on GIT_PROJECTS_DIR env var
+command! -nargs=1 -complete=customlist,GitDirComplete GitProjectsDir
+      \ execute 'tabnew' |
+      \ execute 'lcd ' . $GIT_PROJECTS_DIR . '/<args>' |
+      \ if exists(':Telescope') |
+      \   execute 'Telescope find_files' |
+      \ else |
+      \   echo "Telescope not available" |
+      \ endif
+
+function! GitDirComplete(ArgLead, CmdLine, CursorPos)
+  if empty($GIT_PROJECTS_DIR)
+    echo "Error: GIT_PROJECTS_DIR environment variable not set"
+    return []
+  endif
+
+  let l:git_dir = $GIT_PROJECTS_DIR . '/'
+  let l:dirs = glob(l:git_dir . a:ArgLead . '*', 0, 1)
+  let l:result = []
+  for dir in l:dirs
+    if isdirectory(dir)
+      call add(l:result, substitute(dir, l:git_dir, '', ''))
+    endif
+  endfor
+  return l:result
+endfunction
