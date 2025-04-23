@@ -215,7 +215,24 @@ autocmd BufWritePre * :%s/\s\+$//e
 
 " Vimrest default response content-type to JSON
 " To allow for syntax hightlight in response
-let b:vrc_response_default_content_type = 'application/json'
+let g:vrc_response_default_content_type = 'application/json'
+
+" Make sure JSON and XML are properly formatted
+" For Json, we truncate the headers and the connection info before feeding it to jq.
+let g:vrc_auto_format_response_patterns = {
+  \ 'json': 'awk ''BEGIN{body=0;header="";body_content="";timing=""} /^$/ && body==0 {body=1;next} /^Connection:/ && body==1 {body=2} body==0{header=header$0"\n";next} body==1{body_content=body_content$0"\n";next} body==2{timing=timing$0"\n"} END{printf "%s\n",header; cmd="jq . 2>&1"; printf "%s", body_content | cmd; if (close(cmd) != 0) {printf "%s", body_content}; printf "%s",timing}''',
+  \ 'xml': 'xmllint --format -'
+\}
+
+" Disable the curl progress meter to clean up output
+let g:vrc_curl_opts = {
+  \ '-sS': '',
+  \ '-i': '',
+  \ '-w': '\n\nConnection: %{time_connect}s\nAppConnect: %{time_appconnect}s\nRedirect: %{time_redirect}s\nPreTransfer: %{time_pretransfer}s\nStartTransfer: %{time_starttransfer}s\nTotal: %{time_total}s\n'
+\}
+
+" This will make the output buffer use JSON syntax highlighting by default
+let g:vrc_output_buffer_name = '__VRC_OUTPUT.json'
 
 " Make .h files be interpreted as Objective-C
 au BufRead,BufNewFile *.h set filetype=objc
@@ -277,7 +294,7 @@ endif
 " Detect .conf files as hocon
 au BufRead,BufNewFile *.conf set filetype=hocon
 
-" Format JSON witg jq
+" Format JSON with jq
 command JsonFormatCurrentBuffer :%!jq .
 
 command XmlFormatCurrentBuffer :%!xmllint --format -
