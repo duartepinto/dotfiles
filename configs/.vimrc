@@ -302,7 +302,7 @@ command XmlFormatCurrentBuffer :%!xmllint --format -
 " Custom command to open and navigate Git projects based on GIT_PROJECTS_DIR env var
 command! -nargs=1 -complete=customlist,GitDirComplete GitProjectsDir
       \ execute 'tabnew' |
-      \ execute 'lcd ' . $GIT_PROJECTS_DIR . '/<args>' |
+      \ execute 'lcd ' . expand($GIT_PROJECTS_DIR) . '/<args>' |
       \ if exists(':Telescope') |
       \   execute 'Telescope find_files' |
       \ else |
@@ -315,7 +315,7 @@ function! GitDirComplete(ArgLead, CmdLine, CursorPos)
     return []
   endif
 
-  let l:git_dir = $GIT_PROJECTS_DIR . '/'
+  let l:git_dir = expand($GIT_PROJECTS_DIR) . '/'
   let l:dirs = glob(l:git_dir . a:ArgLead . '*', 0, 1)
   let l:result = []
   for dir in l:dirs
