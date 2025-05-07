@@ -101,6 +101,16 @@ local function git_diff_with_copilot(prompt)
     return
   end
 
+  -- Extract filenames from the git diff
+  local files = {}
+  -- Look for lines starting with +++ b/ or --- a/ (indicating file paths)
+  for line in diff_output:gmatch("[^\r\n]+") do
+    local file_path = line:match("^%+%+%+ b/(.+)$") or line:match("^%-%-% a/(.+)$")
+    if file_path and not vim.tbl_contains(files, file_path) then
+      table.insert(files, file_path)
+    end
+  end
+
   -- Create buffer name based on the git command with timestamp to avoid naming conflicts
   local timestamp = os.time()
   local buffer_name = "[Git] " .. cmd .. " " .. timestamp
@@ -124,10 +134,20 @@ local function git_diff_with_copilot(prompt)
   vim.defer_fn(function()
     -- Make sure we're still in the right buffer
     if vim.api.nvim_get_current_buf() == buf then
-      -- Apply the specified prompt
+      -- Start with an empty context array
+      local context = {}
+      -- Add the specific files from the diff first
+      for _, file in ipairs(files) do
+        table.insert(context, 'file:' .. file)
+      end
+      -- Add the default file patterns afterward
+      table.insert(context, 'files:*/**/*.scala')
+      table.insert(context, 'files:*/**/*.md')
+
+      -- Apply the specified prompt with extracted files as context
       require("CopilotChat").ask(prompt, {
         buffer = buf,
-        context = { 'files:**/*.scala', 'files:**/*.md' },
+        context = context,
       })
     end
   end, 300)
@@ -147,7 +167,7 @@ end, { noremap = true, silent = true, desc = "CopilotChat: Explain git diff" })
 
 require("CopilotChat").setup {
   model = 'claude-3.7-sonnet-thought', -- default model
-  sticky = { '#files:**/*.scala', '#files:**/*.md' },
+  sticky = { '#files:*/**/*.scala', '#files:*/**/*.md' },
   --
   -- default mappings
   -- see config/mappings.lua for implementation
