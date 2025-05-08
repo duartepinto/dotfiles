@@ -166,7 +166,7 @@ map("n", "<leader>zd", function()
 end, { noremap = true, silent = true, desc = "CopilotChat: Explain git diff" })
 
 require("CopilotChat").setup {
-  model = 'claude-3.7-sonnet-thought', -- default model
+  model = 'gemini-2.5-pro', -- default model
   sticky = { '#files:*/**/*.scala', '#files:*/**/*.md' },
   --
   -- default mappings
