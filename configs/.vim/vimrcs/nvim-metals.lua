@@ -182,7 +182,8 @@ metals_config.settings = {
   showImplicitArguments = false,
   excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
   serverProperties = {
-    -- "-Dmetals.enable-best-effort=true",
+    "-Dmetals.enable-best-effort=true",
+    "-Dmetals.inlay-hints.named-parameters=true",
   },
 }
 
