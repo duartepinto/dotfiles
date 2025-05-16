@@ -165,9 +165,14 @@ map("n", "<leader>zd", function()
   git_diff_with_copilot("Explain this git diff")
 end, { noremap = true, silent = true, desc = "CopilotChat: Explain git diff" })
 
+local select = require("CopilotChat.select")
+
 require("CopilotChat").setup {
-  model = 'gemini-2.5-pro', -- default model
-  sticky = { '#files:*/**/*.scala', '#files:*/**/*.md' },
+  model = 'claude-3.7-sonnet-thought', -- default model
+  sticky = {'#files:*/**/*.scala', '#files:*/**/*.md'},
+  selection = function(source)
+    return select.visual(source) or select.buffer(source)
+  end,
   --
   -- default mappings
   -- see config/mappings.lua for implementation
