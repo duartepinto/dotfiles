@@ -176,3 +176,8 @@ export GPG_TTY=$(tty)
 
 # Setting default JDK according to asdf settings.
 . ~/.asdf/plugins/java/set-java-home.zsh
+
+# >>> scala-cli completions >>>
+fpath=("/Users/duarte/Library/Application Support/ScalaCli/completions/zsh" $fpath)
+compinit
+# <<< scala-cli completions <<<
