@@ -142,6 +142,8 @@ local function git_diff_with_copilot(prompt)
       end
       -- Add the default file patterns afterward
       table.insert(context, 'files:*/**/*.scala')
+      table.insert(context, 'files:*/**/*.yaml')
+      table.insert(context, 'files:*/**/*.conf')
       table.insert(context, 'files:*/**/*.md')
 
       -- Apply the specified prompt with extracted files as context
@@ -166,10 +168,11 @@ map("n", "<leader>zd", function()
 end, { noremap = true, silent = true, desc = "CopilotChat: Explain git diff" })
 
 local select = require("CopilotChat.select")
+local chat = require("CopilotChat")
 
-require("CopilotChat").setup {
-  model = 'claude-3.7-sonnet-thought', -- default model
-  sticky = {'#files:*/**/*.scala', '#files:*/**/*.md'},
+chat.setup {
+  model = 'claude-sonnet-4', -- default model
+  sticky = {'#files:*/**/*.scala', '#files:*/**/*.yaml', '#files:*/**/*.conf', '#files:*/**/*.md'},
   selection = function(source)
     return select.visual(source) or select.buffer(source)
   end,
