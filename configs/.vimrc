@@ -29,8 +29,9 @@ Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " nvim syntax highli
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'j-hui/fidget.nvim'
-Plug 'CopilotC-Nvim/CopilotChat.nvim'
+Plug 'CopilotC-Nvim/CopilotChat.nvim', {'branch': 'tools'}
 Plug 'mfussenegger/nvim-dap'
+Plug 'ravitemer/mcphub.nvim', { 'do': 'npm install -g mcp-hub@latest' }
 
 " Fuzzy search for vim
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
@@ -69,6 +70,7 @@ if has('nvim')
   source ~/.vim/vimrcs/nvim-metals.lua
   source ~/.vim/vimrcs/nvim-treesitter.lua
   source ~/.vim/vimrcs/nvim-fidget.lua
+  source ~/.vim/vimrcs/mcphub.lua
   source ~/.vim/vimrcs/nvim-copilot-chat.lua
 
 lua << EOF

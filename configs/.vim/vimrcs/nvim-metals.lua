@@ -184,6 +184,8 @@ metals_config.settings = {
   serverProperties = {
     "-Dmetals.enable-best-effort=true",
     "-Dmetals.inlay-hints.named-parameters=true",
+    "-Dchat.mcp.enabled=true",
+    "-Dmetals.startMcpServer=true"
   },
 }
 

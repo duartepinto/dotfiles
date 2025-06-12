@@ -1,0 +1,11 @@
+{
+  "nativeMCPServers": [
+
+  ],
+  "mcpServers": {
+    "metals": {
+      "disabled": false,
+      "url": "http://localhost:51942/sse"
+    }
+  }
+}
