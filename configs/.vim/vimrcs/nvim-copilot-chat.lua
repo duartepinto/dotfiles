@@ -308,7 +308,7 @@ local function git_diff_with_copilot(prompt)
       end
       -- Add the default file patterns afterward
       table.insert(context, 'files:*/**/*.md')
-      table.insert(context, 'files:*/**/*.scala')
+      table.insert(context, 'filenames:*/**/*.scala')
       table.insert(context, 'files:*/**/*.yaml')
       table.insert(context, 'files:*/**/*.conf')
 
