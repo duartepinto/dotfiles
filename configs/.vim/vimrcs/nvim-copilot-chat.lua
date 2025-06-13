@@ -77,6 +77,109 @@ vim.cmd([[
 
 ]])
 
+-- Function to extract issue number from branch name
+local function extract_issue_number(branch_name)
+  -- Common patterns for issue numbers in branch names
+  -- Examples: feature/123-description, fix/issue-456, 123-feature, etc.
+  local patterns = {
+    "(%d+)%-",     -- 123-description
+    "%-(%d+)%-",   -- prefix-123-description
+    "%-(%d+)$",    -- prefix-123
+    "^(%d+)%-",    -- 123-description
+    "/(%d+)%-",    -- feature/123-description
+    "/issue%-(%d+)", -- feature/issue-123
+    "#(%d+)",      -- feature-#123
+  }
+
+  for _, pattern in ipairs(patterns) do
+    local issue_num = branch_name:match(pattern)
+    if issue_num then
+      return issue_num
+    end
+  end
+
+  return nil
+end
+
+local function get_gitlab_issue_info(issue_number)
+  if not issue_number then return "" end
+
+  local cmd = string.format("glab issue view %s --output json 2>/dev/null", issue_number)
+  local output = vim.fn.system(cmd)
+
+  if vim.v.shell_error ~= 0 then
+    return ""
+  end
+
+  local ok, issue_data = pcall(vim.json.decode, output)
+  if not ok then return "" end
+
+  local context = string.format([[
+
+## GitLab Issue #%s
+**Title:** %s
+**State:** %s
+**Description:**
+%s
+
+]], issue_number, issue_data.title or "", issue_data.state or "", issue_data.description or "")
+
+  -- Fetch comments separately using glab api
+  local notes_cmd = string.format("glab api projects/:id/issues/%s/notes 2>/dev/null", issue_number)
+  local notes_output = vim.fn.system(notes_cmd)
+
+  if vim.v.shell_error == 0 then
+    local notes_ok, notes_data = pcall(vim.json.decode, notes_output)
+    if notes_ok and notes_data and #notes_data > 0 then
+      context = context .. "**Comments:**\n"
+      for _, note in ipairs(notes_data) do
+        if note.body and note.body ~= "" and not note.system then
+          local author_name = "Unknown"
+          if note.author and note.author.name then
+            author_name = note.author.name
+          elseif note.author and note.author.username then
+            author_name = note.author.username
+          end
+          context = context .. string.format("- %s: %s\n", author_name, note.body)
+        end
+      end
+    end
+  end
+
+  return context
+end
+
+-- Function to get GitLab MR information for a branch
+local function get_gitlab_mr_info(branch_name)
+  if not branch_name then return "" end
+
+  local cmd = string.format("glab mr list --source-branch %s --output json 2>/dev/null", branch_name)
+  local output = vim.fn.system(cmd)
+
+  if vim.v.shell_error ~= 0 then
+    return ""
+  end
+
+  local ok, mr_list = pcall(vim.json.decode, output)
+  if not ok or not mr_list or #mr_list == 0 then return "" end
+
+  local mr = mr_list[1] -- Get the first MR
+
+  local context = string.format([[
+
+## GitLab Merge Request !%s
+**Title:** %s
+**State:** %s
+**Source Branch:** %s
+**Target Branch:** %s
+**Description:**
+%s
+
+]], mr.iid or "", mr.title or "", mr.state or "", mr.source_branch or "", mr.target_branch or "", mr.description or "")
+
+  return context
+end
+
 -- Function to handle git diff with CopilotChat integration
 local function git_diff_with_copilot(prompt)
   -- Get input from user with abort on escape
@@ -111,13 +214,76 @@ local function git_diff_with_copilot(prompt)
     end
   end
 
+  -- Extract branch information for GitLab context
+  local gitlab_context = ""
+
+  -- Try to extract branch name from git diff input
+  local branch_name = nil
+  if input and input ~= "" then
+    -- Handle various git diff target patterns
+    local target_branch = nil
+    local source_branch = nil
+
+    -- Pattern: main...feature-branch (three dots)
+    if input:match("%.%.%.") then
+      source_branch = input:match("%.%.%.([^%s]+)")
+      target_branch = input:match("([^%s%.]+)%.%.%.")
+
+      -- Pattern: main... (current branch is the feature branch)
+      if input:match("%.%.%.$") then
+        source_branch = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
+        if vim.v.shell_error ~= 0 then source_branch = nil end
+      end
+    -- Pattern: main..feature-branch (two dots)
+    elseif input:match("%.%.") then
+      source_branch = input:match("%.%.([^%s]+)")
+      target_branch = input:match("([^%s%.]+)%.%.")
+    -- Pattern: ...feature-branch (comparing from HEAD to feature-branch)
+    elseif input:match("^%.%.%.") then
+      source_branch = input:match("^%.%.%.([^%s]+)")
+    else
+      -- Single branch name or other format
+      source_branch = input:match("^([^%s%-%.]+)$")
+    end
+
+    -- Use source branch (the feature branch) for GitLab context
+    branch_name = source_branch
+
+    -- Debug output to help troubleshoot
+    vim.notify(string.format("Input: '%s', Extracted branch: '%s'", input, branch_name or "nil"), vim.log.levels.INFO)
+  else
+    -- Get current branch if no input provided
+    local current_branch = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
+    if vim.v.shell_error == 0 and current_branch ~= "" then
+      branch_name = current_branch
+    end
+  end
+
+  if branch_name then
+    -- Get GitLab MR information
+    gitlab_context = gitlab_context .. get_gitlab_mr_info(branch_name)
+
+    -- Extract issue number and get issue information
+    local issue_number = extract_issue_number(branch_name)
+    gitlab_context = gitlab_context .. get_gitlab_issue_info(issue_number)
+
+    -- Debug output
+    vim.notify(string.format("Branch: '%s', Issue: '%s', GitLab context length: %d",
+      branch_name or "nil", issue_number or "nil", #gitlab_context), vim.log.levels.INFO)
+  end
+
   -- Create buffer name based on the git command with timestamp to avoid naming conflicts
   local timestamp = os.time()
   local buffer_name = "[Git] " .. cmd .. " " .. timestamp
 
-  -- Create a new buffer for the diff output
+  -- Create a new buffer for the diff output with GitLab context
+  local full_content = diff_output
+  if gitlab_context ~= "" then
+    full_content = gitlab_context .. "\n" .. string.rep("=", 80) .. "\n" .. diff_output
+  end
+
   local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(diff_output, "\n"))
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(full_content, "\n"))
   vim.api.nvim_buf_set_option(buf, "filetype", "diff")
 
   -- Safely set the buffer name using pcall to catch any errors
@@ -141,10 +307,10 @@ local function git_diff_with_copilot(prompt)
         table.insert(context, 'file:' .. file)
       end
       -- Add the default file patterns afterward
+      table.insert(context, 'files:*/**/*.md')
       table.insert(context, 'files:*/**/*.scala')
       table.insert(context, 'files:*/**/*.yaml')
       table.insert(context, 'files:*/**/*.conf')
-      table.insert(context, 'files:*/**/*.md')
 
       -- Apply the specified prompt with extracted files as context
       require("CopilotChat").ask(prompt, {
@@ -172,7 +338,7 @@ local chat = require("CopilotChat")
 
 chat.setup {
   model = 'claude-sonnet-4', -- default model
-  sticky = {'#files:*/**/*.scala', '#files:*/**/*.yaml', '#files:*/**/*.conf', '#files:*/**/*.md'},
+  sticky = {'#files:*/**/*.md', '#files:*/**/*.scala', '#files:*/**/*.yaml', '#files:*/**/*.conf'},
   selection = function(source)
     return select.visual(source) or select.buffer(source)
   end,
