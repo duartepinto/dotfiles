@@ -49,7 +49,12 @@ require('telescope').setup{
                                        -- the default case_mode is "smart_case"
     },
     ["ui-select"] = {
-      require("telescope.themes").get_dropdown()
+      require("telescope.themes").get_dropdown ({
+        layout_config = {
+          width = 0.8,
+          height = 0.6,
+        }
+      }),
     }
   }
 }

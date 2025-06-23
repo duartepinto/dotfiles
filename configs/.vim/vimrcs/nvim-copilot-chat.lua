@@ -321,7 +321,7 @@ local function git_diff_with_copilot(prompt)
   end, 300)
 end
 
--- Copy of '#file' completion from CopilotChat
+-- Adaptation of the original '#file' completion from CopilotChat
 -- https://github.com/CopilotC-Nvim/CopilotChat.nvim/blob/main/lua/CopilotChat/config/contexts.lua
 local utils = require('CopilotChat.utils')
 local function file_completion(callback, source)
@@ -329,8 +329,20 @@ local function file_completion(callback, source)
     max_count = 0,
   })
 
+  local cwd = source.cwd()
+  local relative_files = {}
+  for _, file in ipairs(files) do
+    local relative_path = vim.fn.fnamemodify(file, ':~:.')
+    if relative_path:sub(1, 1) ~= '/' then
+      table.insert(relative_files, relative_path)
+    else
+      -- Fallback: manually calculate relative path
+      table.insert(relative_files, file:gsub('^' .. vim.pesc(cwd .. '/'), ''))
+    end
+  end
+
   utils.schedule_main()
-  vim.ui.select(files, {
+  vim.ui.select(relative_files, {
     prompt = 'Select a file> ',
   }, callback)
 end
@@ -358,12 +370,15 @@ selection = function(source)
   end,
 
   contexts = {
+    file = {
+      input = file_completion,
+    },
     files = {
       input = file_completion,
     },
     filenames = {
       input = file_completion,
-    }
+    },
   },
 
   --
