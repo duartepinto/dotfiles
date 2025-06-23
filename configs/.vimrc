@@ -28,13 +28,14 @@ Plug 'kyazdani42/nvim-tree.lua'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'} " nvim syntax highlight
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+Plug 'nvim-telescope/telescope-ui-select.nvim'
 Plug 'j-hui/fidget.nvim'
-Plug 'CopilotC-Nvim/CopilotChat.nvim', {'branch': 'tools'}
+Plug 'CopilotC-Nvim/CopilotChat.nvim'
 Plug 'mfussenegger/nvim-dap'
 Plug 'ravitemer/mcphub.nvim', { 'do': 'npm install -g mcp-hub@latest' }
 
 " Fuzzy search for vim
-Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'cmake -S. -Bbuild -DCMAKE_BUILD_TYPE=Release && cmake --build build --config Release && cmake --install build --prefix build' }
+Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 
 " Plugins for Latex
 Plug 'valloric/youcompleteme', { 'do': './install.py --tern-completer', 'for': ['tex'] }
@@ -76,7 +77,6 @@ if has('nvim')
 lua << EOF
 vim.g.copilot_assume_mapped = true
 vim.g.copilot_no_tab_map = true
-vim.g.copilot_assume_mapped = true
 vim.g.copilot_tab_fallback = ""
 
 vim.lsp.inlay_hint.enable()

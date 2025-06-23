@@ -321,6 +321,20 @@ local function git_diff_with_copilot(prompt)
   end, 300)
 end
 
+-- Copy of '#file' completion from CopilotChat
+-- https://github.com/CopilotC-Nvim/CopilotChat.nvim/blob/main/lua/CopilotChat/config/contexts.lua
+local utils = require('CopilotChat.utils')
+local function file_completion(callback, source)
+  local files = utils.scan_dir(source.cwd(), {
+    max_count = 0,
+  })
+
+  utils.schedule_main()
+  vim.ui.select(files, {
+    prompt = 'Select a file> ',
+  }, callback)
+end
+
 map("n", "<leader>zc", require("CopilotChat").open) -- open chat
 map("n", "<leader>zr", "<cmd>CopilotChatReview<cr>" ) -- Review code
 map("n", "<leader>zt", "<cmd>CopilotChatTests<cr>" ) -- Generate tests
@@ -338,10 +352,20 @@ local chat = require("CopilotChat")
 
 chat.setup {
   model = 'claude-sonnet-4', -- default model
-  sticky = {'#files:*/**/*.md', '#files:*/**/*.scala', '#files:*/**/*.yaml', '#files:*/**/*.conf'},
-  selection = function(source)
+  sticky = {'#files:*/**/*.md', '#filenames:*/**/*.scala', '#files:*/**/*.yaml', '#files:*/**/*.conf'},
+selection = function(source)
     return select.visual(source) or select.buffer(source)
   end,
+
+  contexts = {
+    files = {
+      input = file_completion,
+    },
+    filenames = {
+      input = file_completion,
+    }
+  },
+
   --
   -- default mappings
   -- see config/mappings.lua for implementation
