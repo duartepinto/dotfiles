@@ -181,11 +181,11 @@ local metals_config = require("metals").bare_config()
 metals_config.settings = {
   showImplicitArguments = false,
   excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
+  startMcpServer = true,
   serverProperties = {
     "-Dmetals.enable-best-effort=true",
     "-Dmetals.inlay-hints.named-parameters=true",
     "-Dchat.mcp.enabled=true",
-    "-Dmetals.startMcpServer=true"
   },
 }
 

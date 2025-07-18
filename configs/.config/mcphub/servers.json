@@ -4,8 +4,8 @@
   ],
   "mcpServers": {
     "metals": {
-      "disabled": false,
-      "url": "http://localhost:51942/sse"
+      "url": "http://localhost:51942/sse",
+      "disabled": false
     }
   }
 }
