@@ -131,7 +131,10 @@ local function get_gitlab_issue_info(issue_number)
   if vim.v.shell_error == 0 then
     local notes_ok, notes_data = pcall(vim.json.decode, notes_output)
     if notes_ok and notes_data and #notes_data > 0 then
-      context = context .. "**Comments:**\n"
+
+      if #notes_data > 0 then
+        context = context .. "**Comments:**\n"
+      end
       for _, note in ipairs(notes_data) do
         if note.body and note.body ~= "" and not note.system then
           local author_name = "Unknown"
@@ -347,6 +350,68 @@ local function file_completion(callback, source)
   }, callback)
 end
 
+-- Function to implement GitLab issue with CopilotChat integration
+local function implement_gitlab_issue()
+  -- Get issue number from user with abort on escape
+  local issue_number = vim.fn.input({
+    prompt = "Enter GitLab issue number: ",
+    cancelreturn = "__CANCEL__",  -- Special value to detect cancellation
+  })
+
+  -- Check if user canceled input
+  if issue_number == "__CANCEL__" or issue_number == "" then
+    vim.notify("GitLab issue implementation cancelled", vim.log.levels.INFO)
+    return
+  end
+
+  -- Get GitLab issue information
+  local issue_info = get_gitlab_issue_info(issue_number)
+
+  if issue_info == "" then
+    vim.notify("Failed to fetch GitLab issue #" .. issue_number, vim.log.levels.ERROR)
+    return
+  end
+
+  -- Create buffer name with timestamp to avoid naming conflicts
+  local timestamp = os.time()
+  local buffer_name = "[GitLab Issue] #" .. issue_number .. " " .. timestamp
+
+  -- Create a new buffer for the issue information
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(issue_info, "\n"))
+  vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
+
+  -- Safely set the buffer name using pcall to catch any errors
+  pcall(function()
+    vim.api.nvim_buf_set_name(buf, buffer_name)
+  end)
+
+  -- Open a new tab and set the buffer
+  vim.cmd("tabnew")
+  local win = vim.api.nvim_get_current_win()
+  vim.api.nvim_win_set_buf(win, buf)
+
+  -- Wait for buffer to fully load, then run CopilotChat
+  vim.defer_fn(function()
+    -- Make sure we're still in the right buffer
+    if vim.api.nvim_get_current_buf() == buf then
+      -- Create context array with relevant files
+      local context = {
+        'files:*/**/*.md',
+        'files:*/**/*.scala', -- Unlike in the other context defaults, here we use 'files' because adding context is more critical when actually implementing.
+        'files:*/**/*.yaml',
+        'files:*/**/*.conf'
+      }
+
+      -- Ask CopilotChat to implement the feature
+      require("CopilotChat").ask("Based on this GitLab issue, please provide a detailed implementation plan and suggest the necessary code changes to implement this feature. Include file modifications, new files that need to be created, and any architectural considerations.", {
+        buffer = buf,
+        context = context,
+      })
+    end
+  end, 300)
+end
+
 map("n", "<leader>zc", require("CopilotChat").open) -- open chat
 map("n", "<leader>zr", "<cmd>CopilotChatReview<cr>" ) -- Review code
 map("n", "<leader>zt", "<cmd>CopilotChatTests<cr>" ) -- Generate tests
@@ -358,6 +423,9 @@ end, { noremap = true, silent = true, desc = "CopilotChat: Review git diff" })
 map("n", "<leader>zd", function()
   git_diff_with_copilot("Explain this git diff")
 end, { noremap = true, silent = true, desc = "CopilotChat: Explain git diff" })
+map("n", "<leader>zgi", function()
+  implement_gitlab_issue()
+end, { noremap = true, silent = true, desc = "CopilotChat: Implement this issue" })
 
 local select = require("CopilotChat.select")
 local chat = require("CopilotChat")
@@ -365,7 +433,7 @@ local chat = require("CopilotChat")
 chat.setup {
   model = 'claude-sonnet-4', -- default model
   sticky = {'#files:*/**/*.md', '#filenames:*/**/*.scala', '#files:*/**/*.yaml', '#files:*/**/*.conf'},
-selection = function(source)
+  selection = function(source)
     return select.visual(source) or select.buffer(source)
   end,
 
