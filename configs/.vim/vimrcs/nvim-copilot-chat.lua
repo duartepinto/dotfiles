@@ -213,7 +213,8 @@ local function git_diff_with_copilot(prompt)
   for line in diff_output:gmatch("[^\r\n]+") do
     local file_path = line:match("^%+%+%+ b/(.+)$") or line:match("^%-%-% a/(.+)$")
     if file_path and not vim.tbl_contains(files, file_path) then
-      table.insert(files, file_path)
+      local absolute_path = vim.fn.fnamemodify(file_path, ":p")
+      table.insert(files, absolute_path)
     end
   end
 
@@ -280,9 +281,9 @@ local function git_diff_with_copilot(prompt)
   local buffer_name = "[Git] " .. cmd .. " " .. timestamp
 
   -- Create a new buffer for the diff output with GitLab context
-  local full_content = diff_output
+  local full_content = ""
   if gitlab_context ~= "" then
-    full_content = gitlab_context .. "\n" .. string.rep("=", 80) .. "\n" .. diff_output
+    full_content = gitlab_context .. "\n" .. string.rep("=", 80)
   end
 
   local buf = vim.api.nvim_create_buf(false, true)
@@ -307,17 +308,15 @@ local function git_diff_with_copilot(prompt)
       local context = {}
       -- Add the specific files from the diff first
       for _, file in ipairs(files) do
-        table.insert(context, 'file:' .. file)
+        table.insert(context, '#file:' .. file)
       end
       -- Add the default file patterns afterward
       table.insert(context, '@metals')
-      table.insert(context, 'glob:*/**/*.scala')
+      table.insert(context, '#glob:*/**/*.scala')
+      table.insert(context, '#gitdiff:' .. (input ~= "" and input or ""))
 
       -- Apply the specified prompt with extracted files as context
-      require("CopilotChat").ask(prompt, {
-        buffer = buf,
-        context = context,
-      })
+      require("CopilotChat").ask(prompt, { sticky = context })
     end
   end, 300)
 end
@@ -393,19 +392,8 @@ local function implement_gitlab_issue()
   vim.defer_fn(function()
     -- Make sure we're still in the right buffer
     if vim.api.nvim_get_current_buf() == buf then
-      -- Create context array with relevant files
-      local context = {
-        'files:*/**/*.md',
-        'files:*/**/*.scala', -- Unlike in the other context defaults, here we use 'files' because adding context is more critical when actually implementing.
-        'files:*/**/*.yaml',
-        'files:*/**/*.conf'
-      }
-
       -- Ask CopilotChat to implement the feature
-      require("CopilotChat").ask("Based on this GitLab issue, please provide a detailed implementation plan and suggest the necessary code changes to implement this feature. Include file modifications, new files that need to be created, and any architectural considerations.", {
-        buffer = buf,
-        context = context,
-      })
+      require("CopilotChat").ask("Based on this GitLab issue, please provide a detailed implementation plan and suggest the necessary code changes to implement this feature. Include file modifications, new files that need to be created, and any architectural considerations.")
     end
   end, 300)
 end
@@ -450,7 +438,7 @@ chat.setup {
   --
   -- default mappings
   -- see config/mappings.lua for implementation
-  -- mappings = {
+  mappings = {
     -- complete = {
       -- insert = '<Tab>',
     -- },
@@ -458,10 +446,10 @@ chat.setup {
       -- normal = 'q',
       -- insert = '<C-c>',
     -- },
-    -- reset = {
-      -- normal = 'gl',
-      -- insert = '<C-l>',
-    -- },
+    reset = {
+      normal = 'gl',
+      insert = '<C-l>',
+    },
     -- submit_prompt = {
       -- normal = '<CR>',
       -- insert = '<C-s>',
@@ -500,5 +488,5 @@ chat.setup {
     -- show_help = {
       -- normal = 'gh',
     -- },
-  -- }
+  }
 }
