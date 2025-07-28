@@ -1,11 +1,10 @@
 {
-  "nativeMCPServers": [
-
-  ],
   "mcpServers": {
     "metals": {
-      "url": "http://localhost:51942/sse",
-      "disabled": false
+      "autoApprove": true,
+      "disabled": false,
+      "url": "http://localhost:51942/sse"
     }
-  }
+  },
+  "nativeMCPServers": []
 }

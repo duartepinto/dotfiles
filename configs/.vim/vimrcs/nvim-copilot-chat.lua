@@ -310,10 +310,8 @@ local function git_diff_with_copilot(prompt)
         table.insert(context, 'file:' .. file)
       end
       -- Add the default file patterns afterward
-      table.insert(context, 'files:*/**/*.md')
-      table.insert(context, 'filenames:*/**/*.scala')
-      table.insert(context, 'files:*/**/*.yaml')
-      table.insert(context, 'files:*/**/*.conf')
+      table.insert(context, '@metals')
+      table.insert(context, 'glob:*/**/*.scala')
 
       -- Apply the specified prompt with extracted files as context
       require("CopilotChat").ask(prompt, {
@@ -432,7 +430,7 @@ local chat = require("CopilotChat")
 
 chat.setup {
   model = 'claude-sonnet-4', -- default model
-  sticky = {'#files:*/**/*.md', '#filenames:*/**/*.scala', '#files:*/**/*.yaml', '#files:*/**/*.conf'},
+  sticky = {'@metals', '#glob:`**/*.scala`'},
   selection = function(source)
     return select.visual(source) or select.buffer(source)
   end,
@@ -452,55 +450,55 @@ chat.setup {
   --
   -- default mappings
   -- see config/mappings.lua for implementation
-  mappings = {
-    complete = {
-      insert = '<Tab>',
-    },
-    close = {
-      normal = 'q',
-      insert = '<C-c>',
-    },
-    reset = {
-      normal = 'gl',
-      insert = '<C-l>',
-    },
-    submit_prompt = {
-      normal = '<CR>',
-      insert = '<C-s>',
-    },
-    toggle_sticky = {
-      detail = 'Makes line under cursor sticky or deletes sticky line.',
-      normal = 'gr',
-    },
-    accept_diff = {
-      normal = '<C-y>',
-      insert = '<C-y>',
-    },
-    jump_to_diff = {
-      normal = 'gj',
-    },
-    quickfix_answers = {
-      normal = 'gqa',
-    },
-    quickfix_diffs = {
-      normal = 'gqd',
-    },
-    yank_diff = {
-      normal = 'gy',
-      register = '"', -- Default register to use for yanking
-    },
-    show_diff = {
-      normal = 'gd',
-      full_diff = false, -- Show full diff instead of unified diff when showing diff window
-    },
-    show_info = {
-      normal = 'gi',
-    },
-    show_context = {
-      normal = 'gc',
-    },
-    show_help = {
-      normal = 'gh',
-    },
-  }
+  -- mappings = {
+    -- complete = {
+      -- insert = '<Tab>',
+    -- },
+    -- close = {
+      -- normal = 'q',
+      -- insert = '<C-c>',
+    -- },
+    -- reset = {
+      -- normal = 'gl',
+      -- insert = '<C-l>',
+    -- },
+    -- submit_prompt = {
+      -- normal = '<CR>',
+      -- insert = '<C-s>',
+    -- },
+    -- toggle_sticky = {
+      -- detail = 'Makes line under cursor sticky or deletes sticky line.',
+      -- normal = 'gr',
+    -- },
+    -- accept_diff = {
+      -- normal = '<C-y>',
+      -- insert = '<C-y>',
+    -- },
+    -- jump_to_diff = {
+      -- normal = 'gj',
+    -- },
+    -- quickfix_answers = {
+      -- normal = 'gqa',
+    -- },
+    -- quickfix_diffs = {
+      -- normal = 'gqd',
+    -- },
+    -- yank_diff = {
+      -- normal = 'gy',
+      -- register = '"', -- Default register to use for yanking
+    -- },
+    -- show_diff = {
+      -- normal = 'gd',
+      -- full_diff = false, -- Show full diff instead of unified diff when showing diff window
+    -- },
+    -- show_info = {
+      -- normal = 'gi',
+    -- },
+    -- show_context = {
+      -- normal = 'gc',
+    -- },
+    -- show_help = {
+      -- normal = 'gh',
+    -- },
+  -- }
 }

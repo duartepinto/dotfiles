@@ -181,7 +181,7 @@ local metals_config = require("metals").bare_config()
 metals_config.settings = {
   showImplicitArguments = false,
   excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
-  startMcpServer = false,
+  startMcpServer = true,
   serverProperties = {
     "-Dmetals.enable-best-effort=true",
     "-Dmetals.inlay-hints.named-parameters=true",
@@ -208,6 +208,15 @@ api.nvim_create_autocmd("FileType", {
   pattern = { "scala", "sbt", "java", "sc" },
   callback = function()
     require("metals").initialize_or_attach(metals_config)
+
+    -- Enable Metals MCP server in MCPHub after a delay to allow Metals to start
+    local mcp = require('mcphub')
+    local hub = mcp.get_hub_instance()
+    vim.defer_fn(function()
+      if hub then
+        hub:start_mcp_server("metals")
+      end
+    end, 5000) -- 5 second delay
   end,
   group = nvim_metals_group,
 })
