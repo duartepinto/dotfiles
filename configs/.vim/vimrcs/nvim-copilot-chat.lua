@@ -329,6 +329,16 @@ local function git_diff_with_copilot(prompt)
   vim.defer_fn(function()
     -- Make sure we're still in the right buffer
     if vim.api.nvim_get_current_buf() == buf then
+      local chat = require("CopilotChat")
+
+      -- Clear the CopilotChat buffer before starting new conversation
+      chat.reset()
+      chat.close()
+
+      -- Set the source to the new diff buffer
+      local winnr = vim.api.nvim_get_current_win()
+      chat.set_source(winnr)
+
       -- Start with an empty context array
       local context = {}
       -- Add the specific files from the diff first
@@ -341,7 +351,7 @@ local function git_diff_with_copilot(prompt)
       table.insert(context, '#gitdiff:' .. (input ~= "" and input or ""))
 
       -- Apply the specified prompt with extracted files as context
-      require("CopilotChat").ask(prompt, { sticky = context })
+      chat.ask(prompt, { sticky = context })
     end
   end, 300)
 end
