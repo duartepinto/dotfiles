@@ -180,6 +180,31 @@ local function get_gitlab_mr_info(branch_name)
 
 ]], mr.iid or "", mr.title or "", mr.state or "", mr.source_branch or "", mr.target_branch or "", mr.description or "")
 
+  -- Fetch comments separately using glab api
+  local notes_cmd = string.format("glab api projects/:id/merge_requests/%s/notes 2>/dev/null", mr.iid or "")
+  local notes_output = vim.fn.system(notes_cmd)
+
+  if vim.v.shell_error == 0 then
+    local notes_ok, notes_data = pcall(vim.json.decode, notes_output)
+    if notes_ok and notes_data and #notes_data > 0 then
+
+      if #notes_data > 0 then
+        context = context .. "**Comments:**\n"
+      end
+      for _, note in ipairs(notes_data) do
+        if note.body and note.body ~= "" and not note.system then
+          local author_name = "Unknown"
+          if note.author and note.author.name then
+            author_name = note.author.name
+          elseif note.author and note.author.username then
+            author_name = note.author.username
+          end
+          context = context .. string.format("- %s: %s\n", author_name, note.body)
+        end
+      end
+    end
+  end
+
   return context
 end
 
@@ -311,7 +336,7 @@ local function git_diff_with_copilot(prompt)
         table.insert(context, '#file:' .. file)
       end
       -- Add the default file patterns afterward
-      table.insert(context, '@metals')
+      -- table.insert(context, '@metals') // removed since it was throwing errors
       table.insert(context, '#glob:*/**/*.scala')
       table.insert(context, '#gitdiff:' .. (input ~= "" and input or ""))
 
