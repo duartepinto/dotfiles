@@ -453,10 +453,8 @@ local chat = require("CopilotChat")
 
 chat.setup {
   model = 'claude-sonnet-4', -- default model
-  sticky = {'@metals', '#glob:`**/*.scala`'},
-  selection = function(source)
-    return select.visual(source) or select.buffer(source)
-  end,
+  sticky = {'@metals', '#buffer', '#glob:`**/*.scala`'},
+  selection = 'visual',
 
   contexts = {
     file = {
