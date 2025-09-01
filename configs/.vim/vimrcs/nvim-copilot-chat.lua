@@ -223,7 +223,111 @@ local function git_diff_with_copilot(prompt)
     return
   end
 
-  local cmd = "git diff " .. (input ~= "" and input or "")
+  -- Function to check if a branch exists locally
+  local function branch_exists_locally(branch_name)
+    if not branch_name then return false end
+    local cmd = string.format("git show-ref --verify --quiet refs/heads/%s", branch_name)
+    return vim.fn.system(cmd) == "" and vim.v.shell_error == 0
+  end
+
+  -- Function to check if a remote branch exists
+  local function remote_branch_exists(branch_name, remote)
+    if not branch_name then return false end
+    remote = remote or "origin"
+    local cmd = string.format("git show-ref --verify --quiet refs/remotes/%s/%s", remote, branch_name)
+    return vim.fn.system(cmd) == "" and vim.v.shell_error == 0
+  end
+
+  -- Function to resolve branch reference, preferring local but falling back to remote
+  local function resolve_branch_ref(branch_name, remote)
+    if not branch_name then return branch_name end
+    remote = remote or "origin"
+
+    if branch_exists_locally(branch_name) then
+      return branch_name
+    elseif remote_branch_exists(branch_name, remote) then
+      vim.notify(string.format("Local branch '%s' not found, using remote '%s/%s'", branch_name, remote, branch_name), vim.log.levels.INFO)
+      return remote .. "/" .. branch_name
+    else
+      vim.notify(string.format("Branch '%s' not found locally or on remote '%s'", branch_name, remote), vim.log.levels.WARN)
+      return branch_name -- Return original and let git handle the error
+    end
+  end
+
+  -- Process the input to resolve any branch references
+  local resolved_input = input
+  if input and input ~= "" then
+    -- Handle various git diff patterns and resolve branch names
+    local modified = false
+
+    -- Pattern: main...feature-branch (three dots)
+    if input:match("%.%.%.") then
+      local target_branch = input:match("([^%s%.]+)%.%.%.")
+      local source_branch = input:match("%.%.%.([^%s]+)")
+
+      if target_branch then
+        local resolved_target = resolve_branch_ref(target_branch)
+        if resolved_target ~= target_branch then
+          resolved_input = resolved_input:gsub(vim.pesc(target_branch) .. "%.%.%.", resolved_target .. "...")
+          modified = true
+        end
+      end
+
+      if source_branch then
+        local resolved_source = resolve_branch_ref(source_branch)
+        if resolved_source ~= source_branch then
+          resolved_input = resolved_input:gsub("%.%.%." .. vim.pesc(source_branch), "..." .. resolved_source)
+          modified = true
+        end
+      end
+    -- Pattern: main..feature-branch (two dots)
+    elseif input:match("%.%.") then
+      local target_branch = input:match("([^%s%.]+)%.%.")
+      local source_branch = input:match("%.%.([^%s]+)")
+
+      if target_branch then
+        local resolved_target = resolve_branch_ref(target_branch)
+        if resolved_target ~= target_branch then
+          resolved_input = resolved_input:gsub(vim.pesc(target_branch) .. "%.%.", resolved_target .. "..")
+          modified = true
+        end
+      end
+
+      if source_branch then
+        local resolved_source = resolve_branch_ref(source_branch)
+        if resolved_source ~= source_branch then
+          resolved_input = resolved_input:gsub("%.%." .. vim.pesc(source_branch), ".." .. resolved_source)
+          modified = true
+        end
+      end
+    -- Pattern: ...feature-branch (comparing from HEAD to feature-branch)
+    elseif input:match("^%.%.%.") then
+      local source_branch = input:match("^%.%.%.([^%s]+)")
+      if source_branch then
+        local resolved_source = resolve_branch_ref(source_branch)
+        if resolved_source ~= source_branch then
+          resolved_input = "..." .. resolved_source
+          modified = true
+        end
+      end
+    else
+      -- Single branch name or other format
+      local single_branch = input:match("^([^%s%-%.]+)$")
+      if single_branch then
+        local resolved_branch = resolve_branch_ref(single_branch)
+        if resolved_branch ~= single_branch then
+          resolved_input = resolved_branch
+          modified = true
+        end
+      end
+    end
+
+    if modified then
+      vim.notify(string.format("Resolved git diff command: git diff %s", resolved_input), vim.log.levels.INFO)
+    end
+  end
+
+  local cmd = "git diff " .. (resolved_input ~= "" and resolved_input or "")
 
   -- Run git diff
   local diff_output = vim.fn.system(cmd)
@@ -246,7 +350,7 @@ local function git_diff_with_copilot(prompt)
   -- Extract branch information for GitLab context
   local gitlab_context = ""
 
-  -- Try to extract branch name from git diff input
+  -- Try to extract branch name from git diff input (use original input for branch name extraction)
   local branch_name = nil
   if input and input ~= "" then
     -- Handle various git diff target patterns
@@ -348,7 +452,7 @@ local function git_diff_with_copilot(prompt)
       -- Add the default file patterns afterward
       -- table.insert(context, '@metals') // removed since it was throwing errors
       table.insert(context, '#glob:*/**/*.scala')
-      table.insert(context, '#gitdiff:' .. (input ~= "" and input or ""))
+      table.insert(context, '#gitdiff:' .. (resolved_input ~= "" and resolved_input or ""))
 
       -- Apply the specified prompt with extracted files as context
       chat.ask(prompt, { sticky = context })
