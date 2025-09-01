@@ -450,8 +450,6 @@ local function git_diff_with_copilot(prompt)
         table.insert(context, '#file:' .. file)
       end
       -- Add the default file patterns afterward
-      -- table.insert(context, '@metals') // removed since it was throwing errors
-      table.insert(context, '#glob:*/**/*.scala')
       table.insert(context, '#gitdiff:' .. (resolved_input ~= "" and resolved_input or ""))
 
       -- Apply the specified prompt with extracted files as context
@@ -557,7 +555,7 @@ local chat = require("CopilotChat")
 
 chat.setup {
   model = 'claude-sonnet-4', -- default model
-  sticky = {'@metals', '#buffer'},
+  sticky = {'@metals', '#buffer', '#glob:*/**/*.scala' },
   selection = 'visual',
 
   contexts = {
