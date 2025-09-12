@@ -30,10 +30,10 @@ local map = vim.keymap.set
 -- global
 vim.opt_global.completeopt = { "menuone", "noinsert", "noselect" }
 
+telescope_builtin = require("telescope.builtin")
+
 -- LSP mappings
 map("n", "K", vim.lsp.buf.hover)
-map("n", "gds", vim.lsp.buf.document_symbol)
-map("n", "gws", vim.lsp.buf.workspace_symbol)
 map("n", "<leader>cll", vim.lsp.codelens.run)
 map("n", "<leader>sh", vim.lsp.buf.signature_help)
 map("n", "<leader>rn", vim.lsp.buf.rename)
@@ -57,23 +57,19 @@ map("n", "]g", function()
 end)
 
 -- Defaults from nvim-metals suggested config
+-- map("n", "gds", vim.lsp.buf.document_symbol)
+-- map("n", "gws", vim.lsp.buf.workspace_symbol)
 -- map("n", "gd", vim.lsp.buf.definition)
 -- map("n", "gi", vim.lsp.buf.implementation)
 -- map("n", "gr", vim.lsp.buf.references)
 -- map("n", "<leader>d", vim.diagnostic.setloclist)
 -- Overriden:
-map("n", "gd", function()
-  require("telescope.builtin").lsp_definitions()
-end)
-map("n", "gi", function()
-  require("telescope.builtin").lsp_implementations()
-end)
-map("n", "gr", function()
-  require("telescope.builtin").lsp_references()
-end)
-map("n", "<leader>d", function() -- buffer diagnostics only
-  require("telescope.builtin").diagnostics()
-end)
+map("n", "gds", telescope_builtin.lsp_document_symbols)
+map("n", "gws", telescope_builtin.lsp_workspace_symbols)
+map("n", "gd", telescope_builtin.lsp_definitions)
+map("n", "gi", telescope_builtin.lsp_implementations)
+map("n", "gr", telescope_builtin.lsp_references)
+map("n", "<leader>d", telescope_builtin.diagnostics) -- buffer diagnostics only
 
 -- Mappings for usage with nvim-dap.
 map("n", "<leader>dc", function()
