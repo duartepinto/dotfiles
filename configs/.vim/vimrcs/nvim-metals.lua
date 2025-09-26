@@ -65,7 +65,7 @@ end)
 -- map("n", "<leader>d", vim.diagnostic.setloclist)
 -- Overriden:
 map("n", "gds", telescope_builtin.lsp_document_symbols)
-map("n", "gws", telescope_builtin.lsp_workspace_symbols)
+map("n", "gws", telescope_builtin.lsp_dynamic_workspace_symbols)
 map("n", "gd", telescope_builtin.lsp_definitions)
 map("n", "gi", telescope_builtin.lsp_implementations)
 map("n", "gr", telescope_builtin.lsp_references)
