@@ -181,3 +181,24 @@ export GPG_TTY=$(tty)
 fpath=("/Users/duarte/Library/Application Support/ScalaCli/completions/zsh" $fpath)
 compinit
 # <<< scala-cli completions <<<
+
+# Kill all sbt processes
+function kill-sbt() {
+    local pids=$(pgrep -f "sbt")
+    if [ -n "$pids" ]; then
+echo "Found sbt processes:"
+        echo "$pids" | while read pid; do
+            local cmd=$(ps -p $pid -o command= 2>/dev/null)
+            if [ -n "$cmd" ]; then
+                # Find sbt in the command and extract context around it, then truncate to 80 chars
+                local sbt_context=$(echo "$cmd" | grep -o '.\{0,20\}sbt.\{0,40\}' | head -c 80)
+                echo "  PID $pid: $sbt_context"
+            fi
+        done
+        echo "Killing sbt processes..."
+        echo "$pids" | xargs kill -9
+        echo "All sbt processes killed."
+    else
+        echo "No sbt processes found."
+    fi
+}
