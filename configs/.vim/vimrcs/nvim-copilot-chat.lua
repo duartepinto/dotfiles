@@ -208,6 +208,53 @@ local function get_gitlab_mr_info(branch_name)
   return context
 end
 
+-- Helper function to execute CopilotChat after buffer loads
+local function execute_copilot_chat_on_buffer(buffer_name, buffer_content,prompt, context)
+  local buf = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(buffer_content, "\n"))
+  vim.api.nvim_buf_set_option(buf, "filetype", "md")
+
+  -- Safely set the buffer name using pcall to catch any errors
+  pcall(function()
+    vim.api.nvim_buf_set_name(buf, buffer_name)
+  end)
+
+    -- Open a new tab and set the buffer
+  vim.cmd("tabnew")
+  local win = vim.api.nvim_get_current_win()
+  vim.api.nvim_win_set_buf(win, buf)
+
+  -- Wait for buffer to fully load, then run CopilotChat
+  vim.defer_fn(function()
+    -- Verify we're still in the correct buffer and window
+    if vim.api.nvim_get_current_buf() == buf then
+      local chat = require("CopilotChat")
+      chat.reset()
+      chat.close()
+      chat.set_source(win)
+
+      -- DEBUG: Print buffer info before ask
+      -- local current_buf = vim.api.nvim_get_current_buf()
+      -- local current_buf_name = vim.api.nvim_buf_get_name(current_buf)
+      -- local current_win = vim.api.nvim_get_current_win()
+      -- local win_buf = vim.api.nvim_win_get_buf(current_win)
+      -- local source_info = chat.get_source()
+
+      -- vim.notify(string.format(
+        -- "DEBUG:\nExpected buf: %d (%s)\nExpected win: %d\nCurrent buf: %d (%s)\nCurrent win: %d\nWin's buf: %d\nSource bufnr: %s\nSource winnr: %s",
+        -- buf, buffer_name,
+        -- win,
+        -- current_buf, current_buf_name,
+        -- current_win, win_buf,
+        -- source_info.bufnr or "nil",
+        -- source_info.winnr or "nil"
+      -- ), vim.log.levels.INFO)
+
+      chat.ask(prompt, { sticky = context })
+    end
+  end, 300)
+end
+
 -- Function to handle git diff with CopilotChat integration
 local function git_diff_with_copilot(prompt)
   -- Get input from user with abort on escape
@@ -415,47 +462,15 @@ local function git_diff_with_copilot(prompt)
     full_content = gitlab_context .. "\n" .. string.rep("=", 80)
   end
 
-  local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(full_content, "\n"))
-  vim.api.nvim_buf_set_option(buf, "filetype", "diff")
+  -- Prepare context for CopilotChat
+  local context = {}
+  for _, file in ipairs(files) do
+    table.insert(context, '#file:' .. file)
+  end
+  table.insert(context, '#gitdiff:' .. (resolved_input ~= "" and resolved_input or ""))
 
-  -- Safely set the buffer name using pcall to catch any errors
-  pcall(function()
-    vim.api.nvim_buf_set_name(buf, buffer_name)
-  end)
-
-  -- Open a new tab and set the buffer
-  vim.cmd("tabnew")
-  local win = vim.api.nvim_get_current_win()
-  vim.api.nvim_win_set_buf(win, buf)
-
-  -- Wait for buffer to fully load, then run CopilotChat
-  vim.defer_fn(function()
-    -- Make sure we're still in the right buffer
-    if vim.api.nvim_get_current_buf() == buf then
-      local chat = require("CopilotChat")
-
-      -- Clear the CopilotChat buffer before starting new conversation
-      chat.reset()
-      chat.close()
-
-      -- Set the source to the new diff buffer
-      local winnr = vim.api.nvim_get_current_win()
-      chat.set_source(winnr)
-
-      -- Start with an empty context array
-      local context = {}
-      -- Add the specific files from the diff first
-      for _, file in ipairs(files) do
-        table.insert(context, '#file:' .. file)
-      end
-      -- Add the default file patterns afterward
-      table.insert(context, '#gitdiff:' .. (resolved_input ~= "" and resolved_input or ""))
-
-      -- Apply the specified prompt with extracted files as context
-      chat.ask(prompt, { sticky = context })
-    end
-  end, 300)
+  -- Execute CopilotChat after buffer loads
+  execute_copilot_chat_on_buffer(buffer_name, full_content, prompt, context)
 end
 
 -- Adaptation of the original '#file' completion from CopilotChat
@@ -510,29 +525,12 @@ local function implement_gitlab_issue()
   local timestamp = os.time()
   local buffer_name = "[GitLab Issue] #" .. issue_number .. " " .. timestamp
 
-  -- Create a new buffer for the issue information
-  local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(issue_info, "\n"))
-  vim.api.nvim_buf_set_option(buf, "filetype", "markdown")
-
-  -- Safely set the buffer name using pcall to catch any errors
-  pcall(function()
-    vim.api.nvim_buf_set_name(buf, buffer_name)
-  end)
-
-  -- Open a new tab and set the buffer
-  vim.cmd("tabnew")
-  local win = vim.api.nvim_get_current_win()
-  vim.api.nvim_win_set_buf(win, buf)
-
-  -- Wait for buffer to fully load, then run CopilotChat
-  vim.defer_fn(function()
-    -- Make sure we're still in the right buffer
-    if vim.api.nvim_get_current_buf() == buf then
-      -- Ask CopilotChat to implement the feature
-      require("CopilotChat").ask("Based on this GitLab issue, please provide a detailed implementation plan and suggest the necessary code changes to implement this feature. Include file modifications, new files that need to be created, and any architectural considerations.")
-    end
-  end, 300)
+  execute_copilot_chat_on_buffer(
+    buffer_name,
+    issue_info,
+    "Based on this GitLab issue, please provide a detailed implementation plan and suggest the necessary code changes to implement this feature. Include file modifications, new files that need to be created, and any architectural considerations.",
+    nil
+  )
 end
 
 map("n", "<leader>zc", require("CopilotChat").open) -- open chat
@@ -554,7 +552,7 @@ local select = require("CopilotChat.select")
 local chat = require("CopilotChat")
 
 chat.setup {
-  model = 'claude-sonnet-4', -- default model
+  model = 'claude-sonnet-4.5', -- default model
   sticky = {'@metals', '#buffer', '#glob:*/**/*.scala' },
   selection = 'visual',
 
