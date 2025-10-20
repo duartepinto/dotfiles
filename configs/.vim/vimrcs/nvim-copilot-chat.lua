@@ -559,7 +559,7 @@ local chat = require("CopilotChat")
 
 chat.setup {
   model = 'claude-sonnet-4.5', -- default model
-  sticky = {'@metals', '#buffer', '#glob:*/**/*.scala' },
+  sticky = {'@metals', '#buffer'},
   selection = 'visual',
 
   contexts = {
