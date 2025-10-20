@@ -101,6 +101,23 @@ local function extract_issue_number(branch_name)
   return nil
 end
 
+-- Function to get GitLab project ID
+local function get_gitlab_project_id()
+  local cmd = "glab repo view --output json 2>/dev/null"
+  local output = vim.fn.system(cmd)
+
+  if vim.v.shell_error ~= 0 then
+    return nil
+  end
+
+  local ok, repo_data = pcall(vim.json.decode, output)
+  if not ok or not repo_data or not repo_data.id then
+    return nil
+  end
+
+  return tostring(repo_data.id)
+end
+
 local function get_gitlab_issue_info(issue_number)
   if not issue_number then return "" end
 
@@ -150,6 +167,23 @@ local function get_gitlab_issue_info(issue_number)
   end
 
   return context
+end
+
+local function get_gitlab_mr_number(branch_name)
+  if not branch_name then return nil end
+
+  local cmd = string.format("glab mr list --source-branch %s --output json 2>/dev/null", branch_name)
+  local output = vim.fn.system(cmd)
+
+  if vim.v.shell_error ~= 0 then
+    return nil
+  end
+
+  local ok, mr_list = pcall(vim.json.decode, output)
+  if not ok or not mr_list or #mr_list == 0 then return nil end
+
+  local mr = mr_list[1] -- Get the first MR
+  return tostring(mr.iid)
 end
 
 -- Function to get GitLab MR information for a branch
@@ -209,7 +243,7 @@ local function get_gitlab_mr_info(branch_name)
 end
 
 -- Helper function to execute CopilotChat after buffer loads
-local function execute_copilot_chat_on_buffer(buffer_name, buffer_content,prompt, context)
+local function execute_copilot_chat_on_buffer(buffer_name, buffer_content, prompt, context)
   local buf = vim.api.nvim_create_buf(false, true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(buffer_content, "\n"))
   vim.api.nvim_buf_set_option(buf, "filetype", "md")
@@ -400,6 +434,13 @@ local function git_diff_with_copilot(prompt)
     end
   end
 
+-- Prepare context for CopilotChat
+  local context = {}
+  for _, file in ipairs(files) do
+    table.insert(context, '#file:' .. file)
+  end
+  table.insert(context, '#gitdiff:' .. (resolved_input ~= "" and resolved_input or ""))
+
   -- Extract branch information for GitLab context
   local gitlab_context = ""
 
@@ -434,9 +475,6 @@ local function git_diff_with_copilot(prompt)
 
     -- Use source branch (the feature branch) for GitLab context
     branch_name = source_branch
-
-    -- Debug output to help troubleshoot
-    vim.notify(string.format("Input: '%s', Extracted branch: '%s'", input, branch_name or "nil"), vim.log.levels.INFO)
   else
     -- Get current branch if no input provided
     local current_branch = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
@@ -445,6 +483,10 @@ local function git_diff_with_copilot(prompt)
     end
   end
 
+  local project_id = get_gitlab_project_id()
+  -- Debug output to help troubleshoot
+  vim.notify(string.format("Input: '%s', Extracted branch: '%s', ProjectID: '%s'", input, branch_name or "nil", project_id or "nil"), vim.log.levels.INFO)
+
   if branch_name then
     -- Get GitLab MR information
     gitlab_context = gitlab_context .. get_gitlab_mr_info(branch_name)
@@ -452,6 +494,18 @@ local function git_diff_with_copilot(prompt)
     -- Extract issue number and get issue information
     local issue_number = extract_issue_number(branch_name)
     gitlab_context = gitlab_context .. get_gitlab_issue_info(issue_number)
+
+    if project_id then
+      -- Add GitLab MCP command to context for CopilotChat
+      if issue_number then
+        table.insert(context, string.format('@GitLab_get_issue %s %s', project_id, issue_number))
+      end
+
+      local mr_number = get_gitlab_mr_number(branch_name)
+      if mr_number then
+        table.insert(context, string.format('@GitLab_get_merge_request %s %s', project_id, mr_number))
+      end
+    end
 
     -- Debug output
     vim.notify(string.format("Branch: '%s', Issue: '%s', GitLab context length: %d",
@@ -467,13 +521,6 @@ local function git_diff_with_copilot(prompt)
   if gitlab_context ~= "" then
     full_content = gitlab_context .. "\n" .. string.rep("=", 80)
   end
-
-  -- Prepare context for CopilotChat
-  local context = {}
-  for _, file in ipairs(files) do
-    table.insert(context, '#file:' .. file)
-  end
-  table.insert(context, '#gitdiff:' .. (resolved_input ~= "" and resolved_input or ""))
 
   -- Execute CopilotChat after buffer loads
   execute_copilot_chat_on_buffer(buffer_name, full_content, prompt, context)
@@ -531,11 +578,22 @@ local function implement_gitlab_issue()
   local timestamp = os.time()
   local buffer_name = "[GitLab Issue] #" .. issue_number .. " " .. timestamp
 
+  local context = nil
+  local project_id = get_gitlab_project_id()
+  if project_id then
+    context = {
+      string.format('@GitLab_get_issue %s %s', project_id, issue_number)
+    }
+  end
+
+  -- Debug output to help troubleshoot
+  vim.notify(string.format("Input: '%s', ProjectID: '%s'", issue_number, project_id or "nil"), vim.log.levels.INFO)
+
   execute_copilot_chat_on_buffer(
     buffer_name,
     issue_info,
     "Based on this GitLab issue, please provide a detailed implementation plan and suggest the necessary code changes to implement this feature. Include file modifications, new files that need to be created, and any architectural considerations.",
-    nil
+    context
   )
 end
 
