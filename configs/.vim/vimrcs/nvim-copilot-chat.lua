@@ -391,6 +391,12 @@ local function git_diff_with_copilot(prompt)
     if file_path and not vim.tbl_contains(files, file_path) then
       local absolute_path = vim.fn.fnamemodify(file_path, ":p")
       table.insert(files, absolute_path)
+
+      -- Return nil if more than 7 files
+      if #files > 7 then
+        files = {}
+        break
+      end
     end
   end
 
