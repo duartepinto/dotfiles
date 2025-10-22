@@ -242,51 +242,32 @@ local function get_gitlab_mr_info(branch_name)
   return context
 end
 
--- Helper function to execute CopilotChat after buffer loads
-local function execute_copilot_chat_on_buffer(buffer_name, buffer_content, prompt, context)
-  local buf = vim.api.nvim_create_buf(false, true)
-  vim.api.nvim_buf_set_lines(buf, 0, -1, false, vim.split(buffer_content, "\n"))
-  vim.api.nvim_buf_set_option(buf, "filetype", "md")
-
-  -- Safely set the buffer name using pcall to catch any errors
-  pcall(function()
-    vim.api.nvim_buf_set_name(buf, buffer_name)
-  end)
-
-    -- Open a new tab and set the buffer
-  vim.cmd("tabnew")
+local function execute_copilot_chat_new(prompt, context)
+  local chat = require("CopilotChat")
+  local buf = vim.api.nvim_get_current_buf()
   local win = vim.api.nvim_get_current_win()
-  vim.api.nvim_win_set_buf(win, buf)
+  chat.reset()
+  chat.close()
+  chat.set_source(win)
 
-  -- Wait for buffer to fully load, then run CopilotChat
-  vim.defer_fn(function()
-    -- Verify we're still in the correct buffer and window
-    if vim.api.nvim_get_current_buf() == buf then
-      local chat = require("CopilotChat")
-      chat.reset()
-      chat.close()
-      chat.set_source(win)
+  -- DEBUG: Print buffer info before ask
+  -- local current_buf = vim.api.nvim_get_current_buf()
+  -- local current_buf_name = vim.api.nvim_buf_get_name(current_buf)
+  -- local current_win = vim.api.nvim_get_current_win()
+  -- local win_buf = vim.api.nvim_win_get_buf(current_win)
+  -- local source_info = chat.get_source()
 
-      -- DEBUG: Print buffer info before ask
-      -- local current_buf = vim.api.nvim_get_current_buf()
-      -- local current_buf_name = vim.api.nvim_buf_get_name(current_buf)
-      -- local current_win = vim.api.nvim_get_current_win()
-      -- local win_buf = vim.api.nvim_win_get_buf(current_win)
-      -- local source_info = chat.get_source()
+  -- vim.notify(string.format(
+    -- "DEBUG:\nExpected buf: %d (%s)\nExpected win: %d\nCurrent buf: %d (%s)\nCurrent win: %d\nWin's buf: %d\nSource bufnr: %s\nSource winnr: %s",
+    -- buf, buffer_name,
+    -- win,
+    -- current_buf, current_buf_name,
+    -- current_win, win_buf,
+    -- source_info.bufnr or "nil",
+    -- source_info.winnr or "nil"
+  -- ), vim.log.levels.INFO)
 
-      -- vim.notify(string.format(
-        -- "DEBUG:\nExpected buf: %d (%s)\nExpected win: %d\nCurrent buf: %d (%s)\nCurrent win: %d\nWin's buf: %d\nSource bufnr: %s\nSource winnr: %s",
-        -- buf, buffer_name,
-        -- win,
-        -- current_buf, current_buf_name,
-        -- current_win, win_buf,
-        -- source_info.bufnr or "nil",
-        -- source_info.winnr or "nil"
-      -- ), vim.log.levels.INFO)
-
-      chat.ask(prompt, { sticky = context })
-    end
-  end, 300)
+  chat.ask(prompt, { sticky = context })
 end
 
 -- Function to handle git diff with CopilotChat integration
@@ -434,12 +415,7 @@ local function git_diff_with_copilot(prompt)
     end
   end
 
--- Prepare context for CopilotChat
   local context = {}
-  for _, file in ipairs(files) do
-    table.insert(context, '#file:' .. file)
-  end
-  table.insert(context, '#gitdiff:' .. (resolved_input ~= "" and resolved_input or ""))
 
   -- Extract branch information for GitLab context
   local gitlab_context = ""
@@ -483,7 +459,9 @@ local function git_diff_with_copilot(prompt)
     end
   end
 
-  local project_id = get_gitlab_project_id()
+  -- local project_id = get_gitlab_project_id()
+  local project_id = "<ignored>"  -- Currently not used, but can be enabled if needed
+
   -- Debug output to help troubleshoot
   vim.notify(string.format("Input: '%s', Extracted branch: '%s', ProjectID: '%s'", input, branch_name or "nil", project_id or "nil"), vim.log.levels.INFO)
 
@@ -495,35 +473,74 @@ local function git_diff_with_copilot(prompt)
     local issue_number = extract_issue_number(branch_name)
     gitlab_context = gitlab_context .. get_gitlab_issue_info(issue_number)
 
-    if project_id then
-      -- Add GitLab MCP command to context for CopilotChat
-      if issue_number then
-        table.insert(context, string.format('@GitLab_get_issue %s %s', project_id, issue_number))
-      end
+    -- Add GitLab MCP server tool commands to context for CopilotChat
+    -- if project_id then
+      -- -- Add GitLab MCP command to context for CopilotChat
+      -- if issue_number then
+        -- table.insert(context, string.format('@GitLab_get_issue %s %s', project_id, issue_number))
+      -- end
 
-      local mr_number = get_gitlab_mr_number(branch_name)
-      if mr_number then
-        table.insert(context, string.format('@GitLab_get_merge_request %s %s', project_id, mr_number))
-      end
-    end
+      -- local mr_number = get_gitlab_mr_number(branch_name)
+      -- if mr_number then
+        -- table.insert(context, string.format('@GitLab_get_merge_request %s %s', project_id, mr_number))
+      -- end
+    -- end
 
     -- Debug output
     vim.notify(string.format("Branch: '%s', Issue: '%s', GitLab context length: %d",
       branch_name or "nil", issue_number or "nil", #gitlab_context), vim.log.levels.INFO)
   end
 
-  -- Create buffer name based on the git command with timestamp to avoid naming conflicts
-  local timestamp = os.time()
-  local buffer_name = "[Git] " .. cmd .. " " .. timestamp
-
   -- Create a new buffer for the diff output with GitLab context
-  local full_content = ""
+  local full_prompt = prompt
   if gitlab_context ~= "" then
-    full_content = gitlab_context .. "\n" .. string.rep("=", 80)
+    full_prompt = prompt ..
+      "\n\n" .. string.rep("=", 30) .. " GITLAB CONTEXT " .. string.rep("=", 30) ..
+      gitlab_context ..
+      string.rep("=", 30) .. " END GITLAB CONTEXT " .. string.rep("=", 30)
   end
 
-  -- Execute CopilotChat after buffer loads
-  execute_copilot_chat_on_buffer(buffer_name, full_content, prompt, context)
+  -- Prepare context for CopilotChat
+  for _, file in ipairs(files) do
+    table.insert(context, '#file:' .. file)
+  end
+  table.insert(context, '#gitdiff:' .. (resolved_input ~= "" and resolved_input or ""))
+
+  -- Execute CopilotChat
+  execute_copilot_chat_new(full_prompt, context)
+end
+
+-- Function to implement GitLab issue with CopilotChat integration
+local function implement_gitlab_issue()
+  -- Get issue number from user with abort on escape
+  local issue_number = vim.fn.input({
+    prompt = "Enter GitLab issue number: ",
+    cancelreturn = "__CANCEL__",  -- Special value to detect cancellation
+  })
+
+  -- Check if user canceled input
+  if issue_number == "__CANCEL__" or issue_number == "" then
+    vim.notify("GitLab issue implementation cancelled", vim.log.levels.INFO)
+    return
+  end
+
+  -- Get GitLab issue information
+  local issue_info = get_gitlab_issue_info(issue_number)
+
+  if issue_info == "" then
+    vim.notify("Failed to fetch GitLab issue #" .. issue_number, vim.log.levels.ERROR)
+    return
+  end
+
+  -- Debug output to help troubleshoot
+  vim.notify(string.format("Input: '%s', ProjectID: '%s'", issue_number, project_id or "nil"), vim.log.levels.INFO)
+
+  local prompt = "Based on this GitLab issue, please provide a detailed implementation plan and suggest the necessary code changes to implement this feature. Include file modifications, new files that need to be created, and any architectural considerations." ..
+    "\n\n" .. string.rep("=", 30) .. " GITLAB ISSUE CONTEXT " .. string.rep("=", 30) ..
+    issue_info ..
+    string.rep("=", 30) .. " END GITLAB ISSUE CONTEXT " .. string.rep("=", 30)
+
+  execute_copilot_chat_new(prompt, nil)
 end
 
 -- Adaptation of the original '#file' completion from CopilotChat
@@ -552,58 +569,15 @@ local function file_completion(callback, source)
   }, callback)
 end
 
--- Function to implement GitLab issue with CopilotChat integration
-local function implement_gitlab_issue()
-  -- Get issue number from user with abort on escape
-  local issue_number = vim.fn.input({
-    prompt = "Enter GitLab issue number: ",
-    cancelreturn = "__CANCEL__",  -- Special value to detect cancellation
-  })
-
-  -- Check if user canceled input
-  if issue_number == "__CANCEL__" or issue_number == "" then
-    vim.notify("GitLab issue implementation cancelled", vim.log.levels.INFO)
-    return
-  end
-
-  -- Get GitLab issue information
-  local issue_info = get_gitlab_issue_info(issue_number)
-
-  if issue_info == "" then
-    vim.notify("Failed to fetch GitLab issue #" .. issue_number, vim.log.levels.ERROR)
-    return
-  end
-
-  -- Create buffer name with timestamp to avoid naming conflicts
-  local timestamp = os.time()
-  local buffer_name = "[GitLab Issue] #" .. issue_number .. " " .. timestamp
-
-  local context = nil
-  local project_id = get_gitlab_project_id()
-  if project_id then
-    context = {
-      string.format('@GitLab_get_issue %s %s', project_id, issue_number)
-    }
-  end
-
-  -- Debug output to help troubleshoot
-  vim.notify(string.format("Input: '%s', ProjectID: '%s'", issue_number, project_id or "nil"), vim.log.levels.INFO)
-
-  execute_copilot_chat_on_buffer(
-    buffer_name,
-    issue_info,
-    "Based on this GitLab issue, please provide a detailed implementation plan and suggest the necessary code changes to implement this feature. Include file modifications, new files that need to be created, and any architectural considerations.",
-    context
-  )
-end
-
 map("n", "<leader>zc", require("CopilotChat").open) -- open chat
 map("n", "<leader>zr", "<cmd>CopilotChatReview<cr>" ) -- Review code
 map("n", "<leader>zt", "<cmd>CopilotChatTests<cr>" ) -- Generate tests
 map("n", "<leader>zm", "<cmd>CopilotChatCommit<cr>" ) -- Create a commit message
 map("v", "<leader>zm", "<cmd>CopilotChatCommit<cr>" ) -- Create a commit message for the selection
 map("n", "<leader>zdr", function()
-  git_diff_with_copilot("Review this git diff and suggest improvements")
+  git_diff_with_copilot(
+    "Review this git diff and suggest improvements. If given access, use the issue and merge/pull request information to properly check if everything was done and if all concerns were taken into considerations. If a change doesn't fit the style of how the rest of the codebase is implemented also point that out. Don't suggest fixes for things that weren't done as part of the diff."
+  )
 end, { noremap = true, silent = true, desc = "CopilotChat: Review git diff" })
 map("n", "<leader>zd", function()
   git_diff_with_copilot("Explain this git diff")
