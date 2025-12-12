@@ -1,17 +1,5 @@
 {
   "mcpServers": {
-    "GitLab": {
-      "args": [
-        "-y",
-        "mcp-remote",
-        "https://gitlab.com/api/v4/mcp",
-        "--static-oauth-client-metadata",
-        "{\"scope\": \"mcp\"}"
-      ],
-      "autoApprove": [],
-      "command": "npx",
-      "disabled": false
-    },
     "metals": {
       "autoApprove": [],
       "disabled": false,
