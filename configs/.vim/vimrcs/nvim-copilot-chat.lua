@@ -589,7 +589,7 @@ local select = require("CopilotChat.select")
 local chat = require("CopilotChat")
 
 chat.setup {
-  model = 'claude-sonnet-4.5', -- default model
+  model = 'gemini-3-pro-preview', -- default model
   sticky = {'@metals', '#buffer'},
   selection = 'visual',
 
