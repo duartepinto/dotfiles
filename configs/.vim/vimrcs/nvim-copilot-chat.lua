@@ -144,25 +144,36 @@ local function get_gitlab_issue_info(issue_number)
 ]], issue_number, issue_data.title or "", issue_data.state or "", issue_data.description or "")
 
   -- Fetch comments separately using glab api
-  local notes_cmd = string.format("glab api projects/:id/issues/%s/notes 2>/dev/null", issue_number)
+  local notes_cmd = string.format("glab api projects/:id/issues/%s/discussions 2>/dev/null", issue_number)
   local notes_output = vim.fn.system(notes_cmd)
 
   if vim.v.shell_error == 0 then
-    local notes_ok, notes_data = pcall(vim.json.decode, notes_output)
-    if notes_ok and notes_data and #notes_data > 0 then
+    local notes_ok, discussions_data = pcall(vim.json.decode, notes_output)
+    if notes_ok and discussions_data and #discussions_data > 0 then
 
-      if #notes_data > 0 then
-        context = context .. "**Comments:**\n"
-      end
-      for _, note in ipairs(notes_data) do
-        if note.body and note.body ~= "" and not note.system then
-          local author_name = "Unknown"
-          if note.author and note.author.name then
-            author_name = note.author.name
-          elseif note.author and note.author.username then
-            author_name = note.author.username
+      context = context .. "**Comments:**\n"
+
+      for i = #discussions_data, 1, -1 do
+        local discussion = discussions_data[i]
+        local notes = discussion.notes
+        if notes then
+          for j, note in ipairs(notes) do
+            if note.body and note.body ~= "" and not note.system then
+              local author_name = "Unknown"
+              if note.author and note.author.name then
+                author_name = note.author.name
+              elseif note.author and note.author.username then
+                author_name = note.author.username
+              end
+
+              local prefix = "- "
+              if j > 1 then
+                prefix = "  - "
+              end
+
+              context = context .. string.format("%s%s: %s\n", prefix, author_name, note.body)
+            end
           end
-          context = context .. string.format("- %s: %s\n", author_name, note.body)
         end
       end
     end
@@ -217,25 +228,36 @@ local function get_gitlab_mr_info(branch_name)
 ]], mr.iid or "", mr.title or "", mr.state or "", mr.source_branch or "", mr.target_branch or "", mr.description or "")
 
   -- Fetch comments separately using glab api
-  local notes_cmd = string.format("glab api projects/:id/merge_requests/%s/notes 2>/dev/null", mr.iid or "")
+  local notes_cmd = string.format("glab api projects/:id/merge_requests/%s/discussions 2>/dev/null", mr.iid or "")
   local notes_output = vim.fn.system(notes_cmd)
 
   if vim.v.shell_error == 0 then
-    local notes_ok, notes_data = pcall(vim.json.decode, notes_output)
-    if notes_ok and notes_data and #notes_data > 0 then
+    local notes_ok, discussions_data = pcall(vim.json.decode, notes_output)
+    if notes_ok and discussions_data and #discussions_data > 0 then
 
-      if #notes_data > 0 then
-        context = context .. "**Comments:**\n"
-      end
-      for _, note in ipairs(notes_data) do
-        if note.body and note.body ~= "" and not note.system then
-          local author_name = "Unknown"
-          if note.author and note.author.name then
-            author_name = note.author.name
-          elseif note.author and note.author.username then
-            author_name = note.author.username
+      context = context .. "**Comments:**\n"
+
+      for i = #discussions_data, 1, -1 do
+        local discussion = discussions_data[i]
+        local notes = discussion.notes
+        if notes then
+          for j, note in ipairs(notes) do
+            if note.body and note.body ~= "" and not note.system then
+              local author_name = "Unknown"
+              if note.author and note.author.name then
+                author_name = note.author.name
+              elseif note.author and note.author.username then
+                author_name = note.author.username
+              end
+
+              local prefix = "- "
+              if j > 1 then
+                prefix = "  - "
+              end
+
+              context = context .. string.format("%s%s: %s\n", prefix, author_name, note.body)
+            end
           end
-          context = context .. string.format("- %s: %s\n", author_name, note.body)
         end
       end
     end
