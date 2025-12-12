@@ -1,5 +1,7 @@
 local map = vim.keymap.set
 
+local CONTEXT_MAX_NUMBER_FILES = 12
+
 vim.cmd([[
   function! GitDiffCompletion(ArgLead, CmdLine, CursorPos)
     let options = [
@@ -244,11 +246,8 @@ end
 
 local function execute_copilot_chat_new(prompt, context)
   local chat = require("CopilotChat")
-  local buf = vim.api.nvim_get_current_buf()
-  local win = vim.api.nvim_get_current_win()
   chat.reset()
   chat.close()
-  chat.set_source(win)
 
   -- DEBUG: Print buffer info before ask
   -- local current_buf = vim.api.nvim_get_current_buf()
@@ -407,8 +406,8 @@ local function git_diff_with_copilot(prompt)
       local absolute_path = vim.fn.fnamemodify(file_path, ":p")
       table.insert(files, absolute_path)
 
-      -- Return nil if more than 7 files
-      if #files > 7 then
+      -- Return nil if more than 'CONTEXT_MAX_NUMBER_FILES' files
+      if #files > CONTEXT_MAX_NUMBER_FILES then
         files = {}
         break
       end

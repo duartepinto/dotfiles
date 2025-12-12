@@ -210,9 +210,11 @@ api.nvim_create_autocmd("FileType", {
     local mcp = require('mcphub')
     local hub = mcp.get_hub_instance()
     vim.defer_fn(function()
-      if hub then
-        hub:start_mcp_server("metals")
-      end
+      vim.schedule(function()
+        if hub then
+          hub:start_mcp_server("metals")
+        end
+      end)
     end, 5000) -- 5 second delay
   end,
   group = nvim_metals_group,
