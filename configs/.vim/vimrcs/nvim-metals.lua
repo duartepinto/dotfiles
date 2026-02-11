@@ -35,6 +35,7 @@ telescope_builtin = require("telescope.builtin")
 -- LSP mappings
 map("n", "K", vim.lsp.buf.hover)
 map("n", "<leader>cll", vim.lsp.codelens.run)
+map("n", "<leader>cr", vim.lsp.codelens.refresh)
 map("n", "<leader>sh", vim.lsp.buf.signature_help)
 map("n", "<leader>rn", vim.lsp.buf.rename)
 map("n", "<leader>F", vim.lsp.buf.format)
@@ -221,3 +222,14 @@ api.nvim_create_autocmd("FileType", {
 })
 
 require("metals").setup_dap()
+
+-- Code lens refreshes automatically
+metals_config.on_attach = function(client, bufnr)
+  if client.server_capabilities.codeLensProvider then
+    vim.api.nvim_create_autocmd({ "BufEnter", "CursorHold", "InsertLeave" }, {
+      buffer = bufnr,
+      callback = vim.lsp.codelens.refresh,
+      group = nvim_metals_group,
+    })
+  end
+end
