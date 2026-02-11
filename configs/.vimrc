@@ -78,6 +78,10 @@ lua << EOF
 vim.g.copilot_assume_mapped = true
 vim.g.copilot_no_tab_map = true
 vim.g.copilot_tab_fallback = ""
+vim.g.copilot_filetypes = {
+  ["env"] = false,
+  ["hocon"] = false,
+}
 
 vim.lsp.inlay_hint.enable()
 
@@ -327,3 +331,6 @@ function! GitDirComplete(ArgLead, CmdLine, CursorPos)
   endfor
   return l:result
 endfunction
+
+" Set filetype to 'env' for .env files but keep sh syntax highlighting
+autocmd BufRead,BufNewFile .env,.env.* set filetype=env | set syntax=sh

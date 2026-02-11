@@ -1,6 +1,6 @@
 require'nvim-treesitter.configs'.setup {
   -- A list of parser names, or "all"
-  ensure_installed = { "lua", "scala", "java", "hocon", "python", "ruby", "html", "css", "json", "javascript", "markdown", "markdown_inline" --[[ , "latex" ]] }, -- latex parser instalation is currently broken
+  ensure_installed = { "lua", "scala", "java", "hocon", "python", "ruby", "html", "css", "json", "javascript", "markdown", "markdown_inline", "yaml" --[[ , "latex" ]] }, -- latex parser instalation is currently broken
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
   sync_install = false,
