@@ -3,7 +3,7 @@
     "metals": {
       "autoApprove": [],
       "disabled": false,
-      "url": "http://localhost:51942/sse"
+      "url": "http://localhost:51942/mcp"
     }
   },
   "nativeMCPServers": []
