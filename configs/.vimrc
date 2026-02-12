@@ -33,6 +33,9 @@ Plug 'j-hui/fidget.nvim'
 Plug 'CopilotC-Nvim/CopilotChat.nvim'
 Plug 'mfussenegger/nvim-dap'
 Plug 'ravitemer/mcphub.nvim', { 'do': 'npm install -g mcp-hub@latest' }
+Plug 'olimorris/codecompanion.nvim'
+Plug 'MeanderingProgrammer/render-markdown.nvim', { 'for': ['markdown'] } " needed for codecompanion
+Plug 'HakonHarnes/img-clip.nvim' " needed for codecompanion
 
 " Fuzzy search for vim
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
@@ -73,6 +76,7 @@ if has('nvim')
   source ~/.vim/vimrcs/nvim-fidget.lua
   source ~/.vim/vimrcs/mcphub.lua
   source ~/.vim/vimrcs/nvim-copilot-chat.lua
+  source ~/.vim/vimrcs/codecompanion.lua
 
 lua << EOF
 vim.g.copilot_assume_mapped = true
