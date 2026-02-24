@@ -30,6 +30,7 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 Plug 'nvim-telescope/telescope-ui-select.nvim'
 Plug 'j-hui/fidget.nvim'
+Plug 'CopilotC-Nvim/CopilotChat.nvim'
 Plug 'mfussenegger/nvim-dap'
 Plug 'ravitemer/mcphub.nvim', { 'do': 'npm install -g mcp-hub@latest' }
 Plug 'olimorris/codecompanion.nvim'
@@ -74,6 +75,7 @@ if has('nvim')
   source ~/.vim/vimrcs/nvim-treesitter.lua
   source ~/.vim/vimrcs/nvim-fidget.lua
   source ~/.vim/vimrcs/mcphub.lua
+  source ~/.vim/vimrcs/nvim-copilot-chat.lua
   source ~/.vim/vimrcs/codecompanion.lua
 
 lua << EOF
