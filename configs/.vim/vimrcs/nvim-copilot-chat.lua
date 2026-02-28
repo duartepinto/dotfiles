@@ -611,7 +611,7 @@ local select = require("CopilotChat.select")
 local chat = require("CopilotChat")
 
 chat.setup {
-  model = 'claude-opus-4.6', -- default model
+  model = 'gpt-5-mini', -- default model
   sticky = {'@metals', '#buffer'},
   selection = 'visual',
 
