@@ -86,6 +86,8 @@ if [ "$TMUX" = "" ]; then tmux -2; fi
 
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
+export PATH="$HOME/.local/bin:$PATH"
+
 # Necessary for having psql in path
 export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
 
