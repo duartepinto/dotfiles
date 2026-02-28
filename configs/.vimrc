@@ -33,6 +33,9 @@ Plug 'j-hui/fidget.nvim'
 Plug 'CopilotC-Nvim/CopilotChat.nvim'
 Plug 'mfussenegger/nvim-dap'
 Plug 'ravitemer/mcphub.nvim', { 'do': 'npm install -g mcp-hub@latest' }
+Plug 'MeanderingProgrammer/render-markdown.nvim' " needed for avante.nvim
+Plug 'MunifTanjim/nui.nvim' " needed for avante.nvim
+Plug 'yetone/avante.nvim', { 'branch': 'main', 'do': 'make' }
 
 " Fuzzy search for vim
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
@@ -68,13 +71,15 @@ if has('nvim')
   source ~/.vim/vimrcs/nvim-tree.vim
   source ~/.vim/vimrcs/nvim-telescope.vim
   source ~/.vim/vimrcs/nvim-lspconfig.lua
-  source ~/.vim/vimrcs/nvim-metals.lua
   source ~/.vim/vimrcs/nvim-treesitter.lua
   source ~/.vim/vimrcs/nvim-fidget.lua
   source ~/.vim/vimrcs/mcphub.lua
   source ~/.vim/vimrcs/nvim-copilot-chat.lua
+  source ~/.vim/vimrcs/nvim-avante.lua
+  source ~/.vim/vimrcs/nvim-metals.lua
 
 lua << EOF
+# The copilot mapping <C-j> is configured in nvim-metals.lua, due to nvim-cmp configs
 vim.g.copilot_assume_mapped = true
 vim.g.copilot_no_tab_map = true
 vim.g.copilot_tab_fallback = ""
