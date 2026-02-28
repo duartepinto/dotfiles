@@ -88,6 +88,17 @@ Useful links:
 
 * https://gist.github.com/kevin-smets/8568070
 
+#### Fonts
+
+Install the fonts using:
+```bash
+brew install --cask font-jetbrains-mono-nerd-font
+```
+
+~~Then set the font in iTerm2 to `Meslo LG S for Powerline` (should come from the Solarized theme) and enable "Use a different font for non-ASCII text" and choose `brew install --cask font-jetbrains-mono-nerd-font`.~~
+
+This had some slight issues with not everything being properly aligned, so I switched to using `JetBrainsMono Nerd Font Mono` for both ASCII and non-ASCII text.
+
 ### Vim
 Already installed. No need to do anything.
 Instruction here if needed: https://github.com/maxmx03/solarized.nvim
