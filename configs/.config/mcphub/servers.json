@@ -1,11 +1,24 @@
 {
   "mcpServers": {
     "GitLab": {
+      "autoApprove": [
+        "get_merge_request",
+        "get_merge_request_commits",
+        "get_merge_request_diffs",
+        "get_merge_request_pipelines",
+        "get_pipeline_jobs",
+        "get_workitem_notes",
+        "search",
+        "search_labels",
+        "semantic_code_search",
+        "get_issue"
+      ],
+      "disabled": false,
       "type": "http",
       "url": "https://gitlab.com/api/v4/mcp"
     },
     "metals": {
-      "autoApprove": [],
+      "autoApprove": true,
       "disabled": false,
       "url": "http://localhost:51942/mcp"
     }
