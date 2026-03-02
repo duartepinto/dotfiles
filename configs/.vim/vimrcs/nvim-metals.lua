@@ -208,14 +208,19 @@ api.nvim_create_autocmd("FileType", {
     require("metals").initialize_or_attach(metals_config)
 
     -- Enable Metals MCP server in MCPHub after a delay to allow Metals to start
-    local mcp = require('mcphub')
-    local hub = mcp.get_hub_instance()
     vim.defer_fn(function()
-      vim.schedule(function()
-        if hub then
-          hub:start_mcp_server("metals")
+      local mcp = require('mcphub')
+      local hub = mcp.get_hub_instance()
+      if not hub then return end
+
+      hub:start_mcp_server("metals", {
+        via_curl_request = true,
+        callback = function(response, err)
+          if err then
+            vim.notify("Failed to connect Metals MCP: " .. err, vim.log.levels.WARN)
+          end
         end
-      end)
+      })
     end, 5000) -- 5 second delay
   end,
   group = nvim_metals_group,
