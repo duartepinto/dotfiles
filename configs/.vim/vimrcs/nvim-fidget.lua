@@ -8,10 +8,13 @@ require("fidget").setup({
   },
 })
 
--- Adjust fidget x_padding when Avante sidebar opens/closes
-local function update_fidget_x_padding()
+-- Adjust fidget x_padding based on Avante window in the current tab
+local function get_avante_width_in_current_tab()
+  local current_tab = vim.api.nvim_get_current_tabpage()
   local avante_width = 0
-  for _, win in ipairs(vim.api.nvim_list_wins()) do
+
+  -- Only check windows in the current tab
+  for _, win in ipairs(vim.api.nvim_tabpage_list_wins(current_tab)) do
     local buf = vim.api.nvim_win_get_buf(win)
     local ft = vim.api.nvim_get_option_value("filetype", { buf = buf })
     if ft == "Avante" or ft == "AvanteInput" then
@@ -19,6 +22,12 @@ local function update_fidget_x_padding()
       break
     end
   end
+
+  return avante_width
+end
+
+local function update_fidget_x_padding()
+  local avante_width = get_avante_width_in_current_tab()
   require("fidget").setup({
     notification = {
       window = {
@@ -39,5 +48,10 @@ vim.api.nvim_create_autocmd("WinClosed", {
   callback = function()
     vim.schedule(update_fidget_x_padding)
   end,
+})
+
+-- Update fidget padding when switching tabs
+vim.api.nvim_create_autocmd("TabEnter", {
+  callback = update_fidget_x_padding,
 })
 
