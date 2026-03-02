@@ -339,6 +339,15 @@ require("avante").setup({
     copilot = {
       model = "gpt-5-mini",
     },
+    claude = {
+      endpoint = "https://api.anthropic.com",
+      auth_type = "api", -- Set to "max" to sign in with Claude Pro/Max subscription
+      model = "claude-3-5-sonnet-20241022",
+      extra_request_body = {
+        temperature = 0.75,
+        max_tokens = 4096
+      }
+    }
   },
   behaviour = {
     auto_suggestions = false,
