@@ -179,6 +179,7 @@ metals_config.settings = {
   showImplicitArguments = false,
   excludedPackages = { "akka.actor.typed.javadsl", "com.github.swagger.akka.javadsl" },
   startMcpServer = true,
+  mcpClient = "claude",
   defaultBspToBuildTool = true,
   serverProperties = {
     "-Dmetals.enable-best-effort=true",

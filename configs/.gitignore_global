@@ -10,3 +10,7 @@ project/metals.sbt
 *.worksheet.sc
 .tool-versions
 .ignore
+
+AGENTS.md
+.claude
+.mcp.json
