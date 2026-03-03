@@ -341,4 +341,4 @@ endfunction
 autocmd BufRead,BufNewFile .env,.env.* set filetype=env | set syntax=sh
 
 " Open .vimrc in a new tab and set the local current directory to ~/.vim
-command! VimDir :tabnew ~/.vimrc | :lcd ~/dotfiles
+command! Dotfiles :tabnew ~/.vimrc | :lcd ~/dotfiles

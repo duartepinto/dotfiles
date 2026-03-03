@@ -213,6 +213,12 @@ api.nvim_create_autocmd("FileType", {
       local hub = mcp.get_hub_instance()
       if not hub then return end
 
+      -- If the Metals MCP server is already connected, don't try to start it again
+      local existing = hub:get_server("metals")
+      if existing and existing.status == "connected" then
+        return
+      end
+
       hub:start_mcp_server("metals", {
         via_curl_request = true,
         callback = function(response, err)
