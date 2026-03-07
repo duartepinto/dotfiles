@@ -211,6 +211,9 @@ local function git_diff_ask(prompt_prefix)
     if vim.v.shell_error == 0 and current ~= "" then branch_name = current end
   end
 
+  -- Debug output to help troubleshoot
+  vim.notify(string.format("Input: '%s', Extracted branch: '%s', ProjectID: '%s'", input, branch_name or "nil", project_id or "nil"), vim.log.levels.INFO)
+
   local gitlab_context = ""
   if branch_name then
     gitlab_context = gitlab_context .. get_gitlab_mr_info(branch_name)
@@ -303,7 +306,6 @@ local function implement_gitlab_issue()
 end
 
 -- Keymaps (using <leader>z prefix to match your old CopilotChat mappings)
-map("n", "<leader>zc", "<cmd>AvanteToggle<cr>", { desc = "Avante: Toggle sidebar" })
 map("n", "<leader>zt", "<cmd>AvanteAsk Please generate tests for this code<cr>", { desc = "Avante: Generate tests" })
 map("n", "<leader>zm", function()
   require("avante.api").ask({ question = "Generate a conventional commit message for the staged changes." })
@@ -356,6 +358,9 @@ require("avante").setup({
   windows = {
     position = "right",
     width = 35,
+    ask = {
+      start_insert = false,
+    }
   },
   -- render-markdown integration
   file_types = { "markdown", "Avante" },
