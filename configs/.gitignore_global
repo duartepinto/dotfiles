@@ -12,5 +12,6 @@ project/metals.sbt
 .ignore
 
 AGENTS.md
+CLAUDE.md
 .claude
 .mcp.json
