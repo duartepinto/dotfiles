@@ -184,6 +184,183 @@ fpath=("/Users/duarte/Library/Application Support/ScalaCli/completions/zsh" $fpa
 compinit
 # <<< scala-cli completions <<<
 
+# Completion for git-review-commits / grc.
+# Supports plain refs, HEAD~N shortcuts, and branch..branch / branch...branch ranges.
+function _git_review_commits() {
+    local cur="${words[CURRENT]}"
+
+    local branches=( ${(f)"$(git branch --format='%(refname:short)' 2>/dev/null)"} )
+    local remote_branches=( ${(f)"$(git branch -r --format='%(refname:short)' 2>/dev/null | sed 's|^origin/||')"} )
+    local all_branches=( "${branches[@]}" "${remote_branches[@]}" )
+
+    # Range with ... (symmetric difference) — complete the ref after the operator
+    if [[ "$cur" == *"..."* ]]; then
+        local prefix="${cur%%...*}..."
+        local suffix="${cur##*...}"
+        local completions=()
+        for b in "${all_branches[@]}"; do
+            [[ "$b" == "$suffix"* ]] && completions+=("${prefix}${b}")
+        done
+        compadd -S '' "${completions[@]}"
+        return
+    fi
+
+    # Range with .. — complete the ref after the operator
+    if [[ "$cur" == *".."* ]]; then
+        local prefix="${cur%%\.\.*}.."
+        local suffix="${cur##*..}"
+        local completions=()
+        for b in "${all_branches[@]}"; do
+            [[ "$b" == "$suffix"* ]] && completions+=("${prefix}${b}")
+        done
+        compadd -S '' "${completions[@]}"
+        return
+    fi
+
+    # Plain ref: HEAD~N shortcuts + branch names
+    local -a shortcuts
+    shortcuts=(
+        'HEAD~:1 commit before HEAD'
+        'HEAD~2:2 commits before HEAD'
+        'HEAD~3:3 commits before HEAD'
+        'HEAD~5:5 commits before HEAD'
+        'HEAD~10:10 commits before HEAD'
+    )
+    _describe -t shortcuts 'shortcuts' shortcuts
+    compadd "${all_branches[@]}"
+}
+
+compdef _git_review_commits git-review-commits grc
+
+# Review git commits one by one, showing the diff for each.
+# Usage: git-review-commits [target]
+#   target: a git ref or range (e.g. 'main', 'HEAD~3', 'main...<hash>')
+#   When a single ref is given, shows commits from that ref up to HEAD.
+function git-review-commits() {
+    local start_from=1
+
+    # Parse optional flags to resume a review after a mid-range amend
+    while [[ "${1}" == --* ]]; do
+        case "$1" in
+            --continue)
+                # Resume from the position saved by the last non-HEAD amend
+                if [[ -z "$_GRC_RESUME_FROM" || -z "$_GRC_RESUME_TARGET" ]]; then
+                    echo "Nothing to continue (no paused review found)."
+                    return 1
+                fi
+                start_from="$_GRC_RESUME_FROM"
+                set -- "$_GRC_RESUME_TARGET"
+                unset _GRC_RESUME_FROM _GRC_RESUME_TARGET
+                break
+                ;;
+            --from=*) start_from="${1#--from=}"; shift ;;
+            --from)   start_from="$2"; shift 2 ;;
+            *) break ;;
+        esac
+    done
+
+    # Guard: refuse to start a review while a rebase is already in progress
+    local git_dir
+    git_dir=$(git rev-parse --git-dir 2>/dev/null) || { echo "Not inside a git repository."; return 1; }
+    if [[ -d "$git_dir/rebase-merge" || -d "$git_dir/rebase-apply" ]]; then
+        echo "A rebase is already in progress. Finish or abort it first:"
+        echo "  git rebase --continue  (or --abort)"
+        if [[ -n "$_GRC_RESUME_FROM" ]]; then
+            echo ""
+            echo "Once done, resume your review with:  $0 --continue"
+        fi
+        return 1
+    fi
+
+    local target="${1:-HEAD~}"
+    local range
+
+    # If the target already contains '..', use it as a range directly
+    if [[ "$target" == *".."* ]]; then
+        range="$target"
+    else
+        # Treat as base ref and review everything from there to HEAD
+        range="${target}..HEAD"
+    fi
+
+    # Collect commits oldest-first so we review in chronological order
+    local commits
+    commits=(${(f)"$(git log --reverse --format="%H" "$range" 2>/dev/null)"})
+
+    if [[ ${#commits[@]} -eq 0 ]]; then
+        echo "No commits found for range: $range"
+        return 1
+    fi
+
+    local total=${#commits[@]}
+    echo "Reviewing $total commit(s) — range: $range"
+    echo "Press 'q' inside the diff viewer to advance to the next commit."
+
+    local i=1
+    for commit in "${commits[@]}"; do
+        # Skip already-reviewed commits when resuming with --from N
+        if (( i < start_from )); then
+            (( i++ ))
+            continue
+        fi
+
+        echo ""
+        echo "┌─── Commit $i/$total ──────────────────────────────────────────────"
+        echo "│ $(git log -1 --format='%C(yellow)%h%Creset  %s' --color=always "$commit")"
+        echo "│ $(git log -1 --format='%an • %ad' --date=short "$commit")"
+        echo "└───────────────────────────────────────────────────────────────────"
+
+        git show --color=always "$commit" | less -R
+
+        (( i++ ))
+
+        local is_last=$(( i > total ))
+        if [[ $is_last -eq 0 ]]; then
+            echo -n "\nContinue to commit $i/$total? [Y/n/a=amend] "
+        else
+            echo -n "\nAmend this commit? [a/n] "
+        fi
+
+        read -rk1 response
+        echo ""
+
+        case "$response" in
+            [aA])
+                local short_hash
+                short_hash=$(git log -1 --format='%h' "$commit")
+                if [[ "$(git rev-parse "$commit")" == "$(git rev-parse HEAD)" ]]; then
+                    # Amend HEAD directly — loop will finish naturally afterwards
+                    echo "Amending HEAD commit $short_hash..."
+                    git commit --amend
+                else
+                    # Use rebase -i, automatically marking the commit as 'edit'
+                    echo "Setting up rebase to amend commit $short_hash..."
+                    GIT_SEQUENCE_EDITOR="perl -i -pe 's/^pick/edit/ if \$. == 1'" \
+                        git rebase -i "${commit}^"
+                    echo ""
+                    echo "Git has stopped at $short_hash. Make your changes, then run:"
+                    echo "  git add <files> && git commit --amend && git rebase --continue"
+                    echo ""
+                    export _GRC_RESUME_FROM=$i
+                    export _GRC_RESUME_TARGET="$target"
+                    echo "Then resume the review with:"
+                    echo "  $0 --continue"
+                    return 0
+                fi
+                ;;
+            [nNqQ])
+                if [[ $is_last -eq 0 ]]; then
+                    echo "Review stopped."
+                    return 0
+                fi
+                ;;
+        esac
+    done
+
+    echo "\n✅ Review complete — $total commit(s) reviewed."
+}
+alias grc='git-review-commits'
+
 # Kill all sbt processes
 function kill-sbt() {
     local pids=$(pgrep -f "sbt")
