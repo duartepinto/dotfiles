@@ -205,7 +205,13 @@ local function git_diff_ask(prompt_prefix)
   -- Extract branch name for GitLab context
   local branch_name = nil
   if input ~= "" then
-    branch_name = input:match("%.%.%.([^%s]+)") or input:match("%.%.([^%s]+)") or input:match("^([^%s%-%.]+)$")
+    -- Pattern: main... (trailing dots mean current branch is the source branch)
+    if input:match("%.%.%.$") then
+      local current = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
+      if vim.v.shell_error == 0 and current ~= "" then branch_name = current end
+    else
+      branch_name = input:match("%.%.%.([^%s]+)") or input:match("%.%.([^%s]+)") or input:match("^([^%s%-%.]+)$")
+    end
   else
     local current = vim.fn.system("git branch --show-current 2>/dev/null"):gsub("\n", "")
     if vim.v.shell_error == 0 and current ~= "" then branch_name = current end
