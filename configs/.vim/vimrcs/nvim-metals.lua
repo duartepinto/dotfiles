@@ -35,7 +35,9 @@ telescope_builtin = require("telescope.builtin")
 -- LSP mappings
 map("n", "K", vim.lsp.buf.hover)
 map("n", "<leader>cll", vim.lsp.codelens.run)
-map("n", "<leader>cr", vim.lsp.codelens.refresh)
+map("n", "<leader>cr", function(bufnr)
+  vim.lsp.codelens.enable(true, { bufnr = bufnr })
+end) -- previously it was vim.lsp.codelens.refresh, but that was deprecated
 map("n", "<leader>sh", vim.lsp.buf.signature_help)
 map("n", "<leader>rn", vim.lsp.buf.rename)
 map("n", "<leader>F", vim.lsp.buf.format)

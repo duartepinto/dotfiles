@@ -1,3 +1,7 @@
+lua << EOF
+vim.treesitter.start()
+EOF
+
 au FileType javascript call JavaScriptFold()
 au FileType javascript setl fen
 au FileType javascript setl nocindent

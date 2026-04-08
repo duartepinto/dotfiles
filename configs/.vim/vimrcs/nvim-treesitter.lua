@@ -1,4 +1,5 @@
 require('nvim-treesitter').install {
+  'vim',
   'lua',
   'scala',
   'java',
