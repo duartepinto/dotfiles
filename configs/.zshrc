@@ -172,9 +172,8 @@ export GPG_TTY=$(tty)
 
 [ -f ~/.fzf.bash ] && source ~/.private-configs/.paylarc
 
-# Load asdf. This has to be sourced after all changes to $PATH
-# . /usr/local/opt/asdf/libexec/asdf.sh # This previouly worked. Not anymore
-. /opt/homebrew/opt/asdf/libexec/asdf.sh
+# Add asdf shims to PATH
+export PATH="${ASDF_DATA_DIR:-$HOME/.asdf}/shims:$PATH"
 
 # Setting default JDK according to asdf settings.
 . ~/.asdf/plugins/java/set-java-home.zsh
