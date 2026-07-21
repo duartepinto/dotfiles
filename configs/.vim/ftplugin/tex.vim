@@ -1,35 +1,22 @@
-" Automatically truncate the length of a line in Latex
-autocmd FileType tex    set textwidth=82
+" Maximum line length in LaTeX: drives auto-wrap while typing and the wrap
+" width used by VimTeX's formatter (gq / <leader>F).
+setlocal textwidth=80
 
 " Make vimtex automatically open evince instead of the default system viewer.
 "let g:vimtex_view_general_viewer = 'evince'
 
 " %%%%%%%%%% MAC OS ONLY %%%%%%%%%%
-" Make vimtex automatically open skim instead of the default system viewer. Better for Mac OS.
-let g:vimtex_view_general_viewer
-      \ = '/Applications/Skim.app/Contents/SharedSupport/displayline'
-let g:vimtex_view_general_options = '-r @line @pdf @tex'
-let g:vimtex_compiler_callback_hooks = ['UpdateSkim']
-function! UpdateSkim(status)
-  if !a:status | return | endif
-
-  let l:out = b:vimtex.out()
-  let l:tex = expand('%:p')
-  let l:cmd = [g:vimtex_view_general_viewer, '-r']
-  if !empty(system('pgrep Skim'))
-    call extend(l:cmd, ['-g'])
-  endif
-  if has('nvim')
-    call jobstart(l:cmd + [line('.'), l:out, l:tex])
-  elseif has('job')
-    call job_start(l:cmd + [line('.'), l:out, l:tex])
-  else
-    call system(join(l:cmd + [line('.'),
-          \ shellescape(l:out), shellescape(l:tex)], ' '))
-  endif
-endfunction
-
+" VimTeX's built-in Skim backend: auto-reloads Skim + forward-search on every
+" successful compile. Replaces the deprecated g:vimtex_compiler_callback_hooks
+" + custom UpdateSkim approach.
+let g:vimtex_view_method = 'skim'
 " %%%%%%%%%% END OF MAC OS ONLY %%%%%%%%%%
+
+" Enable VimTeX's latexindent-based, LaTeX-aware formatting via `gq`.
+"   gqq = current line, gqip = paragraph/entry, <leader>F = whole file
+let g:vimtex_format_enabled = 1
+" Format the whole file, restoring the cursor position afterwards.
+nnoremap <buffer> <leader>F mzgggqG`z
 
 if !exists('g:ycm_semantic_triggers')
     let g:ycm_semantic_triggers = {}
